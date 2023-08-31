@@ -60,4 +60,4 @@ git clone "$REPO_URL" "$REPO_DEST"
 info "Change path to $REPO_DEST"
 cd "$REPO_DEST" >/dev/null
 
-./install.sh
+source ./install.sh
