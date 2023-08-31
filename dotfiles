@@ -3,7 +3,7 @@
 set -o errexit
 
 REPO_URL=git@github.com:jolafrite/dotfiles.git
-REPO_DEST="$HOME/.dotfiles2"
+REPO_DEST="$HOME/.dotfiles"
 
 reset_color=$(tput sgr 0)
 
