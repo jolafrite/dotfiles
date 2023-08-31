@@ -4,6 +4,4 @@
 packer_compiled.lua
 Brewfile.lock.json
 stow/tmux/.tmux/plugins/
-stow/nvim/.config/nvim/*
-
 !/**/.gitkeep
