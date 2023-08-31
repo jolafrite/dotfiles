@@ -45,7 +45,7 @@ install_homebrew() {
 }
 
 info "####### dotfiles #######"
-read -p "Press enter to start:"
+read -r -p "Press enter to start:"
 info "Bootstraping..."
 
 install_xcode
