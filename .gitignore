@@ -1,0 +1,6 @@
+.DS_Store
+.netrwhist
+.git
+packer_compiled.lua
+stow/tmux/.tmux/plugins/
+stow/nvim/.config/nvim

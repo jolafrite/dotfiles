@@ -34,7 +34,7 @@ install_xcode() {
 }
 
 install_homebrew() {
-	export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+	export HOMEBREW_CASK_OPTS="--appdir=~/Applications"
 	if hash brew &>/dev/null; then
 		warn "Homebrew already installed"
 	else
