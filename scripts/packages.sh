@@ -1,7 +1,7 @@
 taps=(
 	homebrew/cask
 	homebrew/cask-fonts
-	popcorn-official/popcorn-desktop
+	# popcorn-official/popcorn-desktop
 )
 
 packages=(
