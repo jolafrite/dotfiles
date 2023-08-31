@@ -58,6 +58,6 @@ info "Cloning .dotfiles repo from $REPO_URL into $REPO_DEST"
 git clone "$REPO_URL" "$REPO_DEST"
 
 info "Change path to $REPO_DEST"
-cd "$REPO_DEST" >/dev/null
+cd "$REPO_DEST"
 
 source ./install.sh
