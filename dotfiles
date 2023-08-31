@@ -55,7 +55,7 @@ info "Installing Git"
 brew install git
 
 info "Cloning .dotfiles repo from $REPO_URL into $REPO_DEST"
-git clone "$REPO_URL" "$REPO_DEST"
+git clone --recurse-submodules --remote-submodules -j8 "$REPO_URL" "$REPO_DEST"
 
 info "Change path to $REPO_DEST"
 pushd "$REPO_DEST" > /dev/null
