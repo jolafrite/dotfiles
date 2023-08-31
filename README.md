@@ -8,3 +8,11 @@ Run the `dotfiles` script:
 ```sh
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/jolafrite/dotfiles/main/dotfiles)"
 ```
+
+## Testing Stow
+
+Simulate `stow` links
+
+```sh
+stow -nSv vim
+```
