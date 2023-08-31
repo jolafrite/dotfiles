@@ -13,7 +13,7 @@ apps=(
 	firefox
 	google-chrome
 	nvidia-geforce-now
-	popcorn-time
+	# popcorn-time
 	postman
 	rectangle
 	tableplus
