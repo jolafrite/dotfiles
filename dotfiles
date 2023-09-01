@@ -41,9 +41,9 @@ install_homebrew() {
 		info "Installing homebrew..."
 		# sudo --validate # reset `sudo` timeout to use Homebrew install in noninteractive mode
 		# NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-		mkdir homebrew 
-		curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C homebrew
-		eval "$(homebrew/bin/brew shellenv)"
+		mkdir ~/homebrew 
+		curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C ~/homebrew
+		eval "$(~/homebrew/bin/brew shellenv)"
 		brew update --force --quiet
 		chmod -R go-w "$(brew --prefix)/share/zsh"
 	fi
@@ -55,9 +55,6 @@ info "Bootstraping..."
 
 install_xcode
 install_homebrew
-
-info "Installing Git"
-brew install git
 
 info "Cloning .dotfiles repo from $REPO_URL into $REPO_DEST"
 git clone --recurse-submodules --remote-submodules -j8 "$REPO_URL" "$REPO_DEST"
