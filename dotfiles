@@ -59,6 +59,7 @@ install_homebrew
 
 info "####### Install Git auth helper #######"
 brew install --cask git-credential-manager
+brew install git
 git credential-manager github login
 
 info "Cloning .dotfiles repo from $REPO_URL into $REPO_DEST"
