@@ -56,6 +56,9 @@ info "Bootstraping..."
 install_xcode
 install_homebrew
 
+info "####### Install Git auth helper #######"
+brew install --cask git-credential-manager
+
 info "Cloning .dotfiles repo from $REPO_URL into $REPO_DEST"
 git clone --recurse-submodules --remote-submodules -j8 "$REPO_URL" "$REPO_DEST"
 
