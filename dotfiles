@@ -58,7 +58,7 @@ install_xcode
 install_homebrew
 
 info "####### Install required dependencies  #######"
-brew install gcc openssl@3 --force-bottle
+brew install gcc openssl@3 pkg-config --force-bottle
 brew install git
 brew install --cask git-credential-manager
 
