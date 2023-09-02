@@ -59,7 +59,8 @@ install_homebrew
 
 info "####### Install required dependencies  #######"
 brew install --cask git-credential-manager
-brew install git gcc --force-bottle
+brew install git --force-bottle
+brew install gcc --force-bottle
 
 info "Cloning .dotfiles repo from $REPO_URL into $REPO_DEST"
 git credential-manager github login
