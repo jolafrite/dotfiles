@@ -28,7 +28,6 @@ packages=(
 	lazygit
 	lolcat
 	neovim
-	newsboat
 	nmap
 	openjdk
 	python3
