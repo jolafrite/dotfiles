@@ -58,8 +58,9 @@ install_xcode
 install_homebrew
 
 info "####### Install required dependencies  #######"
+brew install gcc --force-bottle
+brew install git
 brew install --cask git-credential-manager
-brew install gettext gcc git --force-bottle
 
 info "Cloning .dotfiles repo from $REPO_URL into $REPO_DEST"
 git credential-manager github login
