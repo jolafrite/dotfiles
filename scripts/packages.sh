@@ -30,6 +30,7 @@ packages=(
 	neovim
 	nmap
 	openjdk
+ 	parallel
 	python3
 	ripgrep
 	rustup
