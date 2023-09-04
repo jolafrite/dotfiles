@@ -21,7 +21,7 @@ apps=(
 
 mas_apps=(
 	"937984704"   # Amphetamine
-	"1444383602"  # Good Notes 5
+ 	"1444383602"  # Good Notes 6
   	"1352778147"  # Bitwarden
 )
 
