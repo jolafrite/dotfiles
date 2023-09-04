@@ -38,7 +38,7 @@ main() {
 	info "################################################################################"
 	wait_input
 	install_macos_apps
-	#install_masApps
+	install_masApps
 	success "Finished installing macOS apps"
 
 	info "################################################################################"
