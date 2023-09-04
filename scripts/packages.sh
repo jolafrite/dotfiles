@@ -41,7 +41,7 @@ packages=(
 	tmux
 	trash-cli
 	tz
-	xo/xo/usql
+	#xo/xo/usql
 	viddy
 	watson
 	websocat
