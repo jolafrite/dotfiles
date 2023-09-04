@@ -14,8 +14,8 @@ packages=(
 	exa
 	fd
 	fzf
+ 	g	
 	gdu
-	gh
 	git
 	git-delta
 	glow
