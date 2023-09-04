@@ -11,7 +11,6 @@ packages=(
 	bottom
 	btop
 	curl
-	dooit
 	exa
 	fd
 	fzf
