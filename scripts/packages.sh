@@ -5,12 +5,12 @@ taps=(
 )
 
 packages=(
-	bat
 	bandwhich
+	bash
+	bat
 	bottom
 	btop
 	curl
-	dooit
 	exa
 	fd
 	fzf
@@ -30,6 +30,7 @@ packages=(
 	neovim
 	nmap
 	openjdk
+ 	parallel
 	python3
 	ripgrep
 	rustup
