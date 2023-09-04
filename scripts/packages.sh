@@ -27,6 +27,7 @@ packages=(
 	lazydocker
 	lazygit
 	lolcat
+ 	mas
 	neovim
 	nmap
 	openjdk
