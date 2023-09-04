@@ -5,8 +5,9 @@ taps=(
 )
 
 packages=(
-	bat
 	bandwhich
+	bash
+	bat
 	bottom
 	btop
 	curl
