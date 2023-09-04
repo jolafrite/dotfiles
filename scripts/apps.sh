@@ -20,10 +20,10 @@ apps=(
 )
 
 mas_apps=(
-  "937984704"   # Amphetamine
-  "1444383602"  # Good Notes 5
-  "768053424"   # Gappling (svg viewer)
-  "1352778147"  # Bitwarden
+	"937984704"   # Amphetamine
+	"1444383602"  # Good Notes 5
+  	"768053424"   # Gappling (svg viewer)
+  	"1352778147"  # Bitwarden
 )
 
 install_macos_apps() {
