@@ -2,16 +2,11 @@
 
 apps=(
 	arctype
-	avast-security
 	brave-browser
-	bitwarden
 	clipy
 	deepl
 	docker
 	expressvpn
-	fig
-	firefox
-	google-chrome
 	nvidia-geforce-now
 	# popcorn-time
 	postman
