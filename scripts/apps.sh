@@ -23,7 +23,7 @@ mas_apps=(
 	"937984704"   # Amphetamine
    	"1352778147"  # Bitwarden
  	"1444383602"  # Good Notes 6
-   	"497799835" # Xcode
+   	"497799835"   # Xcode
 )
 
 install_macos_apps() {
