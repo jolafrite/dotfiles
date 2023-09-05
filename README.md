@@ -14,5 +14,5 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/jolafrite/dotfiles/main/
 Simulate `stow` links
 
 ```sh
-stow -nSv -d ~/.dotfiles/stow nvim
+stow -nSv -d ~/.dotfiles/stow -t ~ nvim
 ```
