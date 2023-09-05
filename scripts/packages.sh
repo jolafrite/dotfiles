@@ -14,7 +14,7 @@ packages=(
 	exa
 	fd
 	fzf
- 	g	
+	g
 	gdu
 	git
 	git-delta
@@ -27,11 +27,11 @@ packages=(
 	lazydocker
 	lazygit
 	lolcat
- 	mas
+	mas
 	neovim
 	nmap
 	openjdk
- 	parallel
+	parallel
 	python3
 	ripgrep
 	rustup

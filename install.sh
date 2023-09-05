@@ -42,6 +42,27 @@ main() {
 	success "Finished installing macOS apps"
 
 	info "################################################################################"
+	info "Homebrew Fonts"
+	info "################################################################################"
+	wait_input
+	install_fonts
+	success "Finished installing fonts"
+
+	info "################################################################################"
+	info "PiP modules"
+	info "################################################################################"
+	wait_input
+	install_python_packages
+	success "Finished installing python packages"
+
+	info "################################################################################"
+	info "Rust cargo tools"
+	info "################################################################################"
+	wait_input
+	install_rust_tools
+	success "Finished installing Rust tools"
+
+	info "################################################################################"
 	info "Configuration"
 	info "################################################################################"
 	wait_input
@@ -54,6 +75,14 @@ main() {
 	info "Creating development folders"
 	info "################################################################################"
 	mkdir -p ~/Development/projects
+
+	if ! hash rustc &>/dev/null; then
+		info "################################################################################"
+		info "Rust Setup"
+		info "################################################################################"
+		wait_input
+		rustup-init
+	fi
 
 	success "Done"
 
