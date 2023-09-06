@@ -7,6 +7,7 @@ apps=(
 	deepl
 	docker
 	expressvpn
+ 	hiddenbar
 	nvidia-geforce-now
 	# popcorn-time
 	postman
