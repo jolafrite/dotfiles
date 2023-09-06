@@ -1,5 +1,4 @@
 taps=(
-	homebrew/cask
 	homebrew/cask-fonts
 	# popcorn-official/popcorn-desktop
 )
