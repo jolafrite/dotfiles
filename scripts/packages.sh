@@ -17,6 +17,7 @@ packages=(
 	gdu
 	git
 	git-delta
+ 	glab
 	glow
 	gh
 	hyperfine
