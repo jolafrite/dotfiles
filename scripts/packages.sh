@@ -31,6 +31,7 @@ packages=(
 	neovim
 	nmap
 	openjdk
+ 	openssh
 	parallel
 	python3
 	ripgrep
