@@ -56,10 +56,24 @@ main() {
 	success "Finished installing python packages"
 
 	info "################################################################################"
-	info "Rust cargo tools"
+	info "Nodejs tools"
 	info "################################################################################"
 	wait_input
-	install_rust_tools
+	install_nodejs
+	success "Finished installing nodejs tools"
+
+	info "################################################################################"
+	info "Go tools"
+	info "################################################################################"
+	wait_input
+	install_go
+	success "Finished installing Go tools"
+
+	info "################################################################################"
+	info "Rust tools"
+	info "################################################################################"
+	wait_input
+	install_rust
 	success "Finished installing Rust tools"
 
 	info "################################################################################"

@@ -16,7 +16,20 @@ install_python_packages() {
 	done
 }
 
-install_rust_tools() {
+install_nodejs() {
+	fnm install --latest
+	npm install -g pnpm
+}
+
+install_go() {
+	export GOPATH="$HOME/go"
+	export GOROOT="$HOME/.go"
+	curl -sSL https://git.io/g-install | sh -s
+	
+	ggovm install latest
+}
+
+install_rust() {
 	source "$HOME/.cargo/env"
 	if ! command -v rust-analyzer &>/dev/null; then
 		info "Installing rust-analyzer"

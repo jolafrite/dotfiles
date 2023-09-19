@@ -19,7 +19,7 @@ pkgrun() {
 
 # Jump to folder (zoxide) and open nvim.
 zv() {
- z "$1" && nvim .
+ __zoxide "$1" && nvim .
 }
 
 # Retrieve process real memory
@@ -135,6 +135,4 @@ alias path='echo -e ${PATH//:/\\n}'
 alias localip="ifconfig | grep 'inet ' | grep -v 127.0.0.1 | cut -d\  -f2"
 # Lock the screen
 alias afk="pmset displaysleepnow"
-# Reload fnm env
-alias fnmr="eval \"$(fnm env --use-on-cd)\""
 alias rmf="rm -rf"

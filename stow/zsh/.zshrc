@@ -1,16 +1,26 @@
 #!/usr/bin/env zsh
 
+eval "$(~/homebrew/bin/brew shellenv)"
+BREW_PREFIX="$(brew --prefix)"
+
+[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+eval "$(zoxide init zsh)"
+
+# Golang
+export GOPATH="$HOME/go"; 
+export GOROOT="$HOME/.go"; 
+export PATH="$GOPATH/bin:$PATH"; # g-install: do NOT edit, see https://github.com/stefanmaric/g
+
+# Rust
+[ -f $HOME/.cargo/env ] && source $HOME/.cargo/env
+
 : "$LANG:=\"en_US.UTF-8\""
 : "$LANGUAGE:=\"en\""
 : "$LC_CTYPE:=\"en_US.UTF-8\""
 : "$LC_ALL:=\"en_US.UTF-8\""
 export LANG LANGUAGE LC_CTYPE LC_ALL
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-eval "$(zoxide init zsh)"
-eval "$(~/homebrew/bin/brew shellenv)"
-
-export LIBSQLITE="$(brew --prefix)/opt/sqlite/lib/libsqlite3.dylib"
 
 export TERM="screen-256color"
 export GPG_TTY=$(tty)
@@ -18,12 +28,14 @@ export EDITOR="nvim"
 export HISTSIZE=10000
 export SAVEHIST=10000
 
+export HOMEBREW_CACHE="$HOME/brew-cache"
+export HOMEBREW_CASK_OPTS="--appdir=~/Applications"
 export HOMEBREW_NO_ANALYTICS=1
 export HOMEBREW_NO_INSECURE_REDIRECT=1
 
 export MANPAGER='less -s'
 
-BREW_PREFIX="$(brew --prefix)"
+export LIBSQLITE="$(brew --prefix)/opt/sqlite/lib/libsqlite3.dylib"
 
 # changes ctrl-u to delete everything to the left of the cursor, rather than the whole line
 bindkey "^U" backward-kill-line
@@ -32,7 +44,6 @@ bindkey "^E" kill-line
 bindkey '^[[3;3~' kill-word
 
 # Created by Zap installer
-[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
 plug "zsh-users/zsh-autosuggestions"
 plug "zap-zsh/supercharge"
 plug "zap-zsh/zap-prompt"
@@ -59,13 +70,4 @@ compinit
 # this keeps ls and ll aliased correctly
 alias ls="exa --group-directories-first -G  --color auto --icons -a -s type"
 alias ll="exa --group-directories-first -l --color always --icons -a -s type"
-
-# Golang
-export GOPATH="$HOME/go"
-[ -d "$GOPATH/bin" ] && PATH="$GOPATH/bin:$PATH"
-[ -d "/usr/local/go/bin" ] && PATH="/usr/local/go/bin:$PATH"
-
-# Rust
-[ -f $HOME/.cargo/env ] && source $HOME/.cargo/env
-
 

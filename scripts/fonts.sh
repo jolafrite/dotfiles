@@ -2,6 +2,7 @@
 
 fonts=(
 	font-fira-code-nerd-font
+	font-fira-code
 )
 
 install_fonts() {
