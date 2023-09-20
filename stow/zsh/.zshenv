@@ -113,6 +113,12 @@ drm-all() {
   docker rm $(docker ps -aq)
 }
 
+gwti() {
+  git clone --bar $1 .bare
+  echo "gitdir: ./.bare" > .git
+  echo "  fetch = +refs/heads/*:refs/remotes/origin/*" >> .bare/config
+}
+
 alias l="ll"
 alias vi="nvim"
 alias vim="nvim"
