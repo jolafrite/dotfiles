@@ -396,7 +396,7 @@ local config = {
 			font = wezterm.font(font, { italic = false }),
 		},
 	},
-	font_size = is_windows and 14.0 or 19.0,
+	font_size = is_windows and 12.0 or 12.0,
 	-- Disable font ligatures
 	harfbuzz_features = { "calt=1", "clig=0", "liga=0", "zero", "ss01" },
 	hide_tab_bar_if_only_one_tab = false,
