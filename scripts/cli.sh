@@ -27,7 +27,7 @@ install_go() {
 	export GOROOT="$HOME/.go"
 	curl -sSL https://git.io/g-install | sh -s
 	
-	ggovm install latest
+	g install latest
 }
 
 install_rust() {
