@@ -18,6 +18,7 @@ install_python_packages() {
 
 install_nodejs() {
 	fnm install --latest
+        eval "$(fnm env --use-on-cd)"
 	npm install -g pnpm
 }
 
