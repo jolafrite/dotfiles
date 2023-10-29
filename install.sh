@@ -90,14 +90,6 @@ main() {
 	info "################################################################################"
 	mkdir -p ~/Development/projects
 
-	if ! hash rustc &>/dev/null; then
-		info "################################################################################"
-		info "Rust Setup"
-		info "################################################################################"
-		wait_input
-		rustup-init
-	fi
-
 	success "Done"
 
 	info "System needs to restart. Restart?"
