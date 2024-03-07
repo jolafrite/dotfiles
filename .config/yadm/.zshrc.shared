@@ -1,0 +1,32 @@
+#!/usr/bin/env zsh
+
+# Skip all this for non-interactive shells
+[[ -z "$PS1" ]] && return
+
+function zcompare() {
+  if [[ -s ${1} && ( ! -s ${1}.zwc || ${1} -nt ${1}.zwc ) ]]; then
+    ( zcompile ${1} ) &!
+  fi
+}
+
+function source_file() {
+  zcompare "$1"
+  builtin source "$1"
+}
+
+function source_files() {
+  local f
+  for f; do
+    if [ -x "$f" ]; then
+      zcompare "$f"
+      builtin source "$f"
+    fi
+  done
+}
+
+# aliases
+source_files ~/.aliases.sh
+
+unfunction source_files
+
+
