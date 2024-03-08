@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# yadm bootstrap script
+# Installs all my packages/sets up my environment.
+#
+# Checks for the presence of the $ON_OS variable,
+# which is set in ~/.profile by checking `uname`
+# on linux. Since the ~/.profile is sourced at the
+# beginning of the Xsession and not when opening
+# a shell, it can be assumed that its always set
+# once `yadm clone` has been run and the computer
+# has been restarted.
+
+print_error() {
+	havecmd notify 2>/dev/null && notify -u critical "bootstrap error" "$1"
+	printf '%s%s%s\n' "$(tput setaf 1)" "$1" "$(tput sgr0)" 1>&2
+} && export -f print_error
+
+abort() {
+	print_error "$1"
+	exit 1
+} && export -f abort
+
+havecmd() {
+	local BINARY ERRMSG
+	BINARY="${1:?Must provide command to check}"
+	# the command is on the users $PATH, exit with success
+	if command -v "${BINARY}" >/dev/null 2>&1; then
+		return 0
+	else
+		# construct error message
+		ERRMSG="'${script_name}' requires '${BINARY}', could not find that on your \$PATH"
+		[[ -n "$2" ]] && ERRMSG="${ERRMSG}. $2"
+		printf '%s\n' "${ERRMSG}" 1>&2
+		return 1
+	fi
+} && export -f havecmd
+
+# install my package list parser/machine detection code
+install_go_cmds() {
+	havecmd go || return $?
+	if ! havecmd spkglist; then
+		go install -v 'github.com/seanbreckenridge/spkglist/cmd/spkglist@latest' || return $?
+	fi
+	if ! havecmd on_machine; then
+		go install -v 'github.com/seanbreckenridge/on_machine/cmd/on_machine@latest' || return $?
+	fi
+} && export -f install_go_cmds
+
+set -e
+
+declare -rx YADM_DIR="${HOME}/.config/yadm"
+declare -rx PACKAGE_DIR="${YADM_DIR}/package_lists"
+
+# report errors if user doesn't have a command
+export HAVECMD_REPORT=1
+
+# make sure my $PATH is setup properly
+havecmd havecmd || {
+	# optionally let me continue - this may be the first time I'm running this
+	# on android and I need to install zsh/setup defaults
+	printf 'No havecmd; continue anyways? [Ctrl+C to Cancel] '
+	read -r || exit $?
+}
+
+ON_OS="${ON_OS:=$(on_machine)}"
+declare -rx ON_OS
+
+# match files in ~/.config/yadm, run based on OS
+# https://github.com/seanbreckenridge/on_machine
+# e.g. run the android_bootstrap, linux_bootstrap, mac_bootstrap files
+while read -r -d $'\0' bootstrap_script; do
+	printf 'Executing %s\n' "$bootstrap_script"
+	bash "$bootstrap_script" || exit $?
+done < <(on_machine -cmd match -print0 -filter file -base "${YADM_DIR}" '%o_bootstrap')
+
