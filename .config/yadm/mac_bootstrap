@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+set -e
+
+# delete default files if they exist
+original_files=("${HOME}/.zshenv" "${HOME}/.zshrc" "${HOME}/.zsh_history")
+for file in "${original_files[@]}"; do
+	rm -rf "${file}"
+done
+
+cat <<EOF >"${HOME}/.zshenv"
+# if we're not on linux, source the ~/.profile when shell starts
+source "\${HOME}/.profile"
+EOF
+
+if [[ ! "$(command -v havecmd)" ]]; then
+	printf "Issue finding 'havecmd', environment is not setup properly\n"
+	printf "Try restarting the shell and making sure ~/.profile is getting sourced\n"
+	exit 1
+fi
+
+havecmd xcode-select || {
+	printf 'xCode Command Line Tools not installed;
+
+You can install it by running:
+xcode-select --install
+sudo xcodebuild -license accept'
+
+	exit $?
+}
+
+havecmd brew || {
+	mkdir -p $HOMEBREW_HOME
+	curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C $HOMEBREW_HOME
+	eval "$($HOMEBREW_HOME/bin/brew shellenv)"
+}
+
+# sanity check to make sure brew is configured
+havecmd brew || exit 1
+
+set +e
+
+brew bundle -v --file="$PACKAGE_DIR/Brewfile"
+
+echo "Setting application/mac os defaults..."
+bash "${YADM_DIR}/mac/set-default-apps" || exit $?
+printf 'mac/set-macos-defaults changes a bunch of settings to make macOS more usable and restarts affected applications\nRun? [y/N] > '
+read -r
+case "$REPLY" in
+Y | y)
+	bash "${YADM_DIR}/mac/set-macos-defaults"
+	;;
+*)
+	: # do nothing if user didn't respond Y/y
+	;;
+esac

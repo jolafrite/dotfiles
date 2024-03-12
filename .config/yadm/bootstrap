@@ -1,75 +1,189 @@
 #!/usr/bin/env bash
 # yadm bootstrap script
 # Installs all my packages/sets up my environment.
-#
-# Checks for the presence of the $ON_OS variable,
-# which is set in ~/.profile by checking `uname`
-# on linux. Since the ~/.profile is sourced at the
-# beginning of the Xsession and not when opening
-# a shell, it can be assumed that its always set
-# once `yadm clone` has been run and the computer
-# has been restarted.
 
-print_error() {
-	havecmd notify 2>/dev/null && notify -u critical "bootstrap error" "$1"
-	printf '%s%s%s\n' "$(tput setaf 1)" "$1" "$(tput sgr0)" 1>&2
-} && export -f print_error
+set -o errexit
+set -o nounset
+set -o pipefail
 
-abort() {
-	print_error "$1"
-	exit 1
-} && export -f abort
+. "$YADM_DIR/utils"
 
-havecmd() {
-	local BINARY ERRMSG
-	BINARY="${1:?Must provide command to check}"
-	# the command is on the users $PATH, exit with success
-	if command -v "${BINARY}" >/dev/null 2>&1; then
-		return 0
-	else
-		# construct error message
-		ERRMSG="'${script_name}' requires '${BINARY}', could not find that on your \$PATH"
-		[[ -n "$2" ]] && ERRMSG="${ERRMSG}. $2"
-		printf '%s\n' "${ERRMSG}" 1>&2
-		return 1
-	fi
-} && export -f havecmd
-
-# install my package list parser/machine detection code
-install_go_cmds() {
-	havecmd go || return $?
-	if ! havecmd spkglist; then
-		go install -v 'github.com/seanbreckenridge/spkglist/cmd/spkglist@latest' || return $?
-	fi
-	if ! havecmd on_machine; then
-		go install -v 'github.com/seanbreckenridge/on_machine/cmd/on_machine@latest' || return $?
-	fi
-} && export -f install_go_cmds
-
-set -e
-
-declare -rx YADM_DIR="${HOME}/.config/yadm"
-declare -rx PACKAGE_DIR="${YADM_DIR}/package_lists"
-
-# report errors if user doesn't have a command
 export HAVECMD_REPORT=1
 
-# make sure my $PATH is setup properly
-havecmd havecmd || {
-	# optionally let me continue - this may be the first time I'm running this
-	# on android and I need to install zsh/setup defaults
-	printf 'No havecmd; continue anyways? [Ctrl+C to Cancel] '
-	read -r || exit $?
+cleanup() {
+	err "Last command failed"
+	info "Finishing..."
 }
 
-ON_OS="${ON_OS:=$(on_machine)}"
-declare -rx ON_OS
+main() {
+	cd "$HOME" || exit
 
-# match files in ~/.config/yadm, run based on OS
-# https://github.com/seanbreckenridge/on_machine
-# e.g. run the android_bootstrap, linux_bootstrap, mac_bootstrap files
-while read -r -d $'\0' bootstrap_script; do
-	printf 'Executing %s\n' "$bootstrap_script"
+	info "Installing..."
+
+	info "Init Yadm submodules"
+	yadm submodule update --recursive --init
+
+	havecmd havecmd || {
+		# optionally let me continue - this may be the first time I'm running this
+		# on android and I need to install zsh/setup defaults
+		warn 'No havecmd; continue anyways? [Ctrl+C to Cancel] '
+		read -r || exit $?
+	}
+
+	ON_OS="${ON_OS:=$(manual_on_os)}"
+	declare -rx ON_OS
+
+	if is_machine "mac"; then
+		bootstrap_script="$YADM_DIR/mac_bootstrap"
+	fi
+	info "Executing " "$bootstrap_script"
 	bash "$bootstrap_script" || exit $?
-done < <(on_machine -cmd match -print0 -filter file -base "${YADM_DIR}" '%o_bootstrap')
 
+	declare -rx PYTHON_PACKAGE_LIST="${PACKAGE_DIR}/python3_packages.txt"
+	declare -rx PIPX_PACKAGE_LIST="${PACKAGE_DIR}/pipx_packages.txt"
+	declare -rx GLOBAL_GEM_LIST="${PACKAGE_DIR}/ruby_packages.txt"
+	declare -rx NODE_PACKAGE_LIST="${PACKAGE_DIR}/node_packages.txt"
+	declare -rx COMPUTER_NODE_PACKAGE_LIST="${PACKAGE_DIR}/computer_node_packages.txt"
+	declare -rx BASH_PACKAGE_LIST="${PACKAGE_DIR}/bash_packages.txt"
+
+	havecmd git || exit $?
+	info 'Checking git config...'
+	# check for global name config
+	if [[ -z $(git config --global user.name) ]]; then
+		warn "No global name set. Enter full name: "
+		read -r githubusername
+		git config --global user.name "${githubusername}"
+	fi
+	# check for global email config
+	if [[ -z $(git config --global user.email) ]]; then
+		warn "No global email set. Enter email connected to your GitHub account: "
+		read -r githubemail
+		git config --global user.email "${githubemail}"
+	fi
+
+	# set editor to use as nvim
+	git config --global core.editor nvim
+	# specify how to handle divergent branches
+	git config --global pull.rebase false
+	git config --global core.pager 'delta'
+	# set similar configuration for yadm itself
+	yadm gitconfig core.editor nvim
+	yadm gitconfig pull.rebase false
+	yadm gitconfig core.pager 'delta'
+
+	# set the hooks directory
+	yadm gitconfig core.hooksPath "${HOME}/.config/yadm/hooks"
+
+	havecmd go || exit $?
+	havecmd spkglist || {
+		go install -v 'github.com/seanbreckenridge/spkglist/cmd/spkglist@latest' || return $?
+	}
+	GO_PACKAGE_LIST="${PACKAGE_DIR}/go_packages.txt"
+	function install_go_package() {
+		local -a packageinfo
+		read -ra packageinfo <<<"${1}"
+		havecmd "${packageinfo[0]}" || {
+			go install -v "${packageinfo[1]}@latest"
+		}
+	}
+	info "Installing global go packages..."
+	while IFS= read -r go_line; do
+		install_go_package "${go_line}"
+	done < <(spkglist "${GO_PACKAGE_LIST}")
+
+	havecmd cargo || exit $?
+	info "Installing global cargo packages..."
+	CARGO_PACKAGE_LIST="${PACKAGE_DIR}/cargo_packages.txt"
+	CARGO_INSTALLED_PACKAGES="$(cargo install --list | sed -E -e '/^\s+/d; s|\s.*||')"
+	while read -r cargopkg; do
+		if ! grep -qx "${cargopkg}" <<<"${CARGO_INSTALLED_PACKAGES}"; then
+			info "Installing %s\n" "${cargopkg}"
+			cargo install "${cargopkg}"
+		fi
+	done < <(spkglist "${CARGO_PACKAGE_LIST}")
+
+	havecmd python3 || exit $?
+	info$() "Installing global python site-packages..."
+	INSTALLED_PYTHON_PACKAGES="$(python3 -m pip list --format=freeze | cut -d'=' -f1)"
+	python_install_missing() {
+		local -r pkg="$1"
+		if ! grep -qx "${pkg}" <<<"${INSTALLED_PYTHON_PACKAGES}"; then
+			info "Installing %s\n" "$pkg"
+			python3 -m pip install --user --break-system-packages "${pkg}"
+		fi
+	} && export -f python_install_missing
+	python_install_missing wheel
+	python_install_missing virtualenv
+	python3 -m pip install --user -q --break-system-packages -r "${PYTHON_PACKAGE_LIST}"
+
+	PIPX_INSTALLED="$(pipx list --json 2>/dev/null | jq '.venvs | keys[]' -r)"
+	while read -r pipx_pkg; do
+		if ! grep -qix "${pipx_pkg}" <<<"${PIPX_INSTALLED}"; then
+			printf "Installing %s\n" "$pipx_pkg"
+			pipx install "${pipx_pkg}"
+		fi
+	done < <(spkglist "${PIPX_PACKAGE_LIST}")
+
+	is_machine "android" || {
+		printf 'Executing %s\n' "${YADM_DIR}/computer_bootstrap"
+		bash "${YADM_DIR}/computer_bootstrap" || exit $?
+	}
+
+	pnpm_install_from_pcklist() {
+		local node_installed="$1"
+		local package_list="$2"
+
+		while read -r npkg; do
+			if ! grep -qx "${npkg}" <<<"${node_installed}"; then
+				printf "Installing %s\n" "$npkg"
+				# install to ~/.local/bin
+				pnpm global add --prefix "${HOME}/.local" "${npkg}"
+			fi
+		done < <(spkglist "${package_list}")
+	}
+
+	install_pnpm_packages() {
+		PNPM_INSTALLED="$(pnpm_installed)"
+
+	}
+
+	havecmd pnpm || exit $?
+	# install_pnpm_packages
+
+	GH_PACKAGE_LIST="${PACKAGE_DIR}/gh_extension_packages.txt"
+	havecmd gh && {
+		GH_INSTALLED_PACKAGES="$(gh extension list | awk '{print $3}')"
+		while read -r gh_pkg; do
+			if ! grep -qx "${gh_pkg}" <<<"$GH_INSTALLED_PACKAGES"; then
+				gh extension install "https://github.com/${gh_pkg}"
+			fi
+		done < <(spkglist "${GH_PACKAGE_LIST}")
+	}
+
+	# use bpkg to automate make installs
+	havecmd bpkg || curl -Lo- "https://raw.githubusercontent.com/bpkg/bpkg/master/setup.sh" | bash
+	havecmd bpkg || exit $?
+
+	set -e
+	havecmd tttlog || bpkg install -g seanbreckenridge/ttt
+	havecmd exists || bpkg install -g seanbreckenridge/exists
+	havecmd genpasswd || bpkg install -g seanbreckenridge/genpasswd
+	set +e
+
+	info "Finished bootstrapping!"
+	info "System needs to restart. Restart?"
+
+	select yn in "y" "n"; do
+		case $yn in
+		y)
+			sudo shutdown -r now
+			break
+			;;
+		n) exit ;;
+		esac
+	done
+}
+
+trap cleanup SIGINT SIGTERM ERR EXIT
+
+main

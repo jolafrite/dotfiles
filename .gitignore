@@ -336,7 +336,7 @@ __pycache__
 !.local/share/gpg_autoclick/
 
 # default user directories
-/Repos
+/Development
 /Documents
 /Files
 /Games
