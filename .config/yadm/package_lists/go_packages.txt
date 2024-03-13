@@ -1,0 +1,2 @@
+buf github.com/bufbuild/buf
+viddy github.com/sachaos/viddy

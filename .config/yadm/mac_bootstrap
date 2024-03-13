@@ -29,6 +29,10 @@ sudo xcodebuild -license accept'
 	exit $?
 }
 
+[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] || {
+	zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1 -k
+}
+
 havecmd brew || {
 	mkdir -p $HOMEBREW_HOME
 	curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C $HOMEBREW_HOME
@@ -41,6 +45,8 @@ havecmd brew || exit 1
 set +e
 
 brew bundle -v --file="$PACKAGE_DIR/Brewfile"
+
+havecmd atuin && atuin gen-completions --shell zsh --out-dir "$XDG_DATA_HOME/functions"
 
 echo "Setting application/mac os defaults..."
 bash "${YADM_DIR}/mac/set-default-apps" || exit $?

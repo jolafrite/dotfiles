@@ -29,6 +29,8 @@ export PACKAGE_DIR="${YADM_DIR}/package_lists"
 
 export HOMEBREW_HOME="${XDG_DATA_HOME}/homebrew"
 
+export NVIM_DIR="${XDG_CONFIG_HOME}/nvim"
+
 # Go
 export GOPATH="${XDG_DATA_HOME}/go"
 export GOBIN="${GOPATH}/bin"

@@ -11,7 +11,7 @@ fmv() {
 pkgrun() {
   name=$(jq .scripts package.json | sed '1d;$d' | fzf --height 40% | awk -F ': ' '{gsub(/"/, "", $1); print $1}')
   if [[ -n $scripts ]]; then
-    yarn run "$name"
+    brew run "$name"
   fi
 }
 
@@ -58,7 +58,7 @@ groot() {
 }
 
 # Print all 256 ANSI colors
-ansi_colors() {
+ansi-colors() {
   python3 -c "print(''.join(f'\u001b[48;5;{s}m{s.rjust(4)}' + ('\n' if not (int(s)+1) % 8 else '') for s in (str(i) for i in range(256))) + '\u001b[0m')"
 }
 
@@ -111,4 +111,44 @@ gwti() {
 
 reload() {
   exec $SHELL -l
+}
+
+nvim-clear-cache() {
+  rm -rf "${XDG_DATA_HOME}/nvim"
+  rm -rf "${XDG_STATE_HOME}/nvim"
+  rm -rf "${XDG_CACHE_HOME}/nvim"
+}
+
+proxy-start() {
+  cntlm -c ~/cntlm/cntlm.conf -I -v 
+}
+
+edit-brew() {
+  pushd $PACKAGE_DIR
+  editor ./Brewfile
+  popd
+}
+
+edit-zsh() {
+  pushd $ZDOTDIR
+  editor .
+  popd
+}
+
+edit-yadm() {
+  pushd $YADM_DIR
+  editor .
+  popd
+}
+
+edit-config() {
+  pushd $XDG_CONFIG_HOME
+  editor .
+  popd
+}
+
+edit-nvim() {
+  pushd $NVIM_DIR
+  editor .
+  popd
 }
