@@ -34,7 +34,7 @@ main() {
 	declare -rx ON_OS
 
 	if is_machine "mac"; then
-		bootstrap_script="$YADM_DIR/mac_bootstrap"
+		bootstrap_script="$HOME/.config/yadm/mac_bootstrap"
 	fi
 	info "Executing " "$bootstrap_script"
 	bash "$bootstrap_script" || exit $?
