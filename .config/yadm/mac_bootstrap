@@ -44,7 +44,7 @@ havecmd brew || exit 1
 
 set +e
 
-brew bundle -v --file="$PACKAGE_DIR/Brewfile"
+brew bundle -v --file="$HOME/.config/yadm/package_list/Brewfile"
 
 info "Installing macOS apps..."
 CASKS_AVAILABLE=(
@@ -98,11 +98,11 @@ havecmd gvm || {
 }
 
 echo "Setting application/mac os defaults..."
-bash "${YADM_DIR}/mac/set-default-apps" || exit $?
+bash "$HOME/.config/yadm/mac/set-default-apps" || exit $?
 printf 'mac/set-macos-defaults changes a bunch of settings to make macOS more usable and restarts affected applications\nRun? [y/N] > '
 read -r
 case "$REPLY" in
   Y | y)
-    bash "${YADM_DIR}/mac/set-macos-defaults"
+    bash "$HOME/.config/yadm/mac/set-macos-defaults"
     ;;
 esac
