@@ -32,10 +32,14 @@ ${PATH}"
 ON_OS="$(on_os)"
 export ON_OS
 
+: "$LANG:=\"en_US.UTF-8\""
+: "$LANGUAGE:=\"en\""
+: "$LC_CTYPE:=\"en_US.UTF-8\""
+: "$LC_ALL:=\"en_US.UTF-8\""
+export LANG LANGUAGE LC_CTYPE LC_ALL
+
 export EDITOR='editor' # basic nvim wrapper
 export GPG_TTY=$(tty)
-export LANG='en_US.UTF-8'
-export LC_ALL='en_US.UTF-8'
 export PAGER='less'
 export READER='okular'
 export TERM="screen-256color"
@@ -51,6 +55,6 @@ export GOROOT_BOOTSTRAP=$GOROOT
 # environment since they could be referenced without opening a terminal
 # e.g. from my menu bar/window manager/run launcher
 if [ -f "${ZDOTDIR}/global_env.sh" ]; then
-	# shellcheck disable=SC1091
-	. "${ZDOTDIR}/global_env.sh"
+  # shellcheck disable=SC1091
+  . "${ZDOTDIR}/global_env.sh"
 fi

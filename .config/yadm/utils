@@ -3,33 +3,32 @@
 reset_color=$(tput sgr 0)
 
 info() {
-	printf "%s" "$(tput setaf 4)" "$@" "$reset_color"
-	printf "\n"
+  printf "%s" "$(tput setaf 4)" "$@" "$reset_color"
+  printf "\n"
 } && export -f info
 
 success() {
-	printf "%s" "$(tput setaf 2)" "$@" "$reset_color"
-	printf "\n"
+  printf "%s" "$(tput setaf 2)" "$@" "$reset_color"
+  printf "\n"
 } && export -f success
 
 err() {
-	printf "%s" "$(tput setaf 1)" "$@" "$reset_color"
-	printf "\n"
+  printf "%s" "$(tput setaf 1)" "$@" "$reset_color"
+  printf "\n"
 } && export -f err
 
 warn() {
-	printf "%s" "$(tput setaf 3)" "$@" "$reset_color"
-	printf "\n"
+  printf "%s" "$(tput setaf 3)" "$@" "$reset_color"
+  printf "\n"
 } && export -f warn
 
-want_to() {
-	read -p "Do you want to bootstrap $1? [Y/n] " response
-	case $response in [yY][eE][sS] | [yY] | [jJ] | '')
-		return 0
-		;;
-	*)
-		echo "cancelled"
-		return 1
-		;;
-	esac
-} && export -f want_to
+wantto() {
+  read -p "Do you want to $1? [Y/n] " response
+  case $response in [yY][eE][sS] | [yY] | [jJ] | '')
+    return 0
+    ;;
+  *)
+    return 1
+    ;;
+  esac
+} && export -f wantto

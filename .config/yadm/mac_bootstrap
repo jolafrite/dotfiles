@@ -5,7 +5,7 @@ set -e
 # delete default files if they exist
 original_files=("${HOME}/.zshenv" "${HOME}/.zshrc" "${HOME}/.zsh_history")
 for file in "${original_files[@]}"; do
-	rm -rf "${file}"
+  rm -rf "${file}"
 done
 
 cat <<EOF >"${HOME}/.zshenv"
@@ -14,29 +14,29 @@ source "\${HOME}/.profile"
 EOF
 
 if [[ ! "$(command -v havecmd)" ]]; then
-	printf "Issue finding 'havecmd', environment is not setup properly\n"
-	printf "Try restarting the shell and making sure ~/.profile is getting sourced\n"
-	exit 1
+  printf "Issue finding 'havecmd', environment is not setup properly\n"
+  printf "Try restarting the shell and making sure ~/.profile is getting sourced\n"
+  exit 1
 fi
 
 havecmd xcode-select || {
-	printf 'xCode Command Line Tools not installed;
+  printf 'xCode Command Line Tools not installed;
 
 You can install it by running:
 xcode-select --install
 sudo xcodebuild -license accept'
 
-	exit $?
+  exit $?
 }
 
 [ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] || {
-	zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1 -k
+  zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1 -k
 }
 
 havecmd brew || {
-	mkdir -p $HOMEBREW_HOME
-	curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C $HOMEBREW_HOME
-	eval "$($HOMEBREW_HOME/bin/brew shellenv)"
+  mkdir -p $HOMEBREW_HOME
+  curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C $HOMEBREW_HOME
+  eval "$($HOMEBREW_HOME/bin/brew shellenv)"
 }
 
 # sanity check to make sure brew is configured
@@ -46,10 +46,55 @@ set +e
 
 brew bundle -v --file="$PACKAGE_DIR/Brewfile"
 
-havecmd atuin && atuin gen-completions --shell zsh --out-dir "$XDG_DATA_HOME/functions"
+info "Installing macOS apps..."
+CASKS_AVAILABLE=(
+  alfred
+  arctype
+  brave-browser
+  clipy
+  deepl
+  docker
+  expressvpn
+  hiddenbar
+  kreya
+  mpv
+  nvidia-geforce-now
+  popcorn-time
+  rectangle
+  tableplus
+  the-unarchiver
+  webtorrent
+  zoom
+)
+casksToInstall=""
+installedCasks=$(brew list --casks)
+
+for cask in "${CASKS_AVAILABLE[@]}"; do
+  [[ $installedCasks == *$cask* ]] || {
+    wantto "install $cask" && {
+      casksToInstall+="$cask "
+    }
+  }
+done
+
+[[ $casksToInstall == *popcorn-time* ]] && {
+  info "install popcorn-time "
+  brew tap popcorn-official/popcorn-desktop https://github.com/popcorn-official/popcorn-desktop.git
+}
+
+info "Installing extra packages..."
+[[ $(echo $casksToInstall | xargs) == "" ]] || {
+  export HOMEBREW_CASK_OPTS="--appdir=$HOME/Applications"
+  brew install --cask $casksToInstall
+} && info "Nothing to install"
+
+havecmd atuin && {
+  mkdir -p "$XDG_DATA_HOME/functions"
+  atuin gen-completions --shell zsh --out-dir "$XDG_DATA_HOME/functions"
+}
 
 havecmd gvm || {
-	curl -sSL https://raw.githubusercontent.com/voidint/g/master/install.sh | zsh
+  curl -sSL https://raw.githubusercontent.com/voidint/g/master/install.sh | zsh
 }
 
 echo "Setting application/mac os defaults..."
@@ -57,10 +102,7 @@ bash "${YADM_DIR}/mac/set-default-apps" || exit $?
 printf 'mac/set-macos-defaults changes a bunch of settings to make macOS more usable and restarts affected applications\nRun? [y/N] > '
 read -r
 case "$REPLY" in
-Y | y)
-	bash "${YADM_DIR}/mac/set-macos-defaults"
-	;;
-*)
-	: # do nothing if user didn't respond Y/y
-	;;
+  Y | y)
+    bash "${YADM_DIR}/mac/set-macos-defaults"
+    ;;
 esac

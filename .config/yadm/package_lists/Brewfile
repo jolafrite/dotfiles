@@ -125,9 +125,4 @@ cask 'font-source-code-pro'
 cask 'font-hack-nerd-font'
 
 # Applications
-cask 'alfred'
-cask 'brave-browser'
-cask 'kreya'
-cask 'mpv'
-# cask 'git-credential-manager'
 cask 'wezterm'
