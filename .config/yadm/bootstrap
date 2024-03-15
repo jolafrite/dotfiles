@@ -21,7 +21,7 @@ main() {
 	info "Installing..."
 
 	info "Init Yadm submodules"
-	yadm submodule update --recursive --init
+	$HOME/.local/bin/yadm submodule update --recursive --init
 
 	havecmd havecmd || {
 		# optionally let me continue - this may be the first time I'm running this
@@ -67,12 +67,12 @@ main() {
 	git config --global pull.rebase false
 	git config --global core.pager 'delta'
 	# set similar configuration for yadm itself
-	yadm gitconfig core.editor nvim
-	yadm gitconfig pull.rebase false
-	yadm gitconfig core.pager 'delta'
+	$HOME/.local/bin/yadm gitconfig core.editor nvim
+	$HOME/.local/bin/yadm gitconfig pull.rebase false
+	$HOME/.local/bin/yadm gitconfig core.pager 'delta'
 
 	# set the hooks directory
-	yadm gitconfig core.hooksPath "${HOME}/.config/yadm/hooks"
+	$HOME/.local/bin/yadm gitconfig core.hooksPath "${HOME}/.config/yadm/hooks"
 
 	havecmd go || exit $?
 	havecmd spkglist || {
