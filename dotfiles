@@ -12,7 +12,8 @@ info "####### dotfiles #######"
 read -r -p "Press enter to start:"
 info "Bootstraping..."
 
-YADM_BIN="$HOME/.local/bin/yadm"
+export YADM_BIN="$HOME/.local/bin/yadm"
+export HOMEBREW_HOME="$HOME/.local/share/homebrew"
 
 info "####### Install required dependencies  #######"
 mkdir -p $HOME/.local/bin
