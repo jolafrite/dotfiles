@@ -22,6 +22,9 @@ chmod a+x $YADM_BIN
 $YADM_BIN clone https://github.com/jolafrite/dotfiles.git -b dev
 $YADM_BIN restore --staged $HOME
 $YADM_BIN checkout -- $HOME
+
+source ~/.profile
+
 $YADM_BIN bootstrap
 
 info "####### Cleanup #######"
