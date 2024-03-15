@@ -6,7 +6,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-. "$YADMDOTDIR/utils"
+. "$YADM_DIR/utils"
 
 export HAVECMD_REPORT=1
 
