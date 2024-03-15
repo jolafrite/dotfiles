@@ -21,6 +21,7 @@ $HOME/.local/bin/yadm clone -f https://github.com/jolafrite/dotfiles.git -b dev
 $HOME/.local/bin/yadm restore --staged $HOME
 $HOME/.local/bin/yadm checkout -- $HOME
 
+cd "$HOME" || exit
 source ~/.profile
 
 $HOME/.local/bin/yadm bootstrap
