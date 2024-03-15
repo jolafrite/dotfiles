@@ -13,13 +13,7 @@ cat <<EOF >"${HOME}/.zshenv"
 source "\${HOME}/.profile"
 EOF
 
-if [[ ! "$(command -v havecmd)" ]]; then
-  printf "Issue finding 'havecmd', environment is not setup properly\n"
-  printf "Try restarting the shell and making sure ~/.profile is getting sourced\n"
-  exit 1
-fi
-
-havecmd xcode-select || {
+~/.local/bin/yadm xcode-select || {
   printf 'xCode Command Line Tools not installed;
 
 You can install it by running:
@@ -33,14 +27,14 @@ sudo xcodebuild -license accept'
   zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1 -k
 }
 
-havecmd brew || {
+~/.local/bin/yadm brew || {
   mkdir -p $HOMEBREW_HOME
   curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C $HOMEBREW_HOME
   eval "$($HOMEBREW_HOME/bin/brew shellenv)"
 }
 
 # sanity check to make sure brew is configured
-havecmd brew || exit 1
+~/.local/bin/yadm brew || exit 1
 
 set +e
 
