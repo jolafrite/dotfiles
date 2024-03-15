@@ -6,7 +6,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-. "$HOME/.config/utils"
+. "$HOME/.config/yadm/utils"
 
 export HAVECMD_REPORT=1
 
