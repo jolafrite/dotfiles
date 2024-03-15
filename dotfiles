@@ -24,7 +24,7 @@ $YADM_BIN clone https://github.com/jolafrite/dotfiles.git -b dev
 $YADM_BIN restore --staged $HOME
 $YADM_BIN checkout -- $HOME
 
-. ~/.profile
+source ~/.profile
 
 $YADM_BIN bootstrap
 
