@@ -44,7 +44,7 @@ havecmd brew || exit 1
 
 set +e
 
-brew bundle -v --file="$HOME/.config/yadm/package_list/Brewfile"
+brew bundle -v --file="$HOME/.config/yadm/package_lists/Brewfile"
 
 info "Installing macOS apps..."
 CASKS_AVAILABLE=(
