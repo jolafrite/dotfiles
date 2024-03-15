@@ -48,6 +48,10 @@ brew bundle -v --file="$PACKAGE_DIR/Brewfile"
 
 havecmd atuin && atuin gen-completions --shell zsh --out-dir "$XDG_DATA_HOME/functions"
 
+havecmd gvm || {
+	curl -sSL https://raw.githubusercontent.com/voidint/g/master/install.sh | zsh
+}
+
 echo "Setting application/mac os defaults..."
 bash "${YADM_DIR}/mac/set-default-apps" || exit $?
 printf 'mac/set-macos-defaults changes a bunch of settings to make macOS more usable and restarts affected applications\nRun? [y/N] > '

@@ -1,22 +1,33 @@
 export HOMEBREW_NO_ANALYTICS=1
 
+PATH="\
+${HOME}/.local/bin:\
+/usr/local/bin:\
+${PATH}"
+export PATH
+
+export LIBSQLITE="$HOMEBREW_HOME/opt/sqlite/lib/libsqlite3.dylib"
+
+# reset $PWD to $HOME since sometimes starts in at '/'
+cd
+
 havecmd "brew" || {
 	PATH="${HOMEBREW_HOME}/bin:$PATH"
 	eval "$(${HOMEBREW_HOME}/bin/brew shellenv)"
 }
 
-PATH="\
-${HOME}/.local/bin:\
-/usr/local/bin:\
-${PATH}"
+havecmd "zoxide" && {
+  eval "$(zoxide init zsh)"
+}
 
-export PATH
-
-# reset $PWD to $HOME since sometimes starts in at '/'
-cd
+if [ -f "${HOME}/.g/env" ]; then
+    . "${HOME}/.g/env"
+fi
 
 # Created by Zap installer
-[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
+[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && {
+  source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
+}
 plug "zsh-users/zsh-autosuggestions"
 plug "zap-zsh/supercharge"
 plug "zap-zsh/zap-prompt"
@@ -38,7 +49,7 @@ plug "wintermi/zsh-rust"
 autoload -Uz compinit
 compinit
 
-eval "$(atuin init zsh)"
+eval "$(atuin init zsh --disable-up-arrow)"
 
 
 [[ $- == *i* ]] && source_if_exists "$HOMEBREW_HOME/opt/fzf/shell/completion.zsh" 2>/dev/null
