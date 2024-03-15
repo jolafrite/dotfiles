@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set -o errexit
+
+reset_color=$(tput sgr 0)
+
+info() {
+  printf "%s[*] %s%s\n" "$(tput setaf 4)" "$1" "$reset_color"
+}
+
+info "####### dotfiles #######"
+read -r -p "Press enter to start:"
+info "Bootstraping..."
+
+YADM_BIN="$HOME/.local/bin/yadm"
+
+info "####### Install required dependencies  #######"
+mkdir -p $HOME/.local/bin
+curl -fLo $YADM_BIN https://github.com/TheLocehiliosan/yadm/raw/master/yadm
+chmod a+x $YADM_BIN
+
+REPO_URL="https://github.com/jolafrite/dotfiles/tree/dev"
+
+$YADM_BIN clone $REPO_URL
+$YADM_BIN restore --staged $HOME
+$YADM_BIN checkout -- $HOME
+$YADM_BIN bootstrap
+
+info "####### Cleanup #######"
+rm YADM_BIN
