@@ -33,6 +33,7 @@ sudo xcodebuild -license accept'
   zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1 -k
 }
 
+local HOMEBREW_HOME="${XDG_DATA_HOME}/homebrew"
 havecmd brew || {
   mkdir -p $HOMEBREW_HOME
   curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C $HOMEBREW_HOME
