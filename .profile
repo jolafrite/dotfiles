@@ -46,8 +46,8 @@ export TERM="screen-256color"
 export TERMINAL='wezterm'
 export VISUAL='nvim'
 
-# define where ZDOTDIR (rest of zsh configuration) is
 export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
+export YADMDOTDIR="${XDG_CONFIG_HOME}/yadm"
 
 export GOROOT_BOOTSTRAP=$GOROOT
 
