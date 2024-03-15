@@ -23,13 +23,6 @@ main() {
 	info "Init Yadm submodules"
 	$HOME/.local/bin/yadm submodule update --recursive --init
 
-	havecmd havecmd || {
-		# optionally let me continue - this may be the first time I'm running this
-		# on android and I need to install zsh/setup defaults
-		warn 'No havecmd; continue anyways? [Ctrl+C to Cancel] '
-		read -r || exit $?
-	}
-
 	ON_OS="${ON_OS:=$(manual_on_os)}"
 	declare -rx ON_OS
 
