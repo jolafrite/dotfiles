@@ -13,7 +13,6 @@ read -r -p "Press enter to start:"
 info "Bootstraping..."
 
 export YADM_BIN="$HOME/.local/bin/yadm"
-export HOMEBREW_HOME="$HOME/.local/share/homebrew"
 
 info "####### Install required dependencies  #######"
 mkdir -p $HOME/.local/bin
