@@ -47,6 +47,7 @@ export TERMINAL='wezterm'
 export VISUAL='nvim'
 
 export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
+export HOMEBREW_HOME="${XDG_DATA_HOME}/homebrew"
 
 export GOROOT_BOOTSTRAP=$GOROOT
 
