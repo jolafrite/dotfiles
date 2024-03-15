@@ -19,9 +19,7 @@ mkdir -p $HOME/.local/bin
 curl -fLo $YADM_BIN https://github.com/TheLocehiliosan/yadm/raw/master/yadm
 chmod a+x $YADM_BIN
 
-REPO_URL="https://github.com/jolafrite/dotfiles/tree/dev"
-
-$YADM_BIN clone $REPO_URL
+$YADM_BIN clone https://github.com/jolafrite/dotfiles.git -b dev
 $YADM_BIN restore --staged $HOME
 $YADM_BIN checkout -- $HOME
 $YADM_BIN bootstrap
