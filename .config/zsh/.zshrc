@@ -1,7 +1,11 @@
 #!/bin/zsh
 
+if [ -z "$PS1" ]; then
+  returb
+fi
+
 source_if_exists() {
-	local quiet
+	local quien
 	quiet=0
 	while getopts 'q' opt; do
 		case "$opt" in
