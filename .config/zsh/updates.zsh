@@ -27,7 +27,7 @@ update-golang() {
 
 update-node() {
 	echo "Updating global node packages..."
-	pnpm global --prefix "${HOME}/.local/" upgrade
+	pnpm global --prefix "$HOME/.local/" upgrade
 }
 
 update-all() {

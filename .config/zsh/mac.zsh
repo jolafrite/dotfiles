@@ -1,7 +1,7 @@
 export HOMEBREW_NO_ANALYTICS=1
 
 PATH="\
-${HOME}/.local/bin:\
+$HOME/.local/bin:\
 /usr/local/bin:\
 ${PATH}"
 export PATH
@@ -20,8 +20,8 @@ havecmd "zoxide" && {
   eval "$(zoxide init zsh)"
 }
 
-if [ -f "${HOME}/.g/env" ]; then
-    . "${HOME}/.g/env"
+if [ -f "$HOME/.g/env" ]; then
+    . "$HOME/.g/env"
 fi
 
 # Created by Zap installer

@@ -27,19 +27,19 @@ export CDPATH=".:${REPOS}"
 export YADM_DIR="${XDG_CONFIG_HOME}/yadm"
 export PACKAGE_DIR="${YADM_DIR}/package_lists"
 
-export HOMEBREW_HOME="${XDG_DATA_HOME}/homebrew"
+export HOMEBREW_HOME="$XDG_DATA_HOME/homebrew"
 
 export NVIM_DIR="${XDG_CONFIG_HOME}/nvim"
 
 # Go
-export GOPATH="${XDG_DATA_HOME}/go"
+export GOPATH="$XDG_DATA_HOME/go"
 export GOBIN="${GOPATH}/bin"
 
 # Rust
-export CARGO_HOME="${XDG_DATA_HOME}/cargo"
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
 
 # Python/Venv related
-export PYENV_ROOT="${XDG_DATA_HOME}/pyenv"
+export PYENV_ROOT="$XDG_DATA_HOME/pyenv"
 export PIPENV_PYTHON="${PYENV_ROOT}/shims/python"
 export PYTHONBREAKPOINT='ipdb.set_trace'
 
@@ -56,7 +56,7 @@ export NODE_REPL_HISTORY="${XDG_CACHE_HOME}/node_repl_history"
 export PYTHONSTARTUP="${XDG_CONFIG_HOME}/pythonrc"
 
 # move ipython data directory
-export IPYTHONDIR="${XDG_DATA_HOME}/ipython"
+export IPYTHONDIR="$XDG_DATA_HOME/ipython"
 
 # SQLite history file
 export SQLITE_HISTORY="${XDG_CACHE_HOME}/sqlite_history"
@@ -64,10 +64,10 @@ export SQLITE_HISTORY="${XDG_CACHE_HOME}/sqlite_history"
 # ruby: only seems to work for bundle-installed gems
 # the rest of the typically installed 'gem install <gem>'
 # go to ~/.gem
-export GEM_HOME="${XDG_DATA_HOME}/gem"
+export GEM_HOME="$XDG_DATA_HOME/gem"
 
 # shortcuts: https://github.com/seanbreckenridge/shortcuts
-export SHORTCUTS_DIR="${XDG_DATA_HOME}/shortcuts"
+export SHORTCUTS_DIR="$XDG_DATA_HOME/shortcuts"
 
 # ignore less history
 export LESSHISTFILE='-'

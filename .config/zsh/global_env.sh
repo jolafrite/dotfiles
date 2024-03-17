@@ -7,7 +7,7 @@
 SHELL_BOOT_TIME="$(date '+%s')"
 export SHELL_BOOT_TIME
 
-TTT_DATADIR="${XDG_DATA_HOME}/ttt"
+TTT_DATADIR="$XDG_DATA_HOME/ttt"
 export TTT_HISTFILE="${TTT_DATADIR}/${SHELL_BOOT_TIME}.csv"
 if [ ! -d "$TTT_DATADIR" ]; then
 	mkdir -p "$TTT_DATADIR"

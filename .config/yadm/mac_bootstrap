@@ -3,7 +3,7 @@
 set -e
 
 # delete default files if they exist
-original_files=("${HOME}/.zshenv" "${HOME}/.zshrc" "${HOME}/.zsh_history")
+original_files=("$HOME/.zshenv" "$HOME/.zshrc" "$HOME/.zsh_history")
 for file in "${original_files[@]}"; do
   rm -rf "${file}"
 done
@@ -77,9 +77,9 @@ info "Installing extra packages..."
   brew install --cask $casksToInstall
 } && info "Nothing to install"
 
-cat <<EOF >"${HOME}/.zshenv"
+cat <<EOF >"$HOME/.zshenv"
 # if we're not on linux, source the ~/.profile when shell starts
-source "\${HOME}/.profile"
+source "\$HOME/.profile"
 EOF
 
 havecmd atuin && {
