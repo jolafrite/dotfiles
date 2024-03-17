@@ -1,0 +1,57 @@
+## XDG
+export XDG_DOWNLOAD_DIR="${HOME}/Downloads"
+export XDG_DOCUMENTS_DIR="${HOME}/Documents"
+export XDG_PICTURES_DIR="${HOME}/Pictures"
+export XDG_VIDEOS_DIR="${HOME}/Movies"
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_CACHE_HOME="${HOME}/.cache"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_STATE_HOME="${HOME}/.local/state"
+export FILES_DIR="${HOME}/Files"
+export REPOS="${HOME}/Development"
+export SCREENSHOTS="${XDG_PICTURES_DIR}/Screenshots"
+
+# common path modifications
+export PATH="\
+${XDG_DATA_HOME}/shortcuts:\
+${HOME}/.local/bin:\
+${HOME}/.local/scripts/mac:\
+${HOME}/.local/scripts/cross-platform:\
+${HOME}/.local/scripts/generic:\
+${XDG_DATA_HOME}/go/bin:\
+${XDG_DATA_HOME}/cargo/bin:\
+${XDG_DATA_HOME}/pubcache/bin:\
+${PATH}"
+
+ON_OS="$(on_os)"
+export ON_OS
+
+: "$LANG:=\"en_US.UTF-8\""
+: "$LANGUAGE:=\"en\""
+: "$LC_CTYPE:=\"en_US.UTF-8\""
+: "$LC_ALL:=\"en_US.UTF-8\""
+export LANG LANGUAGE LC_CTYPE LC_ALL
+
+export EDITOR='editor' # basic nvim wrapper
+export GPG_TTY=$(tty)
+export PAGER='less'
+export READER='okular'
+export TERM="screen-256color"
+export TERMINAL='wezterm'
+export VISUAL='nvim'
+
+export ZSH_DOT_DIR="${XDG_CONFIG_HOME}/zsh"
+export YADM_DOT_DIR="${XDG_CONFIG_HOME}/yadm"
+export HOMEBREW_HOME="${XDG_DATA_HOME}/homebrew"
+
+export GO_PACKAGE_LIST="${PACKAGE_DIR}/go_packages.txt"
+export CARGO_PACKAGE_LIST="${PACKAGE_DIR}/cargo_packages.txt"
+export PYTHON_PACKAGE_LIST="${PACKAGE_DIR}/python3_packages.txt"
+export PIPX_PACKAGE_LIST="${PACKAGE_DIR}/pipx_packages.txt"
+export GH_PACKAGE_LIST="${PACKAGE_DIR}/gh_extension_packages.txt"
+export GLOBAL_GEM_LIST="${PACKAGE_DIR}/ruby_packages.txt"
+export NODE_PACKAGE_LIST="${PACKAGE_DIR}/node_packages.txt"
+export COMPUTER_NODE_PACKAGE_LIST="${PACKAGE_DIR}/computer_node_packages.txt"
+export BASH_PACKAGE_LIST="${PACKAGE_DIR}/bash_packages.txt"
+
+export GOROOT_BOOTSTRAP=$GOROOT
