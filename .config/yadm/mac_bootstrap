@@ -8,11 +8,6 @@ for file in "${original_files[@]}"; do
   rm -rf "${file}"
 done
 
-cat <<EOF >"${HOME}/.zshenv"
-# if we're not on linux, source the ~/.profile when shell starts
-source "\${HOME}/.profile"
-EOF
-
 ~/.local/bin/yadm xcode-select || {
   printf 'xCode Command Line Tools not installed;
 
@@ -81,6 +76,11 @@ info "Installing extra packages..."
   export HOMEBREW_CASK_OPTS="--appdir=$HOME/Applications"
   brew install --cask $casksToInstall
 } && info "Nothing to install"
+
+cat <<EOF >"${HOME}/.zshenv"
+# if we're not on linux, source the ~/.profile when shell starts
+source "\${HOME}/.profile"
+EOF
 
 havecmd atuin && {
   mkdir -p "$XDG_DATA_HOME/functions"

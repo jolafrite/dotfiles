@@ -1,3 +1,5 @@
+#!/bin/sh
+
 ## XDG
 export XDG_DOWNLOAD_DIR="${HOME}/Downloads"
 export XDG_DOCUMENTS_DIR="${HOME}/Documents"
