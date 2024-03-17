@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 ## XDG
 export XDG_DOWNLOAD_DIR="${HOME}/Downloads"
