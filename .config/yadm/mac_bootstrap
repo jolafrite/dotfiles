@@ -8,21 +8,17 @@ for file in "${original_files[@]}"; do
   rm -rf "${file}"
 done
 
-~/.local/bin/yadm xcode-select || {
+havecmd xcode-select || {
   printf 'xCode Command Line Tools not installed;
 
 You can install it by running:
 xcode-select --install
 sudo xcodebuild -license accept'
-
+\n
   exit $?
 }
 
-[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] || {
-  zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1 -k
-}
-
-~/.local/bin/yadm brew || {
+havecmd brew || {
   mkdir -p $HOMEBREW_HOME
   curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C $HOMEBREW_HOME
   eval "$($HOMEBREW_HOME/bin/brew shellenv)"
@@ -81,6 +77,10 @@ cat <<EOF >"$HOME/.zshenv"
 # if we're not on linux, source the ~/.profile when shell starts
 source "\$HOME/.profile"
 EOF
+
+[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] || {
+  zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1 -k
+}
 
 havecmd atuin && {
   mkdir -p "$XDG_DATA_HOME/functions"
