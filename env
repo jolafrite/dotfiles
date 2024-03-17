@@ -56,5 +56,3 @@ export GLOBAL_GEM_LIST="$YADM_PACKAGE_DIR/ruby_packages.txt"
 export NODE_PACKAGE_LIST="$YADM_PACKAGE_DIR/node_packages.txt"
 export COMPUTER_NODE_PACKAGE_LIST="$YADM_PACKAGE_DIR/computer_node_packages.txt"
 export BASH_PACKAGE_LIST="$YADM_PACKAGE_DIR/bash_packages.txt"
-
-export GOROOT_BOOTSTRAP=$GOROOT
