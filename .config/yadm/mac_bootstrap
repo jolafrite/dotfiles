@@ -25,7 +25,7 @@ havecmd brew || {
 }
 
 # sanity check to make sure brew is configured
-~/.local/bin/yadm brew || exit 1
+havecmd brew || exit 1
 
 set +e
 
