@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 if [ -z "$PS1" ]; then
-  returb
+  return
 fi
 
 source_if_exists() {
