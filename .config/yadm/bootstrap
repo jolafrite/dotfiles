@@ -6,7 +6,8 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-. "$HOME/.config/yadm/utils"
+. "$YADM_DOT_DIR/env"
+. "$YADM_DOT_DIR/utils"
 
 export HAVECMD_REPORT=1
 
@@ -21,23 +22,16 @@ main() {
 	info "Installing..."
 
 	info "Init Yadm submodules"
-	$HOME/.local/bin/yadm submodule update --recursive --init
+	yadm submodule update --recursive --init
 
-	ON_OS="${ON_OS:=$(manual_on_os)}"
+	ON_OS="${ON_OS:=$(on_os)}"
 	declare -rx ON_OS
 
 	if is_machine "mac"; then
-		bootstrap_script="$HOME/.config/yadm/mac_bootstrap"
+		bootstrap_script="$YADM_DOT_DIR/mac_bootstrap"
 	fi
 	info "Executing " "$bootstrap_script"
 	bash "$bootstrap_script" || exit $?
-
-	declare -rx PYTHON_PACKAGE_LIST="${PACKAGE_DIR}/python3_packages.txt"
-	declare -rx PIPX_PACKAGE_LIST="${PACKAGE_DIR}/pipx_packages.txt"
-	declare -rx GLOBAL_GEM_LIST="${PACKAGE_DIR}/ruby_packages.txt"
-	declare -rx NODE_PACKAGE_LIST="${PACKAGE_DIR}/node_packages.txt"
-	declare -rx COMPUTER_NODE_PACKAGE_LIST="${PACKAGE_DIR}/computer_node_packages.txt"
-	declare -rx BASH_PACKAGE_LIST="${PACKAGE_DIR}/bash_packages.txt"
 
 	havecmd git || exit $?
 	info 'Checking git config...'
@@ -60,18 +54,17 @@ main() {
 	git config --global pull.rebase false
 	git config --global core.pager 'delta'
 	# set similar configuration for yadm itself
-	$HOME/.local/bin/yadm gitconfig core.editor nvim
-	$HOME/.local/bin/yadm gitconfig pull.rebase false
-	$HOME/.local/bin/yadm gitconfig core.pager 'delta'
+	yadm gitconfig core.editor nvim
+	yadm gitconfig pull.rebase false
+	yadm gitconfig core.pager 'delta'
 
 	# set the hooks directory
-	$HOME/.local/bin/yadm gitconfig core.hooksPath "${HOME}/.config/yadm/hooks"
+	yadm gitconfig core.hooksPath "$YADM_DOT_DIR/hooks"
 
 	havecmd go || exit $?
 	havecmd spkglist || {
 		go install -v 'github.com/seanbreckenridge/spkglist/cmd/spkglist@latest' || return $?
 	}
-	GO_PACKAGE_LIST="${PACKAGE_DIR}/go_packages.txt"
 	function install_go_package() {
 		local -a packageinfo
 		read -ra packageinfo <<<"${1}"
@@ -86,7 +79,6 @@ main() {
 
 	havecmd cargo || exit $?
 	info "Installing global cargo packages..."
-	CARGO_PACKAGE_LIST="${PACKAGE_DIR}/cargo_packages.txt"
 	CARGO_INSTALLED_PACKAGES="$(cargo install --list | sed -E -e '/^\s+/d; s|\s.*||')"
 	while read -r cargopkg; do
 		if ! grep -qx "${cargopkg}" <<<"${CARGO_INSTALLED_PACKAGES}"; then
@@ -143,7 +135,6 @@ main() {
 	havecmd pnpm || exit $?
 	# install_pnpm_packages
 
-	GH_PACKAGE_LIST="${PACKAGE_DIR}/gh_extension_packages.txt"
 	havecmd gh && {
 		GH_INSTALLED_PACKAGES="$(gh extension list | awk '{print $3}')"
 		while read -r gh_pkg; do
