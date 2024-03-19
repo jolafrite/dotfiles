@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. "$HOME/env"
+. "$HOME/.env"
 
 # variables which ideally should be sourced into the global
 # environment since they could be referenced without opening a terminal

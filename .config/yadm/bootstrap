@@ -6,7 +6,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-. "$HOME/env"
+. "$HOME/.env"
 
 . "$YADM_DOT_DIR/utils"
 
