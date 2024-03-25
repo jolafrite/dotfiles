@@ -33,10 +33,11 @@ export NVIM_DIR="${XDG_CONFIG_HOME}/nvim"
 
 # Go
 export GOPATH="$XDG_DATA_HOME/go"
-export GOBIN="${GOPATH}/bin"
+export GOBIN="$GOPATH/bin"
+export GOROOT="$HOME/.go"
 
 # Rust
-export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export CARGO_HOME="$HOME/.cargo"
 
 # Python/Venv related
 export PYENV_ROOT="$XDG_DATA_HOME/pyenv"
