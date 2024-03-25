@@ -1,7 +1,0 @@
-.DS_Store
-.netrwhist
-.git
-packer_compiled.lua
-Brewfile.lock.json
-stow/tmux/.tmux/plugins/
-!/**/.gitkeep
