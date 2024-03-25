@@ -1,0 +1,174 @@
+#!/usr/bin/env bash
+# yadm bootstrap script
+# Installs all my packages/sets up my environment.
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+. "$HOME/.env"
+
+. "$YADM_DOT_DIR/utils"
+
+export HAVECMD_REPORT=1
+
+cleanup() {
+	err "Last command failed"
+	info "Finishing..."
+}
+
+main() {
+	cd "$HOME" || exit
+
+	info "Installing..."
+
+	info "Init Yadm submodules"
+	yadm submodule update --recursive --init
+
+	ON_OS="${ON_OS:=$(on_os)}"
+	declare -rx ON_OS
+
+	if is_machine "mac"; then
+		bootstrap_script="$YADM_DOT_DIR/mac_bootstrap"
+	fi
+	info "Executing " "$bootstrap_script"
+	bash "$bootstrap_script" || exit $?
+
+	havecmd git || exit $?
+	info 'Checking git config...'
+	# check for global name config
+	if [[ -z $(git config --global user.name) ]]; then
+		warn "No global name set. Enter full name: "
+		read -r githubusername
+		git config --global user.name "${githubusername}"
+	fi
+	# check for global email config
+	if [[ -z $(git config --global user.email) ]]; then
+		warn "No global email set. Enter email connected to your GitHub account: "
+		read -r githubemail
+		git config --global user.email "${githubemail}"
+	fi
+
+	# set editor to use as nvim
+	git config --global core.editor nvim
+	# specify how to handle divergent branches
+	git config --global pull.rebase false
+	git config --global core.pager 'delta'
+	# set similar configuration for yadm itself
+	yadm gitconfig core.editor nvim
+	yadm gitconfig pull.rebase false
+	yadm gitconfig core.pager 'delta'
+
+	# set the hooks directory
+	yadm gitconfig core.hooksPath "$YADM_DOT_DIR/hooks"
+
+	havecmd go || exit $?
+	havecmd spkglist || {
+		go install -v 'github.com/seanbreckenridge/spkglist/cmd/spkglist@latest' || return $?
+	}
+	function install_go_package() {
+		local -a packageinfo
+		read -ra packageinfo <<<"${1}"
+		havecmd "${packageinfo[0]}" || {
+			go install -v "${packageinfo[1]}@latest"
+		}
+	}
+	info "Installing global go packages..."
+	while IFS= read -r go_line; do
+		install_go_package "${go_line}"
+	done < <(spkglist "${GO_PACKAGE_LIST}")
+
+	havecmd cargo || exit $?
+	info "Installing global cargo packages..."
+	CARGO_INSTALLED_PACKAGES="$(cargo install --list | sed -E -e '/^\s+/d; s|\s.*||')"
+	while read -r cargopkg; do
+		if ! grep -qx "${cargopkg}" <<<"${CARGO_INSTALLED_PACKAGES}"; then
+			info "Installing %s\n" "${cargopkg}"
+			cargo install "${cargopkg}"
+		fi
+	done < <(spkglist "${CARGO_PACKAGE_LIST}")
+
+	havecmd python3 || exit $?
+	info$() "Installing global python site-packages..."
+	INSTALLED_PYTHON_PACKAGES="$(python3 -m pip list --format=freeze | cut -d'=' -f1)"
+	python_install_missing() {
+		local -r pkg="$1"
+		if ! grep -qx "${pkg}" <<<"${INSTALLED_PYTHON_PACKAGES}"; then
+			info "Installing %s\n" "$pkg"
+			python3 -m pip install --user --break-system-packages "${pkg}"
+		fi
+	} && export -f python_install_missing
+	python_install_missing wheel
+	python_install_missing virtualenv
+	python3 -m pip install --user -q --break-system-packages -r "${PYTHON_PACKAGE_LIST}"
+
+	PIPX_INSTALLED="$(pipx list --json 2>/dev/null | jq '.venvs | keys[]' -r)"
+	while read -r pipx_pkg; do
+		if ! grep -qix "${pipx_pkg}" <<<"${PIPX_INSTALLED}"; then
+			printf "Installing %s\n" "$pipx_pkg"
+			pipx install "${pipx_pkg}"
+		fi
+	done < <(spkglist "${PIPX_PACKAGE_LIST}")
+
+	is_machine "android" || {
+		printf 'Executing %s\n' "${YADM_DIR}/computer_bootstrap"
+		bash "${YADM_DIR}/computer_bootstrap" || exit $?
+	}
+
+	pnpm_install_from_pcklist() {
+		local node_installed="$1"
+		local package_list="$2"
+
+		while read -r npkg; do
+			if ! grep -qx "${npkg}" <<<"${node_installed}"; then
+				printf "Installing %s\n" "$npkg"
+				# install to ~/.local/bin
+				pnpm global add --prefix "$HOME/.local" "${npkg}"
+			fi
+		done < <(spkglist "${package_list}")
+	}
+
+	install_pnpm_packages() {
+		PNPM_INSTALLED="$(pnpm_installed)"
+
+	}
+
+	havecmd pnpm || exit $?
+	# install_pnpm_packages
+
+	havecmd gh && {
+		GH_INSTALLED_PACKAGES="$(gh extension list | awk '{print $3}')"
+		while read -r gh_pkg; do
+			if ! grep -qx "${gh_pkg}" <<<"$GH_INSTALLED_PACKAGES"; then
+				gh extension install "https://github.com/${gh_pkg}"
+			fi
+		done < <(spkglist "${GH_PACKAGE_LIST}")
+	}
+
+	# use bpkg to automate make installs
+	havecmd bpkg || curl -Lo- "https://raw.githubusercontent.com/bpkg/bpkg/master/setup.sh" | bash
+	havecmd bpkg || exit $?
+
+	set -e
+	havecmd tttlog || bpkg install -g seanbreckenridge/ttt
+	havecmd exists || bpkg install -g seanbreckenridge/exists
+	havecmd genpasswd || bpkg install -g seanbreckenridge/genpasswd
+	set +e
+
+	info "Finished bootstrapping!"
+	info "System needs to restart. Restart?"
+
+	select yn in "y" "n"; do
+		case $yn in
+		y)
+			sudo shutdown -r now
+			break
+			;;
+		n) exit ;;
+		esac
+	done
+}
+
+trap cleanup SIGINT SIGTERM ERR EXIT
+
+main

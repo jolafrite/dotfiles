@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+
+set -e
+
+# delete default files if they exist
+original_files=("$HOME/.zshenv" "$HOME/.zshrc" "$HOME/.zsh_history")
+for file in "${original_files[@]}"; do
+  rm -rf "${file}"
+done
+
+havecmd xcode-select || {
+  printf 'xCode Command Line Tools not installed;
+
+You can install it by running:
+xcode-select --install
+sudo xcodebuild -license accept'
+\n
+  exit $?
+}
+
+havecmd brew || {
+  mkdir -p $HOMEBREW_HOME
+  curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C $HOMEBREW_HOME
+  eval "$($HOMEBREW_HOME/bin/brew shellenv)"
+}
+
+# sanity check to make sure brew is configured
+havecmd brew || exit 1
+
+set +e
+
+brew bundle -v --file="$HOME/.config/yadm/package_lists/Brewfile"
+
+info "Installing macOS apps..."
+CASKS_AVAILABLE=(
+  alfred
+  arctype
+  brave-browser
+  clipy
+  deepl
+  docker
+  expressvpn
+  hiddenbar
+  kreya
+  mpv
+  nvidia-geforce-now
+  popcorn-time
+  rectangle
+  tableplus
+  the-unarchiver
+  webtorrent
+  zoom
+)
+casksToInstall=""
+installedCasks=$(brew list --casks)
+
+for cask in "${CASKS_AVAILABLE[@]}"; do
+  [[ $installedCasks == *$cask* ]] || {
+    wantto "install $cask" && {
+      casksToInstall+="$cask "
+    }
+  }
+done
+
+[[ $casksToInstall == *popcorn-time* ]] && {
+  info "install popcorn-time "
+  brew tap popcorn-official/popcorn-desktop https://github.com/popcorn-official/popcorn-desktop.git
+}
+
+info "Installing extra packages..."
+[[ $(echo $casksToInstall | xargs) == "" ]] || {
+  export HOMEBREW_CASK_OPTS="--appdir=$HOME/Applications"
+  brew install --cask $casksToInstall
+} && info "Nothing to install"
+
+cat <<EOF >"$HOME/.zshenv"
+# if we're not on linux, source the ~/.profile when shell starts
+source "\$HOME/.profile"
+EOF
+
+[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] || {
+  zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1 -k
+}
+
+havecmd atuin && {
+  mkdir -p "$XDG_DATA_HOME/functions"
+  atuin gen-completions --shell zsh --out-dir "$XDG_DATA_HOME/functions"
+}
+
+havecmd gvm || {
+  curl -sSL https://raw.githubusercontent.com/voidint/g/master/install.sh | zsh
+}
+
+echo "Setting application/mac os defaults..."
+bash "$HOME/.config/yadm/mac/set-default-apps" || exit $?
+printf 'mac/set-macos-defaults changes a bunch of settings to make macOS more usable and restarts affected applications\nRun? [y/N] > '
+read -r
+case "$REPLY" in
+  Y | y)
+    bash "$HOME/.config/yadm/mac/set-macos-defaults"
+    ;;
+esac

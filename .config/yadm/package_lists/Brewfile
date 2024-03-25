@@ -1,0 +1,128 @@
+cask_args appdir: "~/Applications"
+
+tap 'homebrew/cask-fonts'
+# cask 'xquartz'
+
+brew 'gcc', args: ["force-bottle"]
+brew 'openssl', args: ["force-bottle"]
+brew 'gettext', args: ["force-bottle"]
+brew 'pkg-config', args: ["force-bottle"]
+
+# use GNU coreutils
+# $PATH is modified in $ZDOTDIR/env_config.zsh to make linux/mac consistent
+brew 'coreutils'
+brew 'diffutils'
+brew 'findutils'
+brew 'gawk'
+brew 'gnu-getopt'
+# brew 'gnu-indent'
+brew 'gnu-sed'
+brew 'gnu-tar'
+brew 'gnu-which'
+# brew 'gnutls'
+brew 'grep'
+brew 'moreutils'
+
+# install dependencies
+brew 'elixir', args: ["force-bottle"]
+brew 'go', args: ["force-bottle"]
+brew 'lua'
+brew 'node', args: ["force-bottle"]
+brew 'openjdk', args: ["force-bottle"]
+brew 'jabba'
+brew 'perl', args: ["force-bottle"]
+brew 'php'
+brew 'python3'
+brew 'ruby'
+brew 'rust'
+brew 'rustup-init'
+brew 'vlang'
+
+# install newer version of otherwise ancient software
+brew 'ack'
+brew 'atuin'
+brew 'bash'
+brew 'curl'
+brew 'git'
+brew 'gpatch'
+brew 'gzip'
+brew 'less'
+brew 'openssh', args: ["force-bottle"]
+brew 'rsync'
+brew 'vim'
+brew 'zsh'
+
+# generic installs
+brew 'aspell', args: ["force-bottle"]
+brew 'bandwhich'
+brew 'bat'
+brew 'bat-extras'
+brew 'bottom'
+brew 'boxes'
+brew 'btop'
+brew 'ca-certificates'
+brew 'cntlm'
+brew 'codespell'
+brew 'doxygen'
+brew 'duti'
+brew 'eza'
+brew 'fd'
+brew 'fnm'
+brew 'freetype'
+brew 'fzf'
+brew 'gdu'
+brew 'gh'
+brew 'git-delta'
+brew 'git-extras'
+brew 'glab'
+brew 'glow'
+brew 'grpcurl'
+brew 'hyperfine'
+brew 'isort'
+brew 'jq'
+brew 'lazydocker'
+brew 'lazygit'
+brew 'lolcat'
+brew 'mas'
+brew 'maven'
+brew 'mercurial'
+brew 'nasm'
+brew 'nmap'
+brew 'nvim', args: ["HEAD"]
+brew 'parallel'
+brew 'protobuf'
+brew 'ranger'
+brew 'ripgrep'
+brew 'shellcheck'
+brew 'sqlite'
+brew 'stow'
+brew 'supervisor'
+brew 'taskell'
+brew 'telnet'
+brew 'thefuck'
+brew 'tmux'
+brew 'trash'
+brew 'tree-sitter', args: ["HEAD"]
+brew 'tz'
+brew 'watch'
+brew 'watson'
+brew 'websocat'
+brew 'wget', args: ["force-bottle"]
+brew 'wifi-password'
+brew 'yadm'
+brew 'zoxide'
+
+# zsh
+cask 'font-source-code-pro'
+cask 'font-hack-nerd-font'
+brew 'zsh-autosuggestions'
+brew 'zsh-syntax-highlighting'
+
+# fonts
+cask 'font-fira-code-nerd-font'
+cask 'font-fira-code'
+cask 'font-source-code-pro'
+cask 'font-hack-nerd-font'
+
+# Applications
+cask 'wezterm'

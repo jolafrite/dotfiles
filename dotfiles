@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -o errexit
+
+reset_color=$(tput sgr 0)
+
+info() {
+  printf "%s[*] %s%s\n" "$(tput setaf 4)" "$1" "$reset_color"
+}
+
+info "####### dotfiles #######"
+read -r -p "Press enter to start:"
+info "Bootstraping..."
+
+info "####### Install required dependencies  #######"
+mkdir -p $HOME/.local/bin
+curl -fLo $HOME/.local/bin/yadm https://github.com/TheLocehiliosan/yadm/raw/master/yadm
+chmod a+x $HOME/.local/bin/yadm
+
+$HOME/.local/bin/yadm clone -f https://github.com/jolafrite/dotfiles.git -b dev
+$HOME/.local/bin/yadm restore --staged $HOME
+$HOME/.local/bin/yadm checkout -- $HOME
+
+$HOME/.local/bin/yadm bootstrap
+
+info "####### Cleanup #######"
+rm $HOME/.local/bin/yadm
