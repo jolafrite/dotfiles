@@ -4,7 +4,6 @@ tap 'homebrew/cask-fonts'
 # cask 'xquartz'
 
 brew 'gcc', args: ["force-bottle"]
-brew 'openssl', args: ["force-bottle"]
 brew 'gettext', args: ["force-bottle"]
 brew 'pkg-config', args: ["force-bottle"]
 
@@ -22,6 +21,7 @@ brew 'gnu-which'
 # brew 'gnutls'
 brew 'grep'
 brew 'moreutils'
+brew 'openssl'
 
 # install dependencies
 brew 'elixir', args: ["force-bottle"]
@@ -29,6 +29,7 @@ brew 'go', args: ["force-bottle"]
 brew 'lua'
 brew 'node', args: ["force-bottle"]
 brew 'openjdk', args: ["force-bottle"]
+brew 'oven-sh/bun/bun'
 brew 'jabba'
 brew 'perl', args: ["force-bottle"]
 brew 'php'
@@ -89,7 +90,6 @@ brew 'mercurial'
 brew 'nasm'
 brew 'nmap'
 brew 'nvim', args: ["HEAD"]
-brew 'parallel'
 brew 'protobuf'
 brew 'ranger'
 brew 'ripgrep'
@@ -113,14 +113,13 @@ brew 'yadm'
 brew 'zoxide'
 
 # zsh
-cask 'font-source-code-pro'
-cask 'font-hack-nerd-font'
 brew 'zsh-autosuggestions'
 brew 'zsh-syntax-highlighting'
 
 # fonts
 cask 'font-fira-code-nerd-font'
 cask 'font-fira-code'
+cask 'font-maple'
 cask 'font-source-code-pro'
 cask 'font-hack-nerd-font'
 

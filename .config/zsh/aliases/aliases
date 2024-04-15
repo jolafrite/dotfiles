@@ -10,6 +10,7 @@ alias diff="batdiff"
 alias e=editor
 alias eza-defaults="eza --git --octal-permissions --header --group-directories-first"
 alias icat="wezterm imgcat"
+alias k="killall -9"
 alias killall-nvim="killall -9 nvim"
 alias l="ll"
 alias la="ll --all"
@@ -22,6 +23,7 @@ alias man="batman"
 alias mkpwd="xkcdpass --count=5 --acrostic=\"chaos\" -C \"first\" -R --min=5 --max=6 -D \"#@^&~_-;\""
 alias path='echo -e ${PATH//:/\\n}'
 alias rmf="rm -rf"
+alias shots="open $SCREENSHOTS"
 alias sl="ls"
 alias tree="eza --tree --level=5 --icons --group-directories-first --color auto"
 alias yA='yadm add --all'

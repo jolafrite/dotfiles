@@ -9,3 +9,4 @@ if [ -f "${ZDOTDIR}/global_env.sh" ]; then
   # shellcheck disable=SC1091
   . "${ZDOTDIR}/global_env.sh"
 fi
+. "$HOME/.cargo/env"

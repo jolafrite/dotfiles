@@ -115,6 +115,7 @@ __pycache__
 /.gitconfig
 /.gnome/apps/chrome-*
 /.gnupg
+/.go
 /.gore
 /.gradle
 /.ipynb_checkpoints

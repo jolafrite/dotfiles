@@ -45,4 +45,9 @@ is_machine "mac" && {
 havecmd basher && eval "$(basher init - zsh)"
 
 source "${ZDOTDIR}/cache_aliases.zsh"
+
+if [ -f "$ZDOTDIR/.zshrc_local" ]; then
+  source "$ZDOTDIR/.zshrc_local"
+fi
+
 true

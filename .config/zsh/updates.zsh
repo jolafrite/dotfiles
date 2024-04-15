@@ -1,11 +1,5 @@
 #!/bin/zsh
 
-update-basher() {
-	echo "Updating bash scripts..."
-	(cd "$(basher package-path .)" && git pull)
-	basher-upgrade-all
-}
-
 update-brew() {
   brew update &&
     brew bundle -v --file="$PACKAGE_DIR/Brewfile"
@@ -31,7 +25,6 @@ update-node() {
 }
 
 update-all() {
-	update-basher
   update-brew
 	update-cargo
 	update-golang

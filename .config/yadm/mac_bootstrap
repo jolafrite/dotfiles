@@ -9,12 +9,12 @@ for file in "${original_files[@]}"; do
 done
 
 havecmd xcode-select || {
-  printf 'xCode Command Line Tools not installed;
+  info 'xCode Command Line Tools not installed;
 
 You can install it by running:
 xcode-select --install
 sudo xcodebuild -license accept'
-\n
+  \n
   exit $?
 }
 
@@ -68,9 +68,9 @@ done
 }
 
 info "Installing extra packages..."
-[[ $(echo $casksToInstall | xargs) == "" ]] || {
+[[ $(echo "$casksToInstall" | xargs) == "" ]] || {
   export HOMEBREW_CASK_OPTS="--appdir=$HOME/Applications"
-  brew install --cask $casksToInstall
+  brew install --cask "$casksToInstall"
 } && info "Nothing to install"
 
 cat <<EOF >"$HOME/.zshenv"
@@ -87,13 +87,14 @@ havecmd atuin && {
   atuin gen-completions --shell zsh --out-dir "$XDG_DATA_HOME/functions"
 }
 
-havecmd gvm || {
-  curl -sSL https://raw.githubusercontent.com/voidint/g/master/install.sh | zsh
-}
+pushd "$XDG_DATA_HOME/zap/plugins/zsh-zoxide"
+command git submodule --quiet init
+command git submodule --quiet update
+popd
 
-echo "Setting application/mac os defaults..."
+info "Setting application/mac os defaults..."
 bash "$HOME/.config/yadm/mac/set-default-apps" || exit $?
-printf 'mac/set-macos-defaults changes a bunch of settings to make macOS more usable and restarts affected applications\nRun? [y/N] > '
+info 'mac/set-macos-defaults changes a bunch of settings to make macOS more usable and restarts affected applications\nRun? [y/N] > '
 read -r
 case "$REPLY" in
   Y | y)

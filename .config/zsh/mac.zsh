@@ -1,9 +1,12 @@
 export HOMEBREW_NO_ANALYTICS=1
 
 PATH="\
+$HOMEBREW_HOME/bin:\
+$HOMEBREW_HOME/sbin:\
 $HOME/.local/bin:\
+$HOME/Applications/WezTerm.app/Contents/MacOS:\
 /usr/local/bin:\
-${PATH}"
+$PATH"
 export PATH
 
 export LIBSQLITE="$HOMEBREW_HOME/opt/sqlite/lib/libsqlite3.dylib"
@@ -12,7 +15,6 @@ export LIBSQLITE="$HOMEBREW_HOME/opt/sqlite/lib/libsqlite3.dylib"
 cd
 
 havecmd "brew" || {
-	PATH="${HOMEBREW_HOME}/bin:$PATH"
 	eval "$(${HOMEBREW_HOME}/bin/brew shellenv)"
 }
 
@@ -23,6 +25,8 @@ havecmd "zoxide" && {
 if [ -f "$HOME/.g/env" ]; then
     . "$HOME/.g/env"
 fi
+
+eval "$(atuin init zsh)"
 
 # Created by Zap installer
 [ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && {
@@ -49,15 +53,13 @@ plug "wintermi/zsh-rust"
 autoload -Uz compinit
 compinit
 
-eval "$(atuin init zsh --disable-up-arrow)"
-
-
 [[ $- == *i* ]] && source_if_exists "$HOMEBREW_HOME/opt/fzf/shell/completion.zsh" 2>/dev/null
 source_if_exists "$HOMEBREW_HOME/opt/fzf/shell/key-bindings.zsh"
 source_if_exists "$HOMEBREW_HOME/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 source_if_exists "$HOMEBREW_HOME/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 source_if_exists "$HOMEBREW_HOME/opt/git-extras/share/git-extras/git-extras-completion.zsh"
-source_if_exists "$XDG_DATA_HOME/atuin/_atuin"
+source_if_exists "$XDG_DATA_HOME/functions/_atuin"
+source_if_exists "$HOME/Applications/WezTerm.app/Contents/Resources/shell-completion/zsh"
 
 # check if supervisord (background processes are running)
 # else start them
