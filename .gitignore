@@ -273,6 +273,7 @@ __pycache__
 /.config/mono.addins
 /.config/mpv/watch_later/
 /.config/neofetch
+/.config/neovim
 /.config/netrc
 /.config/newsboat/cache.db
 /.config/newsboat/urls
