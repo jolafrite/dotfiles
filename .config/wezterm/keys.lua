@@ -45,14 +45,16 @@ function M.setup(config)
 		{ mods = M.mod, key = "M", action = act.TogglePaneZoomState },
 		{ mods = M.mod, key = "p", action = act.ActivateCommandPalette },
 		{ mods = M.mod, key = "d", action = act.ShowDebugOverlay },
-		M.split_nav("resize", "CTRL", "LeftArrow", "Right"),
-		M.split_nav("resize", "CTRL", "RightArrow", "Left"),
-		M.split_nav("resize", "CTRL", "UpArrow", "Up"),
-		M.split_nav("resize", "CTRL", "DownArrow", "Down"),
-		M.split_nav("move", "CTRL", "h", "Left"),
-		M.split_nav("move", "CTRL", "j", "Down"),
-		M.split_nav("move", "CTRL", "k", "Up"),
-		M.split_nav("move", "CTRL", "l", "Right"),
+		
+		M.split_nav("resize", "SHIFT|OPT", "LeftArrow", "Left"),
+		M.split_nav("resize", "SHIFT|OPT", "RightArrow", "Right"),
+		M.split_nav("resize", "SHIFT|OPT", "UpArrow", "Up"),
+		M.split_nav("resize", "SHIFT|OPT", "DownArrow", "Down"),
+		
+		M.split_nav("move", M.mod, "LeftArrow", "Left"),
+		M.split_nav("move", M.mod, "RightArrow", "Right"),
+		M.split_nav("move", M.mod, "UpArrow", "Up"),
+		M.split_nav("move", M.mod, "DownArrow", "Down"),
 	}
 
 	for i = 1, 8 do
