@@ -1,8 +1,5 @@
 cask_args appdir: "~/Applications"
 
-tap 'homebrew/cask-fonts'
-# cask 'xquartz'
-
 brew 'gcc', args: ["force-bottle"]
 brew 'gettext', args: ["force-bottle"]
 brew 'pkg-config', args: ["force-bottle"]
@@ -89,7 +86,6 @@ brew 'maven'
 brew 'mercurial'
 brew 'nasm'
 brew 'nmap'
-brew 'nvim', args: ["HEAD"]
 brew 'protobuf'
 brew 'ranger'
 brew 'ripgrep'
