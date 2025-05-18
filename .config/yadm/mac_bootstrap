@@ -34,17 +34,14 @@ brew bundle -v --file="$HOME/.config/yadm/package_lists/Brewfile"
 info "Installing macOS apps..."
 CASKS_AVAILABLE=(
   alfred
-  arctype
   brave-browser
   clipy
-  deepl
   docker
   expressvpn
+  ghostty
   hiddenbar
-  kreya
   mpv
   nvidia-geforce-now
-  popcorn-time
   rectangle
   tableplus
   the-unarchiver
