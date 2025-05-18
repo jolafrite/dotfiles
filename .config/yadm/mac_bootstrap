@@ -38,7 +38,6 @@ CASKS_AVAILABLE=(
   clipy
   docker
   expressvpn
-  ghostty
   hiddenbar
   mpv
   nvidia-geforce-now
