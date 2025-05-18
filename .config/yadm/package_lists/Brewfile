@@ -34,7 +34,7 @@ brew 'rust'
 brew 'rustup-init'
 brew 'vlang'
 
-# install newer version of otherwise ancient software
+# install a newer version of otherwise ancient software
 brew 'ack'
 brew 'atuin'
 brew 'bash'
@@ -98,6 +98,7 @@ brew 'tmux'
 brew 'trash'
 brew 'tree-sitter', args: ["HEAD"]
 brew 'tz'
+brew 'viddy'
 brew 'watch'
 brew 'watson'
 brew 'websocat'
