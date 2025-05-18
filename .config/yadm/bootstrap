@@ -67,7 +67,7 @@ main() {
   }
   havecmd go || exit $?
   havecmd spkglist || {
-    go install -v 'github.com/seanbreckenridge/spkglist/cmd/spkglist@latest' || return $?
+    go install -v 'github.com/purarue/spkglist/cmd/spkglist@latest' || return $?
   }
   function install_go_package() {
     local -a packageinfo
