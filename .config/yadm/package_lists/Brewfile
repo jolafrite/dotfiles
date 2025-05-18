@@ -1,5 +1,3 @@
-cask_args appdir: "~/Applications"
-
 brew 'gcc', args: ["force-bottle"]
 brew 'gettext', args: ["force-bottle"]
 brew 'pkg-config', args: ["force-bottle"]
