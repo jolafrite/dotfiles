@@ -120,4 +120,4 @@ cask 'font-source-code-pro'
 cask 'font-hack-nerd-font'
 
 # Applications
-cask 'wezterm'
+cask 'ghostty'
