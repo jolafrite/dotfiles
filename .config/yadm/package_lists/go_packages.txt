@@ -1,2 +1,1 @@
 buf github.com/bufbuild/buf/cmd/buf
-viddy github.com/sachaos/viddy
