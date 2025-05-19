@@ -4,6 +4,7 @@ PATH="\
 $HOMEBREW_HOME/bin:\
 $HOMEBREW_HOME/sbin:\
 $HOME/.local/bin:\
+$HOME/.local/bin/nvim/bin:\
 $HOME/Applications/WezTerm.app/Contents/MacOS:\
 /usr/local/bin:\
 $PATH"

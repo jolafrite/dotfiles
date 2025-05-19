@@ -22,7 +22,7 @@ update-golang() {
 update-nvim() {
   echo "Updating nvim..."
 
-  url="https://github.com/neovim/neovim/releases/download/nightly/nvim-macos-arm64.tar.gz"
+  url="https://github.com/neovim/neovim/releases/download/stable/nvim-macos-arm64.tar.gz"
   tmpFolder="$(mktemp -d)"
   destination="$HOME/.local/bin/"
   
@@ -33,7 +33,7 @@ update-nvim() {
   tar xzvf nvim-macos-arm64.tar.gz
   
   mkdir -p "$destination"
-  mv ./nvim-macos-arm64/bin/nvim "$destination"
+  mv ./nvim-macos-arm64 "$destination/nvim"
   
   popd
   
