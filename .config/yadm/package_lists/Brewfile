@@ -19,11 +19,11 @@ brew 'moreutils'
 brew 'openssl'
 
 # install dependencies
+brew 'composer'
 brew 'elixir', args: ["force-bottle"]
 brew 'go', args: ["force-bottle"]
 brew 'lua'
 brew 'node', args: ["force-bottle"]
-brew 'openjdk', args: ["force-bottle"]
 brew 'oven-sh/bun/bun'
 brew 'jabba'
 brew 'perl', args: ["force-bottle"]
@@ -50,6 +50,7 @@ brew 'zsh'
 
 # generic installs
 brew 'aspell', args: ["force-bottle"]
+brew 'ast-grep'
 brew 'bandwhich'
 brew 'bat'
 brew 'bat-extras'
@@ -59,6 +60,7 @@ brew 'btop'
 brew 'ca-certificates'
 brew 'cntlm'
 brew 'codespell'
+brew 'colorscript'
 brew 'doxygen'
 brew 'duti'
 brew 'eza'
@@ -88,11 +90,13 @@ brew 'nmap'
 brew 'protobuf'
 brew 'ranger'
 brew 'ripgrep'
+brew 'shell-color-scripts'
 brew 'shellcheck'
 brew 'sqlite'
 brew 'stow'
 brew 'supervisor'
 brew 'taskell'
+brew 'tectonic'
 brew 'telnet'
 brew 'thefuck'
 brew 'tmux'

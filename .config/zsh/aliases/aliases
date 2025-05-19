@@ -3,13 +3,15 @@
 alias -s {md,html,txt}=nvim
 
 alias afk="pmset displaysleepnow"
+alias bi="brew install"
 alias cat="bat -p --paging=never"
 alias confige="e ${XDG_CONFIG_HOME}/"
 alias dc="cd"
 alias diff="batdiff"
 alias e=editor
 alias eza-defaults="eza --git --octal-permissions --header --group-directories-first"
-alias icat="wezterm imgcat"
+alias gP="git pull"
+alias icat="ghostty imgcat"
 alias k="killall -9"
 alias killall-nvim="killall -9 nvim"
 alias l="ll"
@@ -34,6 +36,7 @@ alias yds='yadm diff --staged'
 alias yl='yadm pull --recurse-submodules'
 alias ylols='yadm log --graph --pretty='\''%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset'\'' --stat'
 alias yp='yadm push'
+alias yP='yadm pull'
 alias yrh='yadm reset'
 alias yrhh='yadm reset --hard'
 alias yst='yadm status'

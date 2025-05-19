@@ -361,4 +361,5 @@ __pycache__
 /GoogleDrive
 /tmp
 
-~/.docker
+.docker
+.jabba

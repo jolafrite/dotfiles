@@ -5,7 +5,7 @@ $HOMEBREW_HOME/bin:\
 $HOMEBREW_HOME/sbin:\
 $HOME/.local/bin:\
 $HOME/.local/bin/nvim/bin:\
-$HOME/Applications/WezTerm.app/Contents/MacOS:\
+$HOME/.local/share/homebrew/opt/ruby/bin:\
 /usr/local/bin:\
 $PATH"
 export PATH
@@ -27,7 +27,29 @@ if [ -f "$HOME/.g/env" ]; then
     . "$HOME/.g/env"
 fi
 
+. "$HOME/.cargo/env"
+
+[ -s "$HOME/.jabba/jabba.sh" ] && {
+  source "$HOME/.jabba/jabba.sh"
+}
+
+# eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
+
 eval "$(atuin init zsh)"
+
+[ -s "$HOMEBREW_HOME/opt/nvm/nvm.sh" ] && \. "$HOMEBREW_HOME/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "$HOMEBREW_HOME/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$HOMEBREW_HOME/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
+export LDFLAGS="-L$HOMEBREW_HOME/opt/ruby/lib"
+export CPPFLAGS="-I$HOMEBREW_HOME/opt/ruby/include"
+
+# pnpm
+export PNPM_HOME="$HOME/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
 
 # Created by Zap installer
 [ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && {
@@ -60,7 +82,6 @@ source_if_exists "$HOMEBREW_HOME/share/zsh-autosuggestions/zsh-autosuggestions.z
 source_if_exists "$HOMEBREW_HOME/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 source_if_exists "$HOMEBREW_HOME/opt/git-extras/share/git-extras/git-extras-completion.zsh"
 source_if_exists "$XDG_DATA_HOME/functions/_atuin"
-source_if_exists "$HOME/Applications/WezTerm.app/Contents/Resources/shell-completion/zsh"
 
 # check if supervisord (background processes are running)
 # else start them
@@ -72,3 +93,4 @@ if [[ ! -e /tmp/supervisord.pid ]]; then
 	echo "Supervisor pid file does not exist, starting supervisor..."
 	super --daemon
 fi
+
