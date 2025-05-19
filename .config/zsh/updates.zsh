@@ -19,6 +19,27 @@ update-golang() {
 	cd "$OLDPWD" || return $?
 }
 
+update-nvim() {
+  echo "Updating nvim..."
+
+  url="https://github.com/neovim/neovim/releases/download/nightly/nvim-macos-arm64.tar.gz"
+  tmpFolder="$(mktemp -d)"
+  destination="$HOME/.local/bin/"
+  
+  pushd "$tmpFolder"
+  
+  curl -LO "$url"
+  xattr -c ./nvim-macos-arm64.tar.gz
+  tar xzvf nvim-macos-arm64.tar.gz
+  
+  mkdir -p "$destination"
+  mv ./nvim-macos-arm64/bin/nvim "$destination"
+  
+  popd
+  
+  rm -rf "$tmpFolder"
+}
+
 update-node() {
 	echo "Updating global node packages..."
 	pnpm global --prefix "$HOME/.local/" upgrade
@@ -26,9 +47,10 @@ update-node() {
 
 update-all() {
   update-brew
-	update-cargo
-	update-golang
-	update-node
+  update-cargo
+  update-golang
+  update-node
+  update-nvim
 	# update_pip
 	# pipx upgrade-all
 	# update_ranger_plugins

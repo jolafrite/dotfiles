@@ -360,3 +360,5 @@ __pycache__
 /Music
 /GoogleDrive
 /tmp
+
+~/.docker
