@@ -1,1 +1,3 @@
+# vim: ft=conf
+
 buf github.com/bufbuild/buf/cmd/buf

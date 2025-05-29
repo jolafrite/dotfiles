@@ -35,7 +35,7 @@ function M.load(opts)
     defaults = {
       lazy = true,
     },
-    install = { colorscheme = { "tokyonight", "habamax" } },
+    install = { colorscheme = { "catppuccin", "tokyonight", "habamax" } },
     checker = {
       enabled = true,
       notify = true,
@@ -76,4 +76,3 @@ function M.load(opts)
 end
 
 return M
-

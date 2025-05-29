@@ -51,3 +51,8 @@ if [ -f "$ZDOTDIR/.zshrc_local" ]; then
 fi
 
 true
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/jonathanhouze/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions

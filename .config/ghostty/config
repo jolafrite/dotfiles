@@ -16,7 +16,7 @@ cursor-invert-fg-bg = true
 alpha-blending = linear-corrected
 background-opacity = 0.80
 background-blur-radius = 5
-theme = lovelace
+theme = shades-of-purple
 
 # Other
 copy-on-select = clipboard
@@ -27,15 +27,8 @@ working-directory = home
 window-padding-y = 2,0
 window-padding-balance = true
 
-<<<<<<< Updated upstream
-macos-titlebar-style = tabs
-macos-titlebar-proxy-icon = hidden
-macos-option-as-alt = true
-=======
 macos-icon-frame=plastic
 macos-icon-screen-color=E6B455
 macos-titlebar-style = tabs
 macos-titlebar-proxy-icon = hidden
 macos-option-as-alt = true
-
->>>>>>> Stashed changes

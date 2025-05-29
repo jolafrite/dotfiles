@@ -21,16 +21,13 @@ brew 'openssl'
 # install dependencies
 brew 'composer'
 brew 'elixir', args: ["force-bottle"]
-brew 'go', args: ["force-bottle"]
 brew 'lua'
-brew 'node', args: ["force-bottle"]
 brew 'oven-sh/bun/bun'
 brew 'jabba'
 brew 'perl', args: ["force-bottle"]
 brew 'php'
 brew 'python3'
 brew 'ruby'
-brew 'rust'
 brew 'rustup-init'
 brew 'vlang'
 
@@ -61,6 +58,7 @@ brew 'ca-certificates'
 brew 'cntlm'
 brew 'codespell'
 brew 'colorscript'
+brew 'deno'
 brew 'doxygen'
 brew 'duti'
 brew 'eza'
@@ -90,7 +88,6 @@ brew 'nmap'
 brew 'protobuf'
 brew 'ranger'
 brew 'ripgrep'
-brew 'shell-color-scripts'
 brew 'shellcheck'
 brew 'sqlite'
 brew 'stow'
@@ -124,4 +121,5 @@ cask 'font-source-code-pro'
 cask 'font-hack-nerd-font'
 
 # Applications
+cask 'android-file-transfer'
 cask 'ghostty'

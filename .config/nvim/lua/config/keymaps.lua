@@ -5,8 +5,6 @@ local opts = { noremap = false, silent = true }
 set("n", "<Leader>o", "o<Esc>^Da", opts)
 set("n", "<Leader>O", "O<Esc>^Da", opts)
 
-set("n", "x", "_x")
-
 set("n", "+", "<C-a>", opts)
 set("n", "-", "<C-x>", opts)
 
@@ -24,3 +22,17 @@ set("n", "<Left>", "<c-w>h")
 set("n", "<Right>", "<c-w>l")
 
 set("n", "<C-m>", "<C-i>", opts)
+
+set("n", "<C-u>", "<C-u>zz", opts)
+set("n", "<C-d>", "<C-d>zz", opts)
+set("n", "<C-i>", "<C-i>zz", opts)
+set("n", "<C-o>", "<C-o>zz", opts)
+set("n", "n", "nzz", opts)
+set("n", "N", "Nzz", opts)
+set("n", "gg", "ggzz", opts)
+set("n", "GG", "GGzz", opts)
+set("n", "%", "%zz", opts)
+set("n", "*", "*zz", opts)
+set("n", "#", "#zz", opts)
+
+set("n", "U", "<C-r>", opts)

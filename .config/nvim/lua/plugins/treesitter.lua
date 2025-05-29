@@ -3,7 +3,6 @@ return {
   opts = function(_, opts)
     vim.list_extend(opts.ensure_installed, {
       "cmake",
-      -- "comment", -- comments are slowing down TS bigtime, so disable for now
       "css",
       "devicetree",
       "gitcommit",
@@ -15,6 +14,7 @@ return {
       "java",
       "just",
       "kconfig",
+      "lua",
       "meson",
       "ninja",
       "nix",
@@ -24,8 +24,11 @@ return {
       "scss",
       "sql",
       "svelte",
+      "typescript",
+      "vim",
       "vue",
       "wgsl",
+      -- "comment", -- comments are slowing down TS bigtime, so disable for now
     })
   end,
 }

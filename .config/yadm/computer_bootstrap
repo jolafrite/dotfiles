@@ -1,1 +1,18 @@
 #!/usr/bin/env bash
+
+set -u
+user_dirs=("Development/{js,go,rust,projects}", "Pictures/Screenshots", ".cache")
+for dir_name in "${user_dirs[@]}"; do
+  dir_name="$HOME/${dir_name}"
+
+  if [[ ! -d "$dir_name" ]]; then
+    mkdir -pv "$dir_name"
+  fi
+done
+set +u
+
+GH_PACKAGE_LIST="$PACKAGE_DIR/gh_extension_packages.txt"
+havecmd && {
+  GH_INSTALLED_PACKAGES="$(gh extension list | awk '{print $3}')"
+  echo "$GH_INSTALLED_PACKAGES"
+}

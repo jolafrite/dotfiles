@@ -1,3 +1,5 @@
+local esc = vim.api.nvim_replace_termcodes("<Esc>", true, false, true)
+
 -- show cursor line only in active window
 vim.api.nvim_create_autocmd({ "InsertLeave", "WinEnter" }, {
   callback = function()
@@ -48,5 +50,14 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = { "json", "jsonc", "markdown" },
   callback = function()
     vim.opt.conceallevel = 0
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "jsx?", "tsx?", "vue", "astro", "mjs", "cjs", "vue" },
+  callback = function()
+    -- Register 'l' macro for console.log wrapper
+    -- When applied to selected text, it will create: console.log('selectedText:', selectedText)
+    vim.fn.setreg("l", "yoconsole.log('" .. esc .. "pa:', " .. esc .. "pa);" .. esc)
   end,
 })
