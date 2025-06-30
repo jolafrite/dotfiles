@@ -102,6 +102,7 @@ brew 'tree-sitter', args: ["HEAD"]
 brew 'tz'
 brew 'viddy'
 brew 'watch'
+brew 'watchman'
 brew 'watson'
 brew 'websocat'
 brew 'wget', args: ["force-bottle"]

@@ -83,6 +83,8 @@ source_if_exists "$HOMEBREW_HOME/share/zsh-syntax-highlighting/zsh-syntax-highli
 source_if_exists "$HOMEBREW_HOME/opt/git-extras/share/git-extras/git-extras-completion.zsh"
 source_if_exists "$XDG_DATA_HOME/functions/_atuin"
 
+source <(COMPLETE=zsh jj)
+
 # check if supervisord (background processes are running)
 # else start them
 #

@@ -40,11 +40,8 @@
 [push]
   default = upstream
 
-[github]
-  user = folke
-
 [init]
-  defaultBranch = main
+  defaultBranch = master
 
 [commit]
   gpgsign = true

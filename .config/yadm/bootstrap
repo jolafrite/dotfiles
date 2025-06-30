@@ -54,6 +54,8 @@ main() {
   # specify how to handle divergent branches
   git config --global pull.rebase false
   git config --global core.pager 'delta'
+  git config --global --add --bool push.autoSetupRemote true
+
   # set similar configuration for yadm itself
   yadm gitconfig core.editor nvim
   yadm gitconfig pull.rebase false
@@ -165,11 +167,11 @@ main() {
   printf 'System needs to restart.\nRestart? [Y/n] > '
   read -r
   case "$REPLY" in
-    [Y | y]*)
-      sudo shutdown -r now
-      break
-      ;;
-    *) exit ;;
+  [Y | y]*)
+    sudo shutdown -r now
+    break
+    ;;
+  *) exit ;;
   esac
 }
 

@@ -12,7 +12,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
     os.exit(1)
   end
 end
-vim.opt.rtp:prepend(lazypath)
+vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
 local M = {}
 
@@ -24,6 +24,7 @@ function M.load(opts)
         "LazyVim/LazyVim",
         import = "lazyvim.plugins",
         opts = {
+          colorscheme = "fluoromachine",
           news = {
             lazyvim = true,
             newvim = true,
@@ -34,8 +35,9 @@ function M.load(opts)
     },
     defaults = {
       lazy = true,
+      version = false,
     },
-    install = { colorscheme = { "catppuccin", "tokyonight", "habamax" } },
+    local_spec = true,
     checker = {
       enabled = true,
       notify = true,
@@ -53,7 +55,7 @@ function M.load(opts)
           "gzip",
           -- "matchit",
           -- "matchparen",
-          -- "netrwPlugin",
+          "netrwPlugin",
           "rPlugin",
           "tarPlugin",
           "tohtml",
@@ -63,6 +65,7 @@ function M.load(opts)
       },
     },
     ui = {
+      backdrop = 100,
       custom_keys = {
         ["<localleader>d"] = function(plugin)
           dd(plugin)
