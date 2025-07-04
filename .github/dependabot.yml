@@ -20,12 +20,12 @@ updates:
 
   # Go (gomod)
   - package-ecosystem: "gomod"
-    directory: "/"
+    directory: "**/go.mod"
     schedule:
       interval: "weekly"
 
   # Node.js (npm)
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "**/package.json"
     schedule:
       interval: "weekly"    
