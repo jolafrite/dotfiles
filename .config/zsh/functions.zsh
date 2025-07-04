@@ -1,5 +1,5 @@
 cheat() {
-  curl -s "cheat.sh/$1";
+  curl -s "cheat.sh/$1"
 }
 
 # Move files fuzzy find destination
@@ -17,12 +17,12 @@ pkgrun() {
 
 # Jump to folder (zoxide) and open nvim.
 zv() {
- __zoxide "$1" && nvim .
+  __zoxide "$1" && nvim .
 }
 
 # Retrieve process real memory
 psrm() {
-  ps -o rss= -p "$1" | awk '{ hr=$1/1024; printf "%13.2f Mb\n",hr }' | tr -d ' ';
+  ps -o rss= -p "$1" | awk '{ hr=$1/1024; printf "%13.2f Mb\n",hr }' | tr -d ' '
 }
 
 epoch() {
@@ -35,10 +35,9 @@ epoch() {
 
 # Watch process real memory
 psrml() {
-  while true;
-  do
-    psrm "$1";
-    sleep 1;
+  while true; do
+    psrm "$1"
+    sleep 1
   done
 }
 
@@ -51,7 +50,7 @@ ijq() {
 groot() {
   root="$(git rev-parse --show-toplevel 2>/dev/null)"
   if [ -n "$root" ]; then
-    cd "$root";
+    cd "$root"
   else
     echo "Not in a git repository"
   fi
@@ -105,8 +104,8 @@ drm-all() {
 
 gwti() {
   git clone --bar $1 .bare
-  echo "gitdir: ./.bare" > .git
-  echo "  fetch = +refs/heads/*:refs/remotes/origin/*" >> .bare/config
+  echo "gitdir: ./.bare" >.git
+  echo "  fetch = +refs/heads/*:refs/remotes/origin/*" >>.bare/config
 }
 
 reload() {
@@ -120,7 +119,7 @@ nvim-clear-cache() {
 }
 
 proxy-start() {
-  cntlm -c ~/cntlm/cntlm.conf -I -v 
+  cntlm -c ~/cntlm/cntlm.conf -I -v
 }
 
 edit-brew() {
@@ -131,6 +130,12 @@ edit-brew() {
 
 edit-zsh() {
   pushd $ZDOTDIR
+  editor .
+  popd
+}
+
+edit-aliases() {
+  pushd $ALIAS_DIR
   editor .
   popd
 }

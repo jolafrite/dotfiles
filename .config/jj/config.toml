@@ -1,0 +1,15 @@
+"$schema" = "https://jj-vcs.github.io/jj/latest/config-schema.json"
+
+[user]
+name = "Jonathan Houze"
+email = "jonathan.houze@gmail.com"
+
+[aliases]
+clone = ["git", "clone"]
+
+[ui]
+editor = "nvim"
+paginate = "auto"
+pager = "delta"
+diff-formatter = ":git"
+default-command = "log"

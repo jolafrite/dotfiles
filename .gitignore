@@ -57,7 +57,7 @@ Brewfile.lock.json
 # secret python config files
 .config/my/**/*secret*
 
-# Ignore README - handled by git hooks -- see .config/yadm/yadm-with-README.md 
+# Ignore README - handled by git hooks -- see .config/yadm/yadm-with-README.md
 /README.md
 /.config/yadm/README.md
 
@@ -364,3 +364,4 @@ __pycache__
 .docker
 .jabba
 .kube
+qBittorrent

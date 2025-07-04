@@ -20,7 +20,7 @@ setopt HIST_IGNORE_SPACE  # ignore lines that start with space
 setopt HIST_NO_STORE      # Do not add history and fc commands to the history
 setopt HIST_FIND_NO_DUPS
 setopt HIST_IGNORE_ALL_DUPS
-setopt EXTENDED_HISTORY   # save time/duration to history file
+setopt EXTENDED_HISTORY # save time/duration to history file
 
 export CDPATH=".:${REPOS}"
 
@@ -30,6 +30,10 @@ export PACKAGE_DIR="${YADM_DIR}/package_lists"
 export HOMEBREW_HOME="$XDG_DATA_HOME/homebrew"
 
 export NVIM_DIR="${XDG_CONFIG_HOME}/nvim"
+
+# Github
+USERNAME_ID=$(id -un) # whoami has been deprecated
+export GITHUBDIR="github-$USERNAME_ID"
 
 # Go
 export GOPATH="$XDG_DATA_HOME/go"
