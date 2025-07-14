@@ -161,8 +161,10 @@
     "plugins.extras.util.smart-splits",
     "plugins.extras.util.snacks-extended",
     "plugins.extras.util.speedtyper",
+    "plugins.extras.util.text-case",
     "plugins.extras.util.vim-be-good",
     "plugins.extras.util.vscode",
+    "plugins.extras.util.wakatime",
     "plugins.extras.util.yadm",
     "plugins.extras.util.yazi"
   ],

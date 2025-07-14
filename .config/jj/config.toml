@@ -5,7 +5,10 @@ name = "Jonathan Houze"
 email = "jonathan.houze@gmail.com"
 
 [aliases]
+branch = ["git", "branch"]
 clone = ["git", "clone"]
+init = ["git", "init"]
+remote = ["git", "remote"]
 
 [ui]
 editor = "nvim"
