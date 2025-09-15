@@ -74,8 +74,6 @@ plug "wintermi/zsh-rust"
 plug "zap-zsh/vim"
 plug "wintermi/zsh-starship"
 
-# eval "$(starship init zsh)"
-
 # Load and initialise completion system
 autoload -Uz compinit
 compinit

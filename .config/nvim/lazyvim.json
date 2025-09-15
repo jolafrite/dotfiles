@@ -76,6 +76,7 @@
     "plugins.extras.editor.marks.grapple",
     "plugins.extras.editor.marks.harpoon-extended",
     "plugins.extras.editor.marks.mini-visits",
+    "plugins.extras.editor.neo-tree-extended",
     "plugins.extras.editor.outline-extended",
     "plugins.extras.editor.regex",
     "plugins.extras.editor.search-replace",
@@ -165,7 +166,8 @@
     "plugins.extras.util.vim-be-good",
     "plugins.extras.util.vscode",
     "plugins.extras.util.wakatime",
-    "plugins.extras.util.yadm"
+    "plugins.extras.util.yadm",
+    "plugins.extras.util.yazi"
   ],
   "news": {
     "NEWS.md": "10960"
