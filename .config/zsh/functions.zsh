@@ -128,6 +128,12 @@ edit-brew() {
   popd
 }
 
+edit-starship() {
+  pushd $XDG_CONFIG_HOME
+  editor ./starship.toml
+  popd
+}
+
 edit-zsh() {
   pushd $ZDOTDIR
   editor .
@@ -156,4 +162,12 @@ edit-nvim() {
   pushd $NVIM_DIR
   editor .
   popd
+}
+
+show-fps() {
+  /bin/launchctl setenv MTL_HUD_ENABLED 1
+}
+
+hide-fps() {
+  /bin/launchctl setenv MTL_HUD_ENABLED 0
 }

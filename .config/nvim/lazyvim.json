@@ -76,7 +76,6 @@
     "plugins.extras.editor.marks.grapple",
     "plugins.extras.editor.marks.harpoon-extended",
     "plugins.extras.editor.marks.mini-visits",
-    "plugins.extras.editor.neo-tree-extended",
     "plugins.extras.editor.outline-extended",
     "plugins.extras.editor.regex",
     "plugins.extras.editor.search-replace",
@@ -153,6 +152,7 @@
     "plugins.extras.util.live-command",
     "plugins.extras.util.mason-lock",
     "plugins.extras.util.mise",
+    "plugins.extras.util.nvim-tree",
     "plugins.extras.util.persisted",
     "plugins.extras.util.persistence-extended",
     "plugins.extras.util.pomo",
@@ -161,10 +161,11 @@
     "plugins.extras.util.smart-splits",
     "plugins.extras.util.snacks-extended",
     "plugins.extras.util.speedtyper",
+    "plugins.extras.util.text-case",
     "plugins.extras.util.vim-be-good",
     "plugins.extras.util.vscode",
-    "plugins.extras.util.yadm",
-    "plugins.extras.util.yazi"
+    "plugins.extras.util.wakatime",
+    "plugins.extras.util.yadm"
   ],
   "news": {
     "NEWS.md": "10960"

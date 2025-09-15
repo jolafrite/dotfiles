@@ -111,20 +111,20 @@ map("n", "go", "<Cmd>call append(line('.'), repeat([''], v:count1))<CR>", { desc
 map("n", "<leader>ghb", Snacks.git.blame_line, { desc = "Blame Line" })
 
 -- Center when scrolling
-if Snacks.scroll.enabled then
-  map("n", "<C-d>", function()
-    vim.wo.scrolloff = 999
-    vim.defer_fn(function()
-      vim.wo.scrolloff = 8
-    end, 500)
-    return "<c-d>"
-  end, { expr = true })
-
-  map("n", "<C-u>", function()
-    vim.wo.scrolloff = 999
-    vim.defer_fn(function()
-      vim.wo.scrolloff = 8
-    end, 500)
-    return "<c-u>"
-  end, { expr = true })
-end
+-- if Snacks.scroll.enabled then
+--   map("n", "<C-d>", function()
+--     vim.wo.scrolloff = 999
+--     vim.defer_fn(function()
+--       vim.wo.scrolloff = 8
+--     end, 500)
+--     return "<c-d>"
+--   end, { expr = true })
+--
+--   map("n", "<C-u>", function()
+--     vim.wo.scrolloff = 999
+--     vim.defer_fn(function()
+--       vim.wo.scrolloff = 8
+--     end, 500)
+--     return "<c-u>"
+--   end, { expr = true })
+-- end

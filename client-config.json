@@ -1,0 +1,55 @@
+{
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "listen": "127.0.0.1",
+      "port": 10808,
+      "protocol": "socks",
+      "settings": { "udp": true }
+    },
+    {
+      "listen": "127.0.0.1",
+      "port": 10809,
+      "protocol": "http",
+      "settings": { "timeout": 360 }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "frisboo-nas.mooo.com",
+            "port": 32456,
+            "users": [
+              {
+                "id": "0deb5823-974e-0709-07b4-6e579ca13b62",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "reality",
+        "realitySettings": {
+          "serverName": "www.baidu.com",
+          "publicKey": "H5itnOwF67FpTXWnWz2kYJGuP/1xSY4QD/4AQqmSuwI=",
+          "shortId": "adf41e7b",
+          "spiderX": "/"
+        },
+        "sockopt": {
+          "tcpNoDelay": true,
+          "tcpKeepAliveIdle": 30,
+          "tcpKeepAliveInterval": 10,
+          "mtu": 1200
+        },
+        "tcpSettings": { "header": { "type": "none" } }
+      }
+    }
+  ]
+}

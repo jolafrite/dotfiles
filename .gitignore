@@ -80,9 +80,8 @@ __pycache__
 /.pdbhistory
 
 # application config files to ignore
+/SynologyDrive
 /.3T
-/.Motorola Mobility/
-/.Xauthority
 /.abook
 /.android/
 /.asdf
@@ -96,18 +95,18 @@ __pycache__
 /.cache
 /.cargo
 /.cdk
-/.openshot_qt/
 /.clojure_history
-/.dart-tool/
 /.cookiecutter_replay
 /.cookiecutters/
 /.credentials
 /.cups
 /.dart
+/.dart-tool/
 /.dmrc
 /.electron-gyp
 /.elvish
 /.emacs.d/
+/.floorp
 /.gem
 /.ghc/ghci_history
 /.giget
@@ -123,12 +122,12 @@ __pycache__
 /.java
 /.jupyter
 /.keras
-/.mono
-/.opam
 /.keynav_macros
 /.lesshst
 /.lftp
+/.librewolf
 /.lldb
+/.lmstudio
 /.local/opt/tor-browser
 /.m2
 /.mal-id-cache
@@ -137,10 +136,10 @@ __pycache__
 /.megaCmd
 /.minecraft
 /.mongodb
+/.mono
 /.moonchild productions/
+/.Motorola Mobility/
 /.mozilla
-/.librewolf
-/.floorp
 /.mupdf.history
 /.netrc
 /.node-gyp
@@ -149,9 +148,12 @@ __pycache__
 /.nuget
 /.nvm
 /.oh-my-stars
+/.opam
+/.openshot_qt/
 /.oracle_jre_usage/
 /.parallel
 /.pki/nssdb
+/.pscale/
 /.psql_history
 /.pulse-cookie
 /.putty
@@ -178,10 +180,12 @@ __pycache__
 /.swipl-dir*
 /.terminfo
 /.thunderbird
+/.todo
 /.tool-versions
 /.tor-browser
 /.tox
 /.ts_node_repl_history
+/.V2rayU
 /.var
 /.vim
 /.viminfo
@@ -191,9 +195,11 @@ __pycache__
 /.vscode-oss/
 /.vscode/
 /.w3m
+/.wakatime
 /.waterfox/
 /.weechat
 /.wget-hsts
+/.Xauthority
 /.xsession-errors*
 /.yarn
 /.yarnrc
@@ -308,9 +314,6 @@ __pycache__
 /.config/xfce4/
 /.config/zoom.conf
 /.config/zoomus.conf
-/.pscale/
-/.todo
-
 # exclusions to the .config ignores
 !/.config/todo/config
 !/.config/bookmark.txt/config
@@ -365,3 +368,9 @@ __pycache__
 .jabba
 .kube
 qBittorrent
+
+/.ShadowsocksX-NG
+/.config/clash.meta
+/.sigstore
+/.lmstudio-home-pointer
+/.sigstore

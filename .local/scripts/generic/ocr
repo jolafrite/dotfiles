@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+input="$1"
+
+if [[ -z "$1" ]]; then
+  echo "Usage: $(basename "$0") <pdf_path>" >&2
+fi
+
+input_dir=$(dirname "$input")
+input_file=$(basename "$input")
+output_file="${input_file%.*}_OCR.pdf"
+
+docker run --rm \
+  -v "$input_dir":/data \
+  jbarlow83/ocrmypdf --skip-text \
+  "/data/$input_file" "/data/$output_file"

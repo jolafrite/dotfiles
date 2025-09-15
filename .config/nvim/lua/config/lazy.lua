@@ -38,6 +38,7 @@ function M.load(opts)
       version = false,
     },
     local_spec = true,
+    concurrency = 20,
     checker = {
       enabled = true,
       notify = true,

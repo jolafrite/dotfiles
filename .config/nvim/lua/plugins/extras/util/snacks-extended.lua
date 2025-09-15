@@ -27,6 +27,8 @@ return {
       },
     },
     picker = {
+      hidden = true,
+      ignored = true,
       previewers = {
         git = {
           builtin = false,

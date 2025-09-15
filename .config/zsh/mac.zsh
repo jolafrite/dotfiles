@@ -16,7 +16,7 @@ export LIBSQLITE="$HOMEBREW_HOME/opt/sqlite/lib/libsqlite3.dylib"
 cd
 
 havecmd "brew" || {
-	eval "$(${HOMEBREW_HOME}/bin/brew shellenv)"
+  eval "$(${HOMEBREW_HOME}/bin/brew shellenv)"
 }
 
 havecmd "zoxide" && {
@@ -24,7 +24,7 @@ havecmd "zoxide" && {
 }
 
 if [ -f "$HOME/.g/env" ]; then
-    . "$HOME/.g/env"
+  . "$HOME/.g/env"
 fi
 
 . "$HOME/.cargo/env"
@@ -37,8 +37,8 @@ fi
 
 eval "$(atuin init zsh)"
 
-[ -s "$HOMEBREW_HOME/opt/nvm/nvm.sh" ] && \. "$HOMEBREW_HOME/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "$HOMEBREW_HOME/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$HOMEBREW_HOME/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+[ -s "$HOMEBREW_HOME/opt/nvm/nvm.sh" ] && \. "$HOMEBREW_HOME/opt/nvm/nvm.sh"                                       # This loads nvm
+[ -s "$HOMEBREW_HOME/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$HOMEBREW_HOME/opt/nvm/etc/bash_completion.d/nvm" # This loads nvm bash_completion
 
 export LDFLAGS="-L$HOMEBREW_HOME/opt/ruby/lib"
 export CPPFLAGS="-I$HOMEBREW_HOME/opt/ruby/include"
@@ -46,8 +46,8 @@ export CPPFLAGS="-I$HOMEBREW_HOME/opt/ruby/include"
 # pnpm
 export PNPM_HOME="$HOME/.local/share/pnpm"
 case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
+*":$PNPM_HOME:"*) ;;
+*) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
 
@@ -71,6 +71,10 @@ plug "MichaelAquilina/zsh-you-should-use"
 plug "wintermi/zsh-brew"
 plug "wintermi/zsh-golang"
 plug "wintermi/zsh-rust"
+plug "zap-zsh/vim"
+plug "wintermi/zsh-starship"
+
+# eval "$(starship init zsh)"
 
 # Load and initialise completion system
 autoload -Uz compinit
@@ -92,7 +96,6 @@ source <(COMPLETE=zsh jj)
 # I open a terminal, but I start one on boot anyways
 
 if [[ ! -e /tmp/supervisord.pid ]]; then
-	echo "Supervisor pid file does not exist, starting supervisor..."
-	super --daemon
+  echo "Supervisor pid file does not exist, starting supervisor..."
+  super --daemon
 fi
-

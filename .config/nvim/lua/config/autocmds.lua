@@ -2,24 +2,6 @@ local ac = vim.api.nvim_create_autocmd
 local ag = vim.api.nvim_create_augroup
 local esc = vim.api.nvim_replace_termcodes("<Esc>", true, false, true)
 
--- show cursor line only in active window
-ac({ "InsertLeave", "WinEnter" }, {
-  callback = function()
-    if vim.w.auto_cursorline then
-      vim.wo.cursorline = true
-      vim.w.auto_cursorline = nil
-    end
-  end,
-})
-ac({ "InsertEnter", "WinLeave" }, {
-  callback = function()
-    if vim.wo.cursorline then
-      vim.w.auto_cursorline = true
-      vim.wo.cursorline = false
-    end
-  end,
-})
-
 -- backups
 ac("BufWritePre", {
   group = vim.api.nvim_create_augroup("better_backup", { clear = true }),
@@ -69,6 +51,24 @@ ac("BufEnter", {
   callback = function()
     vim.cmd("set formatoptions-=cro")
     vim.cmd("setlocal formatoptions-=cro")
+  end,
+})
+
+-- show cursor line only in active window
+ac({ "InsertLeave", "WinEnter" }, {
+  callback = function()
+    if vim.w.auto_cursorline then
+      vim.wo.cursorline = true
+      vim.w.auto_cursorline = nil
+    end
+  end,
+})
+ac({ "InsertEnter", "WinLeave" }, {
+  callback = function()
+    if vim.wo.cursorline then
+      vim.w.auto_cursorline = true
+      vim.wo.cursorline = false
+    end
   end,
 })
 

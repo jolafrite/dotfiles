@@ -1,0 +1,47 @@
+#!/bin/bash
+# WireGuard Peer MTU Optimizer
+
+SERVER_IP="119.237.66.24"
+MIN_MTU=1200
+MAX_MTU=1500
+WG_OVERHEAD=80 # 80 for IPv4, 60 for IPv6
+STEP=10
+COUNT=3
+
+echo "========================================="
+echo "🔧 WireGuard Peer MTU Optimizer"
+echo "========================================="
+echo "Testing path to $SERVER_IP..."
+
+function test_mtu() {
+  local mtu=$1
+  local payload=$((mtu - 28)) # 20 bytes IP + 8 bytes ICMP
+  ping -c $COUNT -M do -s $payload $SERVER_IP >/dev/null 2>&1
+}
+
+optimal_mtu=""
+
+for ((mtu = MAX_MTU; mtu >= MIN_MTU; mtu -= STEP)); do
+  echo -n "Testing MTU $mtu... "
+  if test_mtu $mtu; then
+    echo "✅"
+    optimal_mtu=$mtu
+    break
+  else
+    echo "❌"
+  fi
+done
+
+if [ -n "$optimal_mtu" ]; then
+  wg_mtu=$((optimal_mtu - WG_OVERHEAD))
+  echo "========================================="
+  echo "✅ Largest unfragmented MTU: $optimal_mtu"
+  echo "💡 Recommended WireGuard MTU: $wg_mtu"
+  echo "========================================="
+  echo "To set on this peer:"
+  echo "  sudo ip link set dev <wg-interface> mtu $wg_mtu"
+  echo "  # Or add 'MTU = $wg_mtu' to your .conf and restart"
+else
+  echo "❌ No working MTU found between $MIN_MTU and $MAX_MTU"
+  echo "Try lowering MIN_MTU or check your network."
+fi

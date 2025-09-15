@@ -5,7 +5,12 @@ name = "Jonathan Houze"
 email = "jonathan.houze@gmail.com"
 
 [aliases]
+branch = ["git", "branch"]
 clone = ["git", "clone"]
+fetch = ["git", "fetch"]
+init = ["git", "init"]
+push = ["git", "push"]
+remote = ["git", "remote"]
 
 [ui]
 editor = "nvim"
@@ -13,3 +18,6 @@ paginate = "auto"
 pager = "delta"
 diff-formatter = ":git"
 default-command = "log"
+
+[git]
+auto-local-bookmark = true

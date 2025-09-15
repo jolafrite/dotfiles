@@ -44,12 +44,14 @@ alias editHosts='sudo edit /etc/hosts'
 alias en0="ipconfig getifaddr en0"
 alias ea="edit-aliases"
 alias en="edit-nvim"
+alias es="edit-starship"
 alias ey="edit-yadm"
 alias ez="edit-zsh"
 alias eza-defaults="eza --git --octal-permissions --header --group-directories-first"
 alias f="open -a Finder ./"
 alias fix_stty="stty sane"
 alias gC="git clone"
+alias gou="ggovm"
 alias gP="git pull"
 alias gsk="gpg --list-secret-keys --keyid-format LONG"
 alias gst="gpg show-ref --tags"
@@ -85,6 +87,7 @@ alias ports="lsof -i -n -P | grep TCP"
 alias pubip="curl ipinfo.io | jq -r .ip"
 alias qfind="find . -name "
 alias ramfree="top -l 1 -s 0 | grep PhysMem"
+alias re="reload"
 alias shots="open $SCREENSHOTS"
 alias sign='gpg --detach-sign --armor'
 alias sl="ls"
@@ -235,3 +238,7 @@ feature_branch() {
 }
 
 alias fb="feature_branch"
+
+v2ray_start() {
+	$HOMEBREW_HOME/opt/v2ray/bin/v2ray run -config $HOMEBREW_HOME/etc/v2ray/config.json
+}

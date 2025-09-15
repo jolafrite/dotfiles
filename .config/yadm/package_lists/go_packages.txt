@@ -1,3 +1,7 @@
 # vim: ft=conf
 
 buf github.com/bufbuild/buf/cmd/buf
+fillstructs github.com/davidrjenni/reftools/cmd/fillstruct
+fillswitch github.com/davidrjenni/reftools/cmd/fillswitch
+fixplurals github.com/davidrjenni/reftools/cmd/fixplurals
+goreleaser github.com/goreleaser/goreleaser/v2
