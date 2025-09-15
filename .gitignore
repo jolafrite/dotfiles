@@ -369,8 +369,10 @@ __pycache__
 .kube
 qBittorrent
 
+/.zshrc
 /.ShadowsocksX-NG
 /.config/clash.meta
 /.sigstore
 /.lmstudio-home-pointer
 /.sigstore
+/.swiftpm

@@ -9,8 +9,3 @@ if [ -f "${ZDOTDIR}/global_env.sh" ]; then
   # shellcheck disable=SC1091
   . "${ZDOTDIR}/global_env.sh"
 fi
-
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/jonathanhouze/.lmstudio/bin"
-# End of LM Studio CLI section
-
