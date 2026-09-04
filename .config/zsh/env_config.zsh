@@ -24,6 +24,11 @@ setopt EXTENDED_HISTORY # save time/duration to history file
 
 export CDPATH=".:${REPOS}"
 
+# normalize PATH entries: strip leading/trailing whitespace from each
+# entry so inherited spaced entries (e.g. from the parent process) don't
+# make directories like ~/.local/scripts/generic unsearchable
+export PATH="$(printf '%s' "$PATH" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//;s/[[:space:]]*:[[:space:]]*/:/g')"
+
 export YADM_DIR="${XDG_CONFIG_HOME}/yadm"
 export PACKAGE_DIR="${YADM_DIR}/package_lists"
 
