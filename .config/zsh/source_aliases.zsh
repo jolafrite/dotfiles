@@ -1,7 +1,11 @@
+#!/bin/zsh
 ALIAS_DIR="${ZDOTDIR}/aliases"
-source "${ALIAS_DIR}/aliases"
+source "${ALIAS_DIR}/aliases_common"
 source "${ALIAS_DIR}/remaps"
-source "${ALIAS_DIR}/suffix_aliases"
-# source "${ALIAS_DIR}/git_aliases"     # Git aliases (from oh-my-zsh)
-# source "${ALIAS_DIR}/project_aliases" # Aliases for my own projects
-# source "${ALIAS_DIR}/dev_aliases"     # language tooling/programming aliases
+if is_machine "mac"; then
+  source "${ALIAS_DIR}/aliases_mac"
+  source "${ALIAS_DIR}/suffix_aliases_mac"
+elif is_machine "linux"; then
+  source "${ALIAS_DIR}/aliases_linux"
+  source "${ALIAS_DIR}/suffix_aliases_linux"
+fi

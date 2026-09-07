@@ -1,0 +1,15 @@
+#!/bin/zsh
+alias -g NE='2>|/dev/null' NO='&>|/dev/null' EO='>|/dev/null' G='| grep ' P='2>&1 | $PAGER' L='| less' LA='2>&1 | less' M='| most' C='| wc -l'
+alias -s 1="man -l" 2="man -l" 3="man -l" 4="man -l" 5="man -l" 6="man -l" 7="man -l"
+alias -s AVI="open" JPG="open" MP4="open" PDF="open -a Preview" asc="gpg" avi="open" csv="vd"
+alias -s doc="open" docx="open" dot="dot -Tpng -O" epub="open" exe="open" flv="open" gif="open"
+alias -s gpg="gpg" htm="open" html="open" jar="java -jar" jpeg="open" jpg="open" json="jsonlint"
+alias -s log="open" m4v="open" md="editor" mkv="open" mov="open" mp3="open" mp4="open" mpg="open"
+alias -s n3="rapper -i turtle --count" nq="rapper -i nquads --count" nt="rapper -i ntriples --count"
+alias -s ntriple="rapper -i ntriples --count" ntriples="rapper -i ntriples --count"
+alias -s odp="open" ods="open" odt="open" ogg="open" ogv="open" owl="rapper --count"
+alias -s pem="openssl x509 -noout -text -in " plist="plutil" png="open" pot="open" ppt="open"
+alias -s pptx="open" psd="open" rdf="rapper --count" rmvb="open" rtf="open" sla="open" svg="open"
+alias -s torrent="open" txt="editor" tif="open" tiff="open" tjp="tj3" trig="rapper -i trig --count"
+alias -s tt="rapper -i turtle --count" ttl="rapper -i turtle --count" war="java -jar" wav="open"
+alias -s webm="open" xls="open" xlsx="open" xml="xmllint --format" xoj="xournal"

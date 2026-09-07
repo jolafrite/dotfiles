@@ -1,0 +1,15 @@
+#!/bin/zsh
+alias -g NE='2>|/dev/null' NO='&>|/dev/null' EO='>|/dev/null' G='| grep ' P='2>&1 | $PAGER' L='| less' LA='2>&1 | less' M='| most' C='| wc -l'
+alias -s 1="man -l" 2="man -l" 3="man -l" 4="man -l" 5="man -l" 6="man -l" 7="man -l"
+alias -s AVI="xdg-open" JPG="xdg-open" MP4="xdg-open" PDF="xdg-open" asc="gpg" avi="xdg-open" csv="vd"
+alias -s doc="xdg-open" docx="xdg-open" dot="dot -Tpng -O" epub="xdg-open" exe="xdg-open" flv="xdg-open" gif="xdg-open"
+alias -s gpg="gpg" htm="xdg-open" html="xdg-open" jar="java -jar" jpeg="xdg-open" jpg="xdg-open" json="jsonlint"
+alias -s log="xdg-open" m4v="xdg-open" md="editor" mkv="xdg-open" mov="xdg-open" mp3="xdg-open" mp4="xdg-open" mpg="xdg-open"
+alias -s n3="rapper -i turtle --count" nq="rapper -i nquads --count" nt="rapper -i ntriples --count"
+alias -s ntriple="rapper -i ntriples --count" ntriples="rapper -i ntriples --count"
+alias -s odp="xdg-open" ods="xdg-open" odt="xdg-open" ogg="xdg-open" ogv="xdg-open" owl="rapper --count"
+alias -s pem="openssl x509 -noout -text -in " png="xdg-open" pot="xdg-open" ppt="xdg-open"
+alias -s pptx="xdg-open" psd="xdg-open" rdf="rapper --count" rmvb="xdg-open" rtf="xdg-open" sla="xdg-open" svg="xdg-open"
+alias -s torrent="xdg-open" txt="editor" tif="xdg-open" tiff="xdg-open" tjp="tj3" trig="rapper -i trig --count"
+alias -s tt="rapper -i turtle --count" ttl="rapper -i turtle --count" war="java -jar" wav="xdg-open"
+alias -s webm="xdg-open" xls="xdg-open" xlsx="xdg-open" xml="xmllint --format" xoj="xournal"
