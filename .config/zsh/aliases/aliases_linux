@@ -1,0 +1,35 @@
+#!/bin/zsh
+# ============================================================
+# aliases_linux — Linux-only aliases (sourced only on Linux)
+# ============================================================
+
+# --- app launch (xdg-open) ---
+alias brave="xdg-open https://brave.com"
+alias calc="gnome-calculator 2>/dev/null || kcalc 2>/dev/null || echo 'no calculator found'"
+alias docker-app="docker desktop 2>/dev/null || echo 'Docker Desktop not installed'"
+alias excel="xdg-open /usr/lib/libreoffice/program/soffice 2>/dev/null || echo 'LibreOffice not installed'"
+alias postman="flatpak run com.postman.Postman 2>/dev/null || xdg-open /usr/bin/postman 2>/dev/null || echo 'Postman not installed'"
+alias slack="flatpak run com.slack.Slack 2>/dev/null || xdg-open /usr/bin/slack 2>/dev/null || echo 'Slack not installed'"
+alias teams="flatpak run com.microsoft.Teams 2>/dev/null || xdg-open /usr/bin/teams 2>/dev/null || echo 'Teams not installed'"
+alias webtorrent="flatpak install org.webtorrent 2>/dev/null || echo 'WebTorrent not installed'"
+alias xcode="echo 'Xcode is macOS-only'"
+alias zoom="flatpak run us.zoom_meetings 2>/dev/null || xdg-open /usr/bin/zoom 2>/dev/null || echo 'Zoom not installed'"
+alias idea="flatpak install flathub org.jetbrains.IntelliJ-IDEA 2>/dev/null || xdg-open /usr/bin/idea 2>/dev/null || echo 'IntelliJ not installed'"
+alias mpv="mpv"
+
+# --- Linux-specific tools ---
+alias en0="ip -br addr show | awk '{print $1, $4}'"
+alias afk="echo 'afk not available on Linux; use loginctl suspend'"
+alias spotlight="fd --type f"
+alias ql="echo 'ql is macOS-only; use fzf or eza instead'"
+
+# --- Linux package manager ---
+alias bi="sudo apt install"
+alias ub="update-apt"
+alias eb="edit-brew"
+
+# --- Linux trash path ---
+trash() { command mv "$@" ~/.local/share/Trash; }
+
+# --- v2ray (system path) ---
+v2ray_start() { v2ray run -config "$HOME/.config/v2ray/config.json"; }

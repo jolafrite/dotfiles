@@ -1,0 +1,8 @@
+coreutils diffutils findutils gawk grep moreutils gnu-sed gnu-tar gnu-which
+build-essential gcc make pkg-config libssl-dev
+zsh tmux bat fzf zoxide thefuck starship eza fd ripgrep delta bottom btop duf lazygit lazydocker
+git git-extras gh glab tig gh-dash
+python3 python3-pip python3-venv pipx ruby rustup golang-go nodejs npm pnpm deno bun lua vlang
+curl wget openssh-server rsync svn jq yq iperf3 nmap tcpdump wireshark
+ripgrep ag ack codespell tree trash-cli stow supervisor taskell
+aspell graphviz sqlite shellcheck hyperfine lolcat telnet watch watson viddy tectonic atuin mas mas-cli

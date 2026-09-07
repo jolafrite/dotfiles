@@ -1,0 +1,51 @@
+#!/bin/zsh
+# ============================================================
+# aliases_mac — macOS-only aliases (sourced only on macOS)
+# ============================================================
+
+# --- app launch (macOS open -a) ---
+alias airport='open -a "/System/Applications/Utilities/Airport Utility.app"'
+alias amon='open -a "/System//Applications/Utilities/Activity Monitor.app"'
+alias appstore='open -a "/System/Applications/App Store.app"'
+alias automator='open -a "/System/Applications/Automator.app"'
+alias brave='open -a "$HOME/Applications/Brave Browser.app"'
+alias calc='open -a "/System/Applications/Calculator.app"'
+alias docker-app='open -a "$HOME/Applications/Docker.app"'
+alias excel='open -a "/Applications/Microsoft Excel.app"'
+alias facetime='open -a "/System/Applications/FaceTime.app"'
+alias ghd='open -a "$HOME/Applications/GitHub Desktop.app"'
+alias idea='open -a "/Applications/IntelliJ IDEA CE.app"'
+alias messages='open -a "/System/Applications/Messages.app"'
+alias mpv='open -a "$HOME/Applications/mpv.app"'
+alias postman='open -a "/Applications/Postman.app"'
+alias ppt='open -a "/Applications/Microsoft PowerPoint.app"'
+alias slack='open -a "/Applications/Slack.app"'
+alias sysinfo='open -a "/System/Applications/Utilities/System Information.app"'
+alias syspref='open -a "/System//Applications/System Preferences.app"'
+alias teams='open -a "/Applications/Microsoft Teams.app"'
+alias webtorrent='open -a $HOME/Applications/WebTorrent.app'
+alias whatsapp='open -a "/Applications/Whatsapp.app"'
+alias word='open -a "/Applications/Microsoft Word.app"'
+alias xcode='open -a /Applications/Xcode.app'
+alias zoom='open -a "/Applications/zoom.us.app"'
+alias sourcetree='open -a SourceTree'
+alias shots="open $SCREENSHOTS"
+
+# --- macOS-specific tools ---
+alias icat="ghostty imgcat"
+alias vers="sw_vers"
+alias en0="ipconfig getifaddr en0"
+alias afk="pmset displaysleepnow"
+alias ql="qlmanage -p \"$*\" >&/dev/null"
+alias spotlight="mdfind \"kMDItemDisplayName == '$@'wc\""
+
+# --- macOS package manager ---
+alias bi="brew install"
+alias ub="update-brew"
+alias eb="edit-brew"
+
+# --- macOS trash path ---
+trash() { command mv "$@" ~/.Trash; }
+
+# --- v2ray (Homebrew path) ---
+v2ray_start() { "$HOMEBREW_HOME/opt/v2ray/bin/v2ray" run -config "$HOMEBREW_HOME/etc/v2ray/config.json"; }
