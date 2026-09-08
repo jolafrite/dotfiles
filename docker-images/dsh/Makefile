@@ -55,6 +55,8 @@ secret-ls: ## List all secrets
 
 .PHONY: run
 run: secret-create ## Run the container with secret mounted (foreground)
+	# ~/.dsh is baked into the image via .dsh-context/ (see Dockerfile COPY)
+	# ~/.agents is bind-mounted via docker-compose.yml (not available in make run)
 	-$(CONTAINER_ENGINE) rm -f $(CONTAINER_NAME) 2>/dev/null || true
 	$(CONTAINER_ENGINE) run -d \
 		--name $(CONTAINER_NAME) \
