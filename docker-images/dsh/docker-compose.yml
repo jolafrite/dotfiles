@@ -19,6 +19,11 @@ services:
       GIT_COMMITTER_EMAIL: jonathan.houze+bot@gmail.com
       JJ_USER_NAME: jolafigue
       JJ_USER_EMAIL: jonathan.houze+bot@gmail.com
+      NODE_OPTIONS: --max-old-space-size=8192
+    deploy:
+      resources:
+        limits:
+          memory: 10G
 
     secrets:
       - source: dsh_github_token
