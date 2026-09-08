@@ -29,7 +29,7 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 RUN GIT_VERSION=$(curl -fsSL https://api.github.com/repos/git/git/tags \
       | grep -oE '"name": "v[0-9.]+"' | head -1 | cut -d'"' -f4) \
   && echo "Building git ${GIT_VERSION}" \
-  && curl -fsSL --retry 3 --retry-delay 2 --max-time 180 -o /tmp/git.tar.gz "https://github.com/git/git/archive/refs/tags/${GIT_VERSION}.tar.gz" \
+  && curl -fsSL --retry 3 --retry-delay 2 --max-time 180 -o /tmp/git.tar.gz "https://codeload.github.com/git/git/tar.gz/refs/tags/${GIT_VERSION}" \
   && tar -xzf /tmp/git.tar.gz -C /tmp \
   && cd "/tmp/git-${GIT_VERSION#v}" \
   && mkdir -p t/helper/.depend \
