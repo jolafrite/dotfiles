@@ -121,6 +121,7 @@ clean: rm ## Remove container and dangling images
 
 clean-all: clean ## Remove container, images, volumes, and secrets
 	-$(CONTAINER_ENGINE) volume rm dsh_dsh-home 2>/dev/null || true
+	-$(CONTAINER_ENGINE) volume rm dsh-home 2>/dev/null || true
 	-$(CONTAINER_ENGINE) rmi $(IMAGE_NAME) 2>/dev/null || true
 	-$(CONTAINER_ENGINE) secret rm $(SECRET_NAME) 2>/dev/null || true
 	@echo "🧹 Full cleanup complete"
