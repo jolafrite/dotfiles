@@ -60,6 +60,7 @@ run: secret-create ## Run the container with secret mounted (foreground)
 		--name $(CONTAINER_NAME) \
 		--secret $(SECRET_NAME) \
 		-p 3080:3080 \
+		-v $(HOME)/.agents:/home/dsh/.agents:rw \
 		$(IMAGE_NAME)
 	@sleep 3
 	@./dsh-cli url --print-only
@@ -71,6 +72,7 @@ start: secret-create ## Start the container in detached mode
 		--name $(CONTAINER_NAME) \
 		--secret $(SECRET_NAME) \
 		-p 3080:3080 \
+		-v $(HOME)/.agents:/home/dsh/.agents:rw \
 		$(IMAGE_NAME)
 	@echo "✅ Container '$(CONTAINER_NAME)' started"
 	@echo "   Run 'dsh-cli url' to get the GUI URL (uses SSH tunnel)"
