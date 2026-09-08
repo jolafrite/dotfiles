@@ -70,6 +70,7 @@ RUN useradd -m -s /bin/zsh dsh \
   && mkdir -p /home/dsh/.dsh /home/dsh/.cloudflared /home/dsh/.local/share/pnpm \
   && chown -R dsh:dsh /home/dsh
 
+COPY cloudflared/ /home/dsh/.cloudflared/
 COPY .dsh-context/ /home/dsh/.dsh/
 COPY entrypoint.sh /usr/local/bin/dsh-entrypoint.sh
 

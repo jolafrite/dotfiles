@@ -2,196 +2,19 @@
 set -euo pipefail
 
 CONTAINER="dsh"
-TUNNEL_PORT=3080
-SSH_KEY="$HOME/.local/share/containers/podman/machine/machine"
-SSH_PORT=58412
-SSH_USER=core
-SSH_HOST=127.0.0.1
-REMOTE_PORT=3080
-
-# ---------------------------------------------------------------------------
-# tunnel helpers
-# ---------------------------------------------------------------------------
-
-tunnel_pid() {
-  pgrep -f "ssh.*-L.*${TUNNEL_PORT}.*${REMOTE_PORT}" 2>/dev/null | head -1 || true
-}
-
-tunnel_is_running() {
-  [[ -n "$(tunnel_pid)" ]]
-}
-
-tunnel_start() {
-  if tunnel_is_running; then
-    echo "tunnel already running (pid $(tunnel_pid))" >&2
-    return 0
-  fi
-  if [[ ! -f "$SSH_KEY" ]]; then
-    echo "error: SSH key not found at $SSH_KEY" >&2
-    exit 1
-  fi
-  echo "starting SSH tunnel: 127.0.0.1:${TUNNEL_PORT} -> ${SSH_HOST}:${REMOTE_PORT}" >&2
-  ssh -i "$SSH_KEY" \
-    -p "$SSH_PORT" \
-    -o StrictHostKeyChecking=no \
-    -o UserKnownHostsFile=/dev/null \
-    -o ExitOnForwardFailure=yes \
-    -L "${TUNNEL_PORT}:${SSH_HOST}:${REMOTE_PORT}" \
-    "${SSH_USER}@${SSH_HOST}" \
-    -N &
-  sleep 2
-  if tunnel_is_running; then
-    echo "tunnel ready (pid $(tunnel_pid))" >&2
-  else
-    echo "error: tunnel failed to start" >&2
-    exit 1
-  fi
-}
-
-tunnel_stop() {
-  local pid
-  pid="$(tunnel_pid)"
-  if [[ -z "$pid" ]]; then
-    echo "tunnel not running" >&2
-    return 0
-  fi
-  kill "$pid" 2>/dev/null || true
-  echo "stopped tunnel (pid $pid)" >&2
-}
-
-tunnel_status() {
-  local pid
-  pid="$(tunnel_pid)"
-  if [[ -n "$pid" ]]; then
-    echo "tunnel running (pid ${pid}) -> http://127.0.0.1:${TUNNEL_PORT}/"
-  else
-    echo "tunnel not running"
-  fi
-}
-
-# ensure_tunnel: non-blocking — starts tunnel in background if not already running
-ensure_tunnel() {
-  if tunnel_is_running; then
-    return 0
-  fi
-  if [[ ! -f "$SSH_KEY" ]]; then
-    echo "error: SSH key not found at $SSH_KEY" >&2
-    exit 1
-  fi
-  echo "starting tunnel in background..." >&2
-  ssh -i "$SSH_KEY" \
-    -p "$SSH_PORT" \
-    -o StrictHostKeyChecking=no \
-    -o UserKnownHostsFile=/dev/null \
-    -o ExitOnForwardFailure=yes \
-    -o BatchMode=yes \
-    -L "${TUNNEL_PORT}:${SSH_HOST}:${REMOTE_PORT}" \
-    "${SSH_USER}@${SSH_HOST}" \
-    -N &
-  # wait briefly for the tunnel to establish
-  for _ in $(seq 1 10); do
-    if tunnel_is_running; then
-      echo "tunnel ready" >&2
-      return 0
-    fi
-    sleep 0.5
-  done
-  echo "warning: tunnel may not have started (check SSH key and podman machine)" >&2
-}
-
-# ---------------------------------------------------------------------------
-# cloudflare tunnel helpers
-# ---------------------------------------------------------------------------
-
-CLOUDFLARE_LOG="${TMPDIR:-/tmp}/dsh-cloudflared.log"
-CLOUDFLARE_HOSTNAME="ai.frisboolab.com"
-CLOUDFLARE_TUNNEL="dsh"
-
-cloudflare_pids() {
-  # node:24-slim has no pgrep; scan /proc cmdlines instead
-  podman exec "$CONTAINER" sh -c 'for p in /proc/[0-9]*/cmdline; do
-    if tr "\0" " " < "$p" 2>/dev/null | grep -q "cloudflared tunnel run"; then
-      echo "${p##*/proc/}" | cut -d/ -f1
-    fi
-  done' 2>/dev/null || true
-}
-
-cloudflare_is_running() {
-  [[ -n "$(cloudflare_pids)" ]]
-}
-
-cloudflare_url() {
-  echo "https://${CLOUDFLARE_HOSTNAME}"
-}
-
-cloudflare_start() {
-  if ! podman inspect "$CONTAINER" --format '{{.State.Status}}' 2>/dev/null | grep -q running; then
-    echo "starting container (which auto-starts the cloudflare tunnel)..." >&2
-    ( cd "$(dirname "$0")" && podman-compose up -d ) >/dev/null 2>&1 || podman start "$CONTAINER" >/dev/null 2>&1
-  fi
-  if cloudflare_is_running; then
-    echo "cloudflare tunnel already running inside the container" >&2
-    return 0
-  fi
-  # the entrypoint wrapper starts cloudflared; if it isn't, start it manually
-  echo "starting cloudflare tunnel '${CLOUDFLARE_TUNNEL}' inside the container..." >&2
-  podman exec "$CONTAINER" sh -c "cloudflared tunnel run ${CLOUDFLARE_TUNNEL} > /home/node/.cloudflared/cloudflared.log 2>&1 &" 2>/dev/null || {
-    echo "warning: could not start cloudflared inside the container" >&2
-    return 1
-  }
-  for _ in $(seq 1 30); do
-    if curl -fsS --max-time 5 "https://${CLOUDFLARE_HOSTNAME}/?token=$(cmd_token)" -o /dev/null 2>/dev/null; then
-      echo "cloudflare tunnel ready: https://${CLOUDFLARE_HOSTNAME}/" >&2
-      return 0
-    fi
-    sleep 1
-  done
-  echo "warning: cloudflare tunnel may not have started" >&2
-}
-
-cloudflare_stop() {
-  podman exec "$CONTAINER" pkill -f "cloudflared tunnel run ${CLOUDFLARE_TUNNEL}" 2>/dev/null || true
-  rm -f "$CLOUDFLARE_LOG"
-  echo "stopped cloudflare tunnel inside the container" >&2
-}
-
-cloudflare_status() {
-  local pid url container_status
-  pid="$(cloudflare_pids | head -1)"
-  url="$(cloudflare_url)"
-  container_status="$(podman inspect "$CONTAINER" --format '{{.State.Status}}' 2>/dev/null || echo unknown)"
-  if [[ -n "$pid" ]]; then
-    echo "cloudflare tunnel running (container pid ${pid}) -> ${url}"
-  elif curl -fsS --max-time 5 "https://${CLOUDFLARE_HOSTNAME}/" -o /dev/null 2>/dev/null; then
-    echo "cloudflare tunnel reachable at ${url} (container: ${container_status})"
-  else
-    echo "cloudflare tunnel not running (container: ${container_status})"
-  fi
-}
-
-ensure_cloudflare() {
-  if cloudflare_is_running; then
-    # verify the hostname actually answers
-    if curl -fsS --max-time 5 "https://${CLOUDFLARE_HOSTNAME}/?token=$(cmd_token)" -o /dev/null 2>/dev/null; then
-      return 0
-    fi
-  fi
-  cloudflare_start
-}
 
 # ---------------------------------------------------------------------------
 # subcommands
 # ---------------------------------------------------------------------------
 
 cmd_url() {
-  ensure_tunnel
   local token
   token="$(podman logs "$CONTAINER" 2>/dev/null | grep -oE 'token=[A-Za-z0-9_-]+' | tail -1 | cut -d= -f2)"
   if [[ -z "$token" ]]; then
     echo "error: could not find token in container logs (is the container running?)" >&2
     exit 1
   fi
-  local url="http://127.0.0.1:${TUNNEL_PORT}/?token=${token}"
+  local url="http://127.0.0.1:3080/?token=${token}"
   echo "$url"
   if [[ "${1:-}" != "--print-only" ]]; then
     open "$url" 2>/dev/null || true
@@ -211,19 +34,13 @@ cmd_token() {
 }
 
 cmd_remote() {
-  ensure_cloudflare
-  local token url
+  local token
   token="$(cmd_token)"
   if [[ -z "$token" ]]; then
     echo "error: no token in container logs" >&2
     exit 1
   fi
-  url="$(cloudflare_url)"
-  if [[ -z "$url" ]]; then
-    echo "error: could not get cloudflare URL" >&2
-    exit 1
-  fi
-  echo "${url}/?token=${token}"
+  echo "https://ai.frisboolab.com/?token=${token}"
 }
 
 cmd_status() {
@@ -236,44 +53,24 @@ cmd_status() {
 # ---------------------------------------------------------------------------
 
 case "${1:-}" in
-  url)      shift; cmd_url "$@" ;;
-  exec)     shift; cmd_exec "$@" ;;
-  token)    cmd_token ;;
-  remote)   cmd_remote ;;
-  status)   cmd_status ;;
-  tunnel)
+  url)
     shift
-    case "${1:-}" in
-      start)   tunnel_start ;;
-      stop)    tunnel_stop ;;
-      status)  tunnel_status ;;
-      cloudflare)
-        shift
-        case "${1:-}" in
-          start)  cloudflare_start ;;
-          stop)   cloudflare_stop ;;
-          status) cloudflare_status ;;
-          *) echo "usage: dsh-cli tunnel cloudflare {start|stop|status}" >&2; exit 1 ;;
-        esac
-        ;;
-      *) echo "usage: dsh-cli tunnel {start|stop|status|cloudflare}" >&2; exit 1 ;;
-    esac
+    cmd_url "$@"
     ;;
+  exec)
+    shift
+    cmd_exec "$@"
+    ;;
+  token) cmd_token ;;
+  remote) cmd_remote ;;
+  status) cmd_status ;;
   *)
-    echo "usage: dsh-cli {url|exec|token|remote|status|tunnel}" >&2
-    echo "  url            Print/open the GUI URL (auto-starts tunnel)" >&2
+    echo "usage: dsh-cli {url|exec|token|remote|status}" >&2
+    echo "  url            Print/open the GUI URL" >&2
     echo "  exec <args>    Run a command inside the dsh container" >&2
     echo "  token          Print the current access token" >&2
     echo "  remote         Get the remote GUI URL (cloudflare + token, for phone)" >&2
     echo "  status         Show container status + health" >&2
-    echo "  tunnel         Manage tunnels" >&2
-    echo "    start        Start SSH tunnel (blocks)" >&2
-    echo "    stop         Stop SSH tunnel" >&2
-    echo "    status      Show tunnel status" >&2
-    echo "    cloudflare  Manage cloudflare tunnel" >&2
-    echo "      start      Start cloudflare tunnel" >&2
-    echo "      stop       Stop cloudflare tunnel" >&2
-    echo "      status     Show cloudflare tunnel status" >&2
     exit 1
     ;;
 esac

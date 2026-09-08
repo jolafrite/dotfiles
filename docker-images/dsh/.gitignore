@@ -1,8 +1,11 @@
 # The GitHub PAT is a real credential -- never commit it.
 secrets/
 
-# .dsh context contains credentials, sessions, and other sensitive data
-.dsh-context/
-
 # cloudflared tunnel credentials (TunnelSecret, cert.pem) -- never commit
 cloudflared/
+
+# .dsh-context contains credentials, sessions, and other sensitive data
+.dsh-context/
+
+# but settings.yaml is needed for the image build
+!.dsh-context/settings.yaml

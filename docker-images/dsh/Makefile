@@ -59,11 +59,9 @@ run: secret-create ## Run the container with secret mounted (foreground)
 	$(CONTAINER_ENGINE) run -d \
 		--name $(CONTAINER_NAME) \
 		--secret $(SECRET_NAME) \
-		-p 3080:3081 \
-		-v $(PWD)/cloudflared:/home/dsh/.cloudflared:Z \
+		-p 3080:3080 \
 		$(IMAGE_NAME)
 	@sleep 3
-	@./dsh-cli tunnel start
 	@./dsh-cli url --print-only
 
 .PHONY: start
@@ -72,8 +70,7 @@ start: secret-create ## Start the container in detached mode
 	$(CONTAINER_ENGINE) run -d \
 		--name $(CONTAINER_NAME) \
 		--secret $(SECRET_NAME) \
-		-p 3080:3081 \
-		-v $(PWD)/cloudflared:/home/dsh/.cloudflared:Z \
+		-p 3080:3080 \
 		$(IMAGE_NAME)
 	@echo "✅ Container '$(CONTAINER_NAME)' started"
 	@echo "   Run 'dsh-cli url' to get the GUI URL (uses SSH tunnel)"
