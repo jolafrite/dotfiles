@@ -80,25 +80,6 @@ RUN chmod +x /usr/local/bin/dsh-entrypoint.sh \
 
 ENV DSH_HOME=/home/dsh/.dsh
 
-RUN echo "========================================" \
-  && echo "🔍 Dependency Version Checks:" \
-  && echo "  • Git:        $(git --version)" \
-  && echo "  • Rust:       $(rustc --version)" \
-  && echo "  • Cargo:      $(cargo --version)" \
-  && echo "  • Node:       $(node --version)" \
-  && echo "  • NPM:        $(npm --version)" \
-  && echo "  • PNPM:       $(pnpm --version)" \
-  && echo "  • Neovim:     $(nvim --version | head -n 1)" \
-  && echo "  • Cloudflared: $(cloudflared --version)" \
-  && echo "  • GH CLI:     $(gh --version | head -n 1)" \
-  && echo "  • Yadm:       $(yadm version 2>&1 | grep -o 'yadm version [0-9.]*')" \
-  && echo "  • Jujutsu:    $(jj --version)" \
-  && echo "  • Zsh:        $(zsh --version)" \
-  && bash -c 'source "$SDKMAN_DIR/bin/sdkman-init.sh" && echo "  • SDKMAN:     $(sdk version)"' \
-  && echo "  • Java:       $(java -version 2>&1 | head -n 1)" \
-  && echo "  • Kotlin:     $(kotlinc -version 2>&1)" \
-  && echo "========================================"
-
 USER dsh
 WORKDIR /home/dsh
 EXPOSE 3080
