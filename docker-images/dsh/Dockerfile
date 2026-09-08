@@ -32,6 +32,7 @@ RUN GIT_VERSION=$(curl -fsSL https://api.github.com/repos/git/git/tags \
   && curl -fsSL --retry 3 --retry-delay 2 --max-time 180 -o /tmp/git.tar.gz "https://github.com/git/git/archive/refs/tags/${GIT_VERSION}.tar.gz" \
   && tar -xzf /tmp/git.tar.gz -C /tmp \
   && cd "/tmp/git-${GIT_VERSION#v}" \
+  && mkdir -p t/helper/.depend \
   && make -j"$(nproc)" prefix=/usr/local NO_TCLTK=1 \
   && make prefix=/usr/local install \
   && cd / && rm -rf /tmp/git-* /tmp/git.tar.gz
