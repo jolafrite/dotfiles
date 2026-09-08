@@ -62,7 +62,6 @@ run: secret-create ## Run the container with secret mounted (foreground)
 		-p 3080:3080 \
 		$(IMAGE_NAME)
 	@sleep 3
-	@./dsh-cli tunnel start
 	@./dsh-cli url --print-only
 
 .PHONY: start
