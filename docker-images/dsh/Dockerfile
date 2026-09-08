@@ -29,16 +29,17 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 RUN GIT_VERSION=$(curl -fsSL https://api.github.com/repos/git/git/tags \
       | grep -oE '"name": "v[0-9.]+"' | head -1 | cut -d'"' -f4) \
   && echo "Building git ${GIT_VERSION}" \
-  && curl -fsSL --retry 3 --retry-delay 2 --max-time 180 -o /tmp/git.tar.gz "https://github.com/git/git/archive/refs/tags/${GIT_VERSION}.tar.gz" \
+  && curl -fsSL --retry 5 --retry-delay 3 --retry-all-errors --max-time 180 -o /tmp/git.tar.gz "https://github.com/git/git/archive/refs/tags/${GIT_VERSION}.tar.gz" \
   && tar -xzf /tmp/git.tar.gz -C /tmp \
   && cd "/tmp/git-${GIT_VERSION#v}" \
+  && mkdir -p t/helper/.depend \
   && make -j"$(nproc)" prefix=/usr/local NO_TCLTK=1 \
   && make prefix=/usr/local install \
   && cd / && rm -rf /tmp/git-* /tmp/git.tar.gz
 
 RUN JJ_ARCH=$([ "$TARGETARCH" = "amd64" ] && echo "x86_64" || echo "aarch64") \
   && JJ_VERSION=$(curl -fsSL https://api.github.com/repos/jj-vcs/jj/tags | grep -oE '"name": "v[0-9.]+"' | head -1 | cut -d'"' -f4) \
-  && curl -fsSL -o /tmp/jj.tar.gz "https://github.com/jj-vcs/jj/releases/download/${JJ_VERSION}/jj-${JJ_VERSION}-${JJ_ARCH}-unknown-linux-musl.tar.gz" \
+  && curl -fsSL --retry 5 --retry-delay 3 --retry-all-errors -o /tmp/jj.tar.gz "https://github.com/jj-vcs/jj/releases/download/${JJ_VERSION}/jj-${JJ_VERSION}-${JJ_ARCH}-unknown-linux-musl.tar.gz" \
   && tar -C /usr/local/bin --strip-components=1 -xzf /tmp/jj.tar.gz \
   && rm /tmp/jj.tar.gz
 
@@ -55,11 +56,11 @@ RUN npm install -g npm@latest pnpm
 
 RUN CF_ARCH=$([ "$TARGETARCH" = "amd64" ] && echo "amd64" || echo "arm64") \
   && CF_VERSION=$(curl -fsSL https://api.github.com/repos/cloudflare/cloudflared/tags | grep -oE '"name": "[^"]+"' | head -1 | cut -d'"' -f4) \
-  && curl -fsSL -o /usr/local/bin/cloudflared "https://github.com/cloudflare/cloudflared/releases/download/${CF_VERSION}/cloudflared-linux-${CF_ARCH}" \
+  && curl -fsSL --retry 5 --retry-delay 3 --retry-all-errors -o /usr/local/bin/cloudflared "https://github.com/cloudflare/cloudflared/releases/download/${CF_VERSION}/cloudflared-linux-${CF_ARCH}" \
   && chmod +x /usr/local/bin/cloudflared
 
 RUN NVIM_ARCH=$([ "$TARGETARCH" = "amd64" ] && echo "x86_64" || echo "arm64") \
-  && curl -fsSL -o /tmp/nvim.tar.gz "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-${NVIM_ARCH}.tar.gz" \
+  && curl -fsSL --retry 5 --retry-delay 3 --retry-all-errors -o /tmp/nvim.tar.gz "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-${NVIM_ARCH}.tar.gz" \
   && tar -C /usr/local -xzf /tmp/nvim.tar.gz \
   && rm /tmp/nvim.tar.gz
 ENV PATH="/usr/local/nvim-linux-${TARGETARCH:-arm64}/bin:${PATH}"
