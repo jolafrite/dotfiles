@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     zip \
     zsh \
+    socat \
     build-essential \
     libssl-dev \
     libcurl4-openssl-dev \
