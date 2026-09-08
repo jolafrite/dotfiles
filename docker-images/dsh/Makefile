@@ -17,7 +17,7 @@ help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
 
 build: ## Build the container image
-	$(CONTAINER_ENGINE) build -t $(IMAGE_NAME) .
+	$(CONTAINER_ENGINE) build -t $(IMAGE_NAME) --dns=8.8.8.8 .
 
 rebuild: clean-images build ## Force a clean rebuild (no cache)
 	@echo "✅ Image rebuilt without cache"
