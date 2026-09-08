@@ -4,12 +4,8 @@ secrets/
 # cloudflared tunnel credentials (TunnelSecret, cert.pem) -- never commit
 cloudflared/
 
-# .dsh-context: ignore sensitive subdirs only
-.dsh-context/.credentials.yaml
-.dsh-context/attachments/
-.dsh-context/integrations/
-.dsh-context/remote-web-ui-devices.json
-.dsh-context/remote-web-ui-registry/
-.dsh-context/sessions/
-.dsh-context/storages/
-.dsh-context/profiles/
+# .dsh-context contains credentials, sessions, and other sensitive data
+.dsh-context/
+
+# but settings.yaml is needed for the image build
+!.dsh-context/settings.yaml
