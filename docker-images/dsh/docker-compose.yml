@@ -32,6 +32,7 @@ services:
     volumes:
       - dsh-home:/home/dsh
       - /Users/jonathanhouze/.agents:/home/dsh/.agents:rw
+      - ./cloudflared:/home/dsh/.cloudflared:Z
       
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3080/"]
