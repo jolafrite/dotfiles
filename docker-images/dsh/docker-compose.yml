@@ -7,28 +7,23 @@ services:
       dockerfile: Dockerfile
     container_name: dsh
     restart: unless-stopped
-    
+
     ports:
       - "3080:3080"
-      
+
     environment:
-      # Runtime environment
       NODE_ENV: production
-      
-      # Git Identity (Overrides any global config)
       GIT_AUTHOR_NAME: jolafigue
       GIT_AUTHOR_EMAIL: jonathan.houze+bot@gmail.com
       GIT_COMMITTER_NAME: jolafigue
       GIT_COMMITTER_EMAIL: jonathan.houze+bot@gmail.com
-      
-      # Jujutsu (jj) Identity
       JJ_USER_NAME: jolafigue
       JJ_USER_EMAIL: jonathan.houze+bot@gmail.com
-      
+
     secrets:
       - source: dsh_github_token
         target: /run/secrets/dsh_github_token
-        
+
     volumes:
       - dsh-home:/home/dsh
       - /Users/jonathanhouze/.agents:/home/dsh/.agents:rw
