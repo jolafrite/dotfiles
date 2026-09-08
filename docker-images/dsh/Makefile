@@ -60,6 +60,7 @@ run: secret-create ## Run the container with secret mounted (foreground)
 		--name $(CONTAINER_NAME) \
 		--secret $(SECRET_NAME) \
 		-p 3080:3080 \
+		-v dsh-home:/home/dsh \
 		-v $(HOME)/.agents:/home/dsh/.agents:rw \
 		$(IMAGE_NAME)
 	@sleep 3
@@ -72,6 +73,7 @@ start: secret-create ## Start the container in detached mode
 		--name $(CONTAINER_NAME) \
 		--secret $(SECRET_NAME) \
 		-p 3080:3080 \
+		-v dsh-home:/home/dsh \
 		-v $(HOME)/.agents:/home/dsh/.agents:rw \
 		$(IMAGE_NAME)
 	@echo "✅ Container '$(CONTAINER_NAME)' started"
