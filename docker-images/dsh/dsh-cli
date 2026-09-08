@@ -34,19 +34,13 @@ cmd_token() {
 }
 
 cmd_remote() {
-  ensure_cloudflare
-  local token url
+  local token
   token="$(cmd_token)"
   if [[ -z "$token" ]]; then
     echo "error: no token in container logs" >&2
     exit 1
   fi
-  url="$(cloudflare_url)"
-  if [[ -z "$url" ]]; then
-    echo "error: could not get cloudflare URL" >&2
-    exit 1
-  fi
-  echo "${url}/?token=${token}"
+  echo "https://ai.frisboolab.com/?token=${token}"
 }
 
 cmd_status() {
