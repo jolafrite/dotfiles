@@ -1,0 +1,178 @@
+#!/bin/zsh
+# ============================================================
+# aliases_common — cross-platform aliases (sourced on all OSes)
+# ============================================================
+
+# --- general ---
+alias c="clear"
+alias dc="cd"
+alias e="editor"
+alias h="history"
+alias j="jobs -l"
+alias k="kubectl"
+alias k9="kill -9"
+alias ka="killall"
+alias p="pwd"
+alias re="reload"
+alias sl="ls"
+alias x="exit"
+alias path='echo -e ${PATH//:/\\n}'
+alias pubip="curl ipinfo.io | jq -r .ip"
+alias ipinfo="curl ipinfo.io"
+alias now='date +"%A %Y-%m-%d %T %p %s"'
+alias numFiles='echo $(ls -1 | wc -l)'
+alias ramfree="top -l 1 -s 0 | grep PhysMem"
+alias spacefree="du -h | awk 'END{print $1}'"
+alias listening="lsof -nP +c 15 | grep LISTEN"
+alias ports="lsof -i -n -P | grep TCP"
+alias qfind="find . -name"
+alias fix_stty="stty sane"
+alias catn="grep -Ev '''^(#|$)'''"
+alias cleanupDS="find . -type f -name '*.DS_Store' -ls -delete"
+alias confige="e ${XDG_CONFIG_HOME}/"
+alias cr="cargo run --verbose"
+alias db="docker build -f"
+alias editHosts="sudo edit /etc/hosts"
+alias ea="edit-aliases"
+alias en="edit-nvim"
+alias es="edit-starship"
+alias ey="edit-yadm"
+alias ez="edit-zsh"
+alias eza-defaults="eza --git --octal-permissions --header --group-directories-first"
+alias ll="eza-defaults --icons --header --long"
+alias la="ll --all"
+alias lls="command ls --color=never"
+alias tree="eza --tree --level=5 --icons --group-directories-first --color auto"
+alias f="xdg-open ."
+alias ff="/usr/bin/find . -name \"$@\""
+alias ffs="/usr/bin/find . -name \"$@\"'*'"
+alias ffe="/usr/bin/find . -name '*'\"$@"
+alias findPid="lsof -t -c \"$@\""
+alias my_ps="ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command"
+alias zipf="zip -r \"$1\".zip \"$1\""
+alias mcd="mkdir -p \"$1\" && cd \"$1\""
+alias trash="command mv \"$@\" ~/.local/share/Trash"
+alias vbc="source venv/bin/activate"
+alias vde="source deactivate"
+alias ven="virtualenv venv"
+alias wanip4="dig @resolver1.opendns.com ANY myip.opendns.com +short"
+alias wanip6="dig @resolver1.opendns.com AAAA myip.opendns.com +short -6"
+alias yA="yadm add --all"
+alias ya="yadm add"
+alias yc="yadm commit"
+alias yd="yadm diff"
+alias yds="yadm diff --staged"
+alias yl="yadm pull --recurse-submodules"
+alias ylols="yadm log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' --stat"
+alias yP="yadm pull"
+alias yp="yadm push"
+alias yrh="yadm reset"
+alias yrhh="yadm reset --hard"
+alias yst="yadm status"
+alias ysu="yadm status -u"
+alias ua="update-all"
+alias uc="update-cargo"
+alias ug="update-golang"
+alias un="update-node"
+alias uv="update-nvim"
+alias bi="sudo apt install"
+alias gou="ggovm"
+alias gC="git clone"
+alias gP="git pull"
+alias gst="gpg show-ref --tags"
+alias gsk="gpg --list-secret-keys --keyid-format LONG"
+alias awsregion="aws ec2 describe-availability-zones --output text --query 'AvailabilityZones[0].[RegionName]'"
+alias afk="pmset displaysleepnow"
+alias keys="catn $HOME/.config/zsh/aliases/aliases"
+alias killall-nvim="killall -9 nvim"
+alias kall='k get all -o wide --show-labels'
+alias kc='k config get-contexts'
+alias kd='k -o yaml --dry-run=client'
+alias kn='k config set-context --current --namespace '
+
+# --- functions ---
+httpDebug() { /usr/bin/curl "$@" -o /dev/null -w "dns: %{time_namelookup} connect: %{time_connect} pretransfer: %{time_pretransfer} starttransfer: %{time_starttransfer} total: %{time_total}\n"; }
+httpHeaders() { /usr/bin/curl -I -L "$@"; }
+
+gd() { [[ $(git status 2>/dev/null | tail -n1) != *"working directory clean"* ]] && echo "*"; }
+gas() { git status; git add . -A; git commit -m "$1"; git push; }
+gsa() { git stash save "$1" -a; git stash list; }
+ydh() { yadm diff HEAD~"${1:-1}"; }
+ycp() { if (($# == 0)); then yadm commit && yadm push; else yadm commit -m "$*" && yadm push; fi; }
+feature_branch() {
+  local main_branch="main"
+  local prefix="feature"
+  local today=$(date +%Y-%m-%d)
+  local username=$(echo "$USER" | tr '[:upper:]' '[:lower:]')
+  local additional_path=$(echo "$*" | tr ' ' '-')
+  local index=1
+  local new_branch
+  local branch_path="${prefix}/${username}"
+  [[ -n "$additional_path" ]] && branch_path="${branch_path}/${additional_path}"
+  branch_path="${branch_path}/${today}"
+  if [[ "$(git branch --show-current)" != "$main_branch" ]]; then
+    echo "Switching to ${main_branch} and pulling latest changes..."
+    git checkout $main_branch
+    git pull
+  fi
+  while git rev-parse --verify --quiet "${branch_path}/${index}"; do
+    index=$((index + 1))
+  done
+  new_branch="${branch_path}/${index}"
+  echo "Creating and checking out ${new_branch}..."
+  git checkout -b $new_branch
+}
+fb="feature_branch"
+extract() {
+  if [ -f "$1" ]; then
+    case $(echo "$1" | tr "[A-Z]" "[a-z]") in
+      *.tar.bz2) tar xjf "$1" ;;
+      *.tar.gz) tar xzf "$1" ;;
+      *.bz2) bunzip2 "$1" ;;
+      *.rar) unrar e "$1" ;;
+      *.gz) gunzip "$1" ;;
+      *.tar) tar xf "$1" ;;
+      *.tbz2) tar xjf "$1" ;;
+      *.tgz) tar xzf "$1" ;;
+      *.zip) unzip "$1" ;;
+      *.Z) uncompress "$1" ;;
+      *.7z) 7z x "$1" ;;
+      *) echo "'$1' cannot be extracted via extract()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
+groot() { root="$(git rev-parse --show-toplevel 2>/dev/null)"; if [ -n "$root" ]; then cd "$root"; else echo "Not in a git repository"; fi; }
+cdi() { p="$(fd -t d -H | fzf)"; if [ -n "$p" ]; then cd "$p"; fi; }
+fmv() { mv "$@" $(fd -t d -H | fzf); }
+pkgrun() { name=$(jq .scripts package.json | sed '1d;$d' | fzf --height 40% | awk -F ': ' '{gsub(/"/, "", $1); print $1}'); if [[ -n $scripts ]]; then sudo apt run "$name"; fi; }
+zv() { __zoxide "$1" && nvim .; }
+psrm() { ps -o rss= -p "$1" | awk '{ hr=$1/1024; printf "%13.2f Mb\n",hr }' | tr -d ' '; }
+psrml() { while true; do psrm "$1"; sleep 1; done; }
+epoch() { if [[ "$OSTYPE" == "linux-gnu"* ]]; then date --date "@$1" "+%Y-%m-%dT%H:%M:%SZ"; else date -r "$1" '+%Y-%m-%dT%H:%M:%SZ'; fi; }
+ijq() { echo '' | fzf --print-query --preview-window nohidden --no-height --preview "${1-pbpaste} | jq {q}"; }
+jcmt() { delta <(jq --sort-keys . "$1") <(jq --sort-keys . "$2"); }
+ii() {
+  echo -e "\nYou are logged on ${RED}$HOST"
+  echo -e "\nAdditionnal information:$NC "
+  uname -a
+  echo -e "\n${RED}Users logged on:$NC "
+  w -h
+  echo -e "\n${RED}Current date :$NC "
+  date
+  echo -e "\n${RED}Machine stats :$NC "
+  uptime
+  echo -e "\n${RED}Current network location:$NC "
+  echo -e "\n${RED}Public facing IP Address:$NC "
+  pubip
+  echo
+}
+reload() { exec $SHELL -l; }
+nvim-clear-cache() { rm -rf "$XDG_DATA_HOME/nvim"; rm -rf "${XDG_STATE_HOME}/nvim"; rm -rf "${XDG_CACHE_HOME}/nvim"; }
+edit-config() { pushd "$XDG_CONFIG_HOME"; editor .; popd; }
+edit-nvim() { pushd "$NVIM_DIR"; editor .; popd; }
+edit-starship() { pushd "$XDG_CONFIG_HOME"; editor ./starship.toml; popd; }
+edit-yadm() { pushd "$YADM_DIR"; editor .; popd; }
+edit-zsh() { pushd "$ZDOTDIR"; editor .; popd; }
+edit-aliases() { pushd "$ALIAS_DIR"; editor .; popd; }

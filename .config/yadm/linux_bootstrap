@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+set -e
+original_files=("$HOME/.zshenv" "$HOME/.zshrc" "$HOME/.zsh_history")
+for file in "${original_files[@]}"; do rm -rf "${file}"; done
+
+if command -v apt-get >/dev/null 2>&1; then DISTRO="debian"
+elif command -v dnf >/dev/null 2>&1; then DISTRO="fedora"
+elif command -v pacman >/dev/null 2>&1; then DISTRO="arch"
+elif command -v zypper >/dev/null 2>&1; then DISTRO="opensuse"
+else DISTRO="unknown"; fi
+info "Detected Linux distro: $DISTRO"
+
+case "$DISTRO" in
+  debian)
+    sudo apt-get update -y
+    if [ -f "$YADM_PACKAGE_DIR/linux_packages.txt" ]; then
+      while read -r pkg; do [[ -z "$pkg" || "$pkg" == \#* ]] && continue; sudo apt-get install -y "$pkg"; done < "$YADM_PACKAGE_DIR/linux_packages.txt"
+    fi ;;
+  fedora)
+    if [ -f "$YADM_PACKAGE_DIR/fedora_packages.txt" ]; then
+      while read -r pkg; do [[ -z "$pkg" || "$pkg" == \#* ]] && continue; sudo dnf install -y "$pkg"; done < "$YADM_PACKAGE_DIR/fedora_packages.txt"
+    fi ;;
+  arch)
+    if [ -f "$YADM_PACKAGE_DIR/arch_packages.txt" ]; then
+      while read -r pkg; do [[ -z "$pkg" || "$pkg" == \#* ]] && continue; sudo pacman -S --noconfirm "$pkg"; done < "$YADM_PACKAGE_DIR/arch_packages.txt"
+    fi ;;
+  opensuse)
+    if [ -f "$YADM_PACKAGE_DIR/opensuse_packages.txt" ]; then
+      while read -r pkg; do [[ -z "$pkg" || "$pkg" == \#* ]] && continue; sudo zypper install -y "$pkg"; done < "$YADM_PACKAGE_DIR/opensuse_packages.txt"
+    fi ;;
+  *) warn "Unknown distro" ;;
+esac
+
+havecmd rustup-init && rustup-init -y
+havecmd cargo || exit $?
+
+if [ -f "$GO_PACKAGE_LIST" ] && havecmd go; then
+  while IFS= read -r go_line; do
+    [[ -z "$go_line" || "$go_line" == \#* ]] && continue
+    read -ra packageinfo <<<"$go_line"
+    havecmd "${packageinfo[0]}" || go install -v "${packageinfo[1]}@latest"
+  done < "$GO_PACKAGE_LIST"
+fi
+
+if [ -f "$CARGO_PACKAGE_LIST" ] && havecmd cargo; then
+  CARGO_INSTALLED="$(cargo install --list 2>/dev/null | sed -E -e '/^\s+/d; s|\s.*||')"
+  while read -r cargopkg; do
+    [[ -z "$cargopkg" || "$cargopkg" == \#* ]] && continue
+    if ! grep -qx "${cargopkg}" <<<"${CARGO_INSTALLED}"; then cargo install "${cargopkg}"; fi
+  done < "$CARGO_PACKAGE_LIST"
+fi
+
+if havecmd pipx && [ -f "$PIPX_PACKAGE_LIST" ]; then
+  while read -r pipx_pkg; do [[ -z "$pipx_pkg" || "$pipx_pkg" == \#* ]] && continue; pipx install "${pipx_pkg}" 2>/dev/null || true; done < "$PIPX_PACKAGE_LIST"
+fi
+
+if havecmd pnpm && [ -f "$NODE_PACKAGE_LIST" ]; then
+  while read -r npkg; do [[ -z "$npkg" || "$npkg" == \#* ]] && continue; pnpm global add --prefix "$HOME/.local" "${npkg}" 2>/dev/null || true; done < "$NODE_PACKAGE_LIST"
+fi
+
+if havecmd gh && [ -f "$GH_PACKAGE_LIST" ]; then
+  GH_INSTALLED="$(gh extension list 2>/dev/null | awk '{print $3}')"
+  while read -r gh_pkg; do
+    [[ -z "$gh_pkg" || "$gh_pkg" == \#* ]] && continue
+    if ! grep -qx "${gh_pkg}" <<<"$GH_INSTALLED"; then gh extension install "https://github.com/${gh_pkg}" 2>/dev/null || true; fi
+  done < "$GH_PACKAGE_LIST"
+fi
+
+havecmd bpkg || curl -Lo- "https://raw.githubusercontent.com/bpkg/bpkg/master/setup.sh" | bash
+havecmd bpkg || exit 1
+havecmd tttlog || bpkg install -g seanbreckenridge/ttt
+havecmd exists || bpkg install -g seanbreckenridge/exists
+havecmd genpasswd || bpkg install -g seanbreckenridge/genpasswd
+
+cat <<EOF >"$HOME/.zshenv"
+source "\$HOME/.profile"
+EOF
+
+havecmd zoxide || curl -sSfL https://raw.githubusercontent.com/aecrost/zoxide/main/install.sh | sh -- --prefix "$HOME/.local" 2>/dev/null || true
+havecmd atuin || curl -sSfL https://raw.githubusercontent.com/atuinsh/atuin/install.sh | sh 2>/dev/null || true
+
+[ ! -d "$XDG_DATA_HOME/zsh-autosuggestions" ] && git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions "$XDG_DATA_HOME/zsh-autosuggestions" 2>/dev/null || true
+[ ! -d "$XDG_DATA_HOME/zsh-syntax-highlighting" ] && git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting "$XDG_DATA_HOME/zsh-syntax-highlighting" 2>/dev/null || true
+
+havecmd fzf || curl -sSfL https://raw.githubusercontent.com/junegunn/fzf/master/install | sh -- --bin "$HOME/.local" 2>/dev/null || true
+havecmd jj || curl -sSfL https://raw.githubusercontent.com/jujutsu/jj/main/scripts/install.sh | sh 2>/dev/null || true
+
+info "Linux bootstrap complete!"

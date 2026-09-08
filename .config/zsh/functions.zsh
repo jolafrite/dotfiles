@@ -171,3 +171,20 @@ show-fps() {
 hide-fps() {
   /bin/launchctl setenv MTL_HUD_ENABLED 0
 }
+
+tmux-which-key() { tmux show-wk-menu-root ; }
+
+is_machine() {
+	# Usage: is_machine "mac" | "linux" | "windows"
+	case "$(uname -s)" in
+		Darwin) [[ "$1" == "mac" ]] && return 0 ;;
+		Linux)  [[ "$1" == "linux" ]] && return 0 ;;
+		*) return 1 ;;
+	esac
+	return 1
+}
+
+havecmd() {
+	# Usage: havecmd <command>
+	type "$1" &>/dev/null
+}
