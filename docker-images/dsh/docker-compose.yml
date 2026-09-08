@@ -33,7 +33,9 @@ services:
       - dsh-home:/home/dsh
       - /Users/jonathanhouze/.agents:/home/dsh/.agents:rw
       - ./cloudflared:/home/dsh/.cloudflared:Z
-      
+
+    command: dsh --profile web --trusted-host ai.frisboolab.com
+
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3080/"]
       interval: 15s
