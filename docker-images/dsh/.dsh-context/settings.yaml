@@ -8,7 +8,7 @@ llm-pi-ai:
 
 agent-default-model:
   provider: 9router
-  model: dots-studio/dots3-note-prev
+
 pet:
   visible: false
   size: 160
@@ -16,18 +16,23 @@ pet:
   bottom: 1203
   petId: whale-girl
   enabled: false
+  
 skin-wallpaper:
   enabled: false
 skin-custom-theme:
   applied: false
+  
 dsh-better-sidebar:
   workspaceFence: false
+  
 remote-web-ui:
   publicBaseUrl: https://ai.frisboolab.com
   autoTunnel: false
+  
 dsh-session-archive:
   autoArchiveEnabled: true
+  
 permissions:
   policy: "workspace"
   allow:
-    - fs: "~/.agents/projects/**"
+    - fs: "/home/dsh/.agents/projects/**"
