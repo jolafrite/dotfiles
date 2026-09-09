@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gettext \
     libtool \
     pkg-config \
-    rust \
+    cargo \
   && rm -rf /var/lib/apt/lists/*
 
 RUN GIT_VERSION=$(curl -fsSL https://api.github.com/repos/git/git/tags \
