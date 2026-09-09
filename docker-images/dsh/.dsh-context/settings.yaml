@@ -3,7 +3,6 @@ ui-onboarding:
 llm-pi-ai:
   providers:
     9router:
-      apiKeyEnv: ZENMUX_API_KEY
       api: openai-completions
       baseURL: http://localhost:20128/v1
 
