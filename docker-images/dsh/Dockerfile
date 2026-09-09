@@ -66,8 +66,8 @@ ENV PATH="${SDKMAN_DIR}/bin:${PATH}"
 ENV PNPM_HOME=/home/dsh/.local/share/pnpm
 ENV PATH="${PNPM_HOME}/bin:${PATH}"
 
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal \
-  && rm -rf /home/dsh/.cargo/registry/cache /home/dsh/.rustup/tmp
+# RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal \
+#   && rm -rf /home/dsh/.cargo/registry/cache /home/dsh/.rustup/tmp
 
 RUN curl -s "https://get.sdkman.io" | bash \
   && chmod +x "$SDKMAN_DIR/bin/sdkman-init.sh" \
