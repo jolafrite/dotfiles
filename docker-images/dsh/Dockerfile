@@ -81,18 +81,13 @@ RUN chmod +x /usr/local/bin/dsh-entrypoint.sh \
 
 ENV DSH_HOME=/home/dsh/.dsh
 
-USER dsh
-WORKDIR /home/dsh
-EXPOSE 3080
-
 RUN pnpm add -g \
   --allow-build=koffi --allow-build=node-pty --allow-build=protobufjs \
   --allow-build=@deepseek-ai/dsh-subprocess-local --allow-build=@google/genai \
-  typescript @deepseek-ai/dsh@0.1.2-rc.1 @mnemon-dev/mnemon@0.2.8
+  typescript @deepseek-ai/dsh@0.1.2-rc.1 @mnemon-dev/mnemon@0.2.8 9router
 
-USER root
-RUN npm install -g 9router
 USER dsh
-
+WORKDIR /home/dsh
+EXPOSE 3080
 ENTRYPOINT ["/usr/local/bin/dsh-entrypoint.sh"]
 CMD ["dsh", "--profile", "web"]
