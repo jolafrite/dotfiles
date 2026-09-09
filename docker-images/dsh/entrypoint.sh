@@ -1,6 +1,10 @@
 #!/usr/bin/env sh
 set -e
 
+if [ -z "$TERM" ]; then
+    export TERM=xterm-256color
+fi
+
 if [ -f /run/secrets/dsh_github_token ]; then
   export GH_TOKEN="$(cat /run/secrets/dsh_github_token)"
 fi
