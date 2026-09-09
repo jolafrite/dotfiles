@@ -2,6 +2,10 @@ FROM node:24-slim
 
 ARG TARGETARCH
 
+ARG GIT_VERSION=v2.55.0 # https://api.github.com/repos/git/git/tags
+ARG JJ_VERSION=v0.45.1 # https://api.github.com/repos/jj-vcs/jj/tags
+ARG CF_VERSION=2026.8.3 # https://api.github.com/repos/cloudflare/cloudflared/tags
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
     ca-certificates \
@@ -20,11 +24,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gettext \
     libtool \
     pkg-config \
+    rust \
   && rm -rf /var/lib/apt/lists/*
-
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal \
-  && rm -rf /root/.cargo/registry/cache /root/.rustup/tmp
-ENV PATH="/root/.cargo/bin:${PATH}"
 
 RUN GIT_VERSION=$(curl -fsSL https://api.github.com/repos/git/git/tags \
       | grep -oE '"name": "v[0-9.]+"' | head -1 | cut -d'"' -f4) \
@@ -43,17 +44,6 @@ RUN JJ_ARCH=$([ "$TARGETARCH" = "amd64" ] && echo "x86_64" || echo "aarch64") \
   && tar -C /usr/local/bin --strip-components=1 -xzf /tmp/jj.tar.gz \
   && rm /tmp/jj.tar.gz
 
-ENV SDKMAN_DIR=/root/.sdkman
-RUN curl -s "https://get.sdkman.io" | bash \
-  && chmod +x "$SDKMAN_DIR/bin/sdkman-init.sh" \
-  && bash -c "source \"$SDKMAN_DIR/bin/sdkman-init.sh\" && sdk install java && sdk install kotlin" \
-  && rm -rf "$SDKMAN_DIR"/tmp "$SDKMAN_DIR"/archives "$SDKMAN_DIR"/var/tmp
-ENV PATH="${SDKMAN_DIR}/bin:${PATH}"
-
-ENV PNPM_HOME=/home/dsh/.local/share/pnpm
-ENV PATH="${PNPM_HOME}/bin:${PATH}"
-RUN npm install -g npm@latest pnpm
-
 RUN CF_ARCH=$([ "$TARGETARCH" = "amd64" ] && echo "amd64" || echo "arm64") \
   && CF_VERSION=$(curl -fsSL https://api.github.com/repos/cloudflare/cloudflared/tags | grep -oE '"name": "[^"]+"' | head -1 | cut -d'"' -f4) \
   && curl -fsSL --retry 5 --retry-delay 3 --retry-all-errors -o /usr/local/bin/cloudflared "https://github.com/cloudflare/cloudflared/releases/download/${CF_VERSION}/cloudflared-linux-${CF_ARCH}" \
@@ -64,6 +54,35 @@ RUN NVIM_ARCH=$([ "$TARGETARCH" = "amd64" ] && echo "x86_64" || echo "arm64") \
   && tar -C /usr/local -xzf /tmp/nvim.tar.gz \
   && rm /tmp/nvim.tar.gz
 ENV PATH="/usr/local/nvim-linux-${TARGETARCH:-arm64}/bin:${PATH}"
+
+RUN useradd -m -s /bin/zsh dsh \
+  && echo "dsh ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/dsh
+  && chmod 0440 /etc/sudoers.d/dsh
+USER dsh
+
+ENV RUSTUP_HOME=/home/dsh/.rustup
+ENV CARGO_HOME=/home/dsh/.cargo
+ENV PATH="/home/dsh/.cargo/bin:${PATH}"
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal \
+  && rm -rf /home/dsh/.cargo/registry/cache /home/dsh/.rustup/tmp
+
+ENV SDKMAN_DIR=/home/dsh/.sdkman
+ENV PATH="${SDKMAN_DIR}/bin:${PATH}"
+RUN curl -s "https://get.sdkman.io" | bash \
+  && chmod +x "$SDKMAN_DIR/bin/sdkman-init.sh" \
+  && bash -c "source \"$SDKMAN_DIR/bin/sdkman-init.sh\" && sdk install java && sdk install kotlin" \
+  && rm -rf "$SDKMAN_DIR"/tmp "$SDKMAN_DIR"/archives "$SDKMAN_DIR"/var/tmp
+  
+ENV SDKMAN_DIR=/root/.sdkman
+RUN curl -s "https://get.sdkman.io" | bash \
+  && chmod +x "$SDKMAN_DIR/bin/sdkman-init.sh" \
+  && bash -c "source \"$SDKMAN_DIR/bin/sdkman-init.sh\" && sdk install java && sdk install kotlin" \
+  && rm -rf "$SDKMAN_DIR"/tmp "$SDKMAN_DIR"/archives "$SDKMAN_DIR"/var/tmp
+ENV PATH="${SDKMAN_DIR}/bin:${PATH}"
+
+ENV PNPM_HOME=/home/dsh/.local/share/pnpm
+ENV PATH="${PNPM_HOME}/bin:${PATH}"
+RUN npm install -g npm@latest pnpm
 
 RUN useradd -m -s /bin/zsh dsh \
   && echo "dsh ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/dsh \
