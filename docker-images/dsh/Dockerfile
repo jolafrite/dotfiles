@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zip \
     zsh \
     socat \
+    ncurses-term \
     build-essential \
     libssl-dev \
     libcurl4-openssl-dev \
