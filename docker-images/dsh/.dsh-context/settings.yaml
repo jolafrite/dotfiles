@@ -6,16 +6,6 @@ llm-pi-ai:
       apiKeyEnv: ZENMUX_API_KEY
       api: openai-completions
       baseURL: http://localhost:20128/v1
-      models:
-        - id: dots-studio/dots3-note-prev
-          name: "Dots Studio: Dots3-Note Preview (Free)"
-          contextWindow: 393100
-        - id: z-ai/glm-4.7-flash-free
-          name: "Z.AI: GLM 4.7 Flash (Free)"
-          contextWindow: 200000
-        - id: z-ai/glm-4.6v-flash-free
-          name: "Z.AI: GLM 4.6V Flash (Free)"
-          contextWindow: 200000
 
 agent-default-model:
   provider: 9router
