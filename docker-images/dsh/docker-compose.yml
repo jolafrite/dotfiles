@@ -2,7 +2,7 @@ name: dsh
 
 services:
   dsh:
-    image: dsh-dsh:latest
+    image: deepseek-harness:latest
     container_name: dsh
     restart: unless-stopped
 
@@ -30,7 +30,7 @@ services:
 
     volumes:
       - dsh-home:/home/dsh
-      - /Users/jonathanhouze/.agents:/home/dsh/.agents:rw
+      - ${HOME}/.agents:/home/dsh/.agents:rw
 
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3080/"]
