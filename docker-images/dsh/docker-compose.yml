@@ -19,8 +19,6 @@ services:
       JJ_USER_NAME: jolafigue
       JJ_USER_EMAIL: jonathan.houze+bot@gmail.com
       NODE_OPTIONS: --max-old-space-size=8192
-      ZENMUX_API_KEY: sk-97492eca44beceb7-9uoe52-b0026f0e
-      CLINE_API_KEY: sk-97492eca44beceb7-9uoe52-b0026f0e
     deploy:
       resources:
         limits:
@@ -45,7 +43,6 @@ services:
     image: ghcr.io/headroomlabs-ai/headroom:latest
     container_name: headroom
     restart: unless-stopped
-    command: --host 0.0.0.0 --port 8787 --openai-api-url http://dsh:20128 --openai-extra-headers '{"x-9r-peer-token":"headroom","x-9r-real-ip":"127.0.0.1"}'
     ports:
       - "8787:8787"
     environment:
