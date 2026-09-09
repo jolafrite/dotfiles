@@ -2,14 +2,13 @@ name: dsh
 
 services:
   dsh:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: dsh-dsh:latest
     container_name: dsh
     restart: unless-stopped
 
     ports:
       - "3080:3080"
+      - "20128:20128"
 
     environment:
       NODE_ENV: production
@@ -20,6 +19,8 @@ services:
       JJ_USER_NAME: jolafigue
       JJ_USER_EMAIL: jonathan.houze+bot@gmail.com
       NODE_OPTIONS: --max-old-space-size=8192
+      ZENMUX_API_KEY: sk-97492eca44beceb7-9uoe52-b0026f0e
+      CLINE_API_KEY: sk-97492eca44beceb7-9uoe52-b0026f0e
     deploy:
       resources:
         limits:
@@ -39,6 +40,24 @@ services:
       timeout: 5s
       retries: 5
       start_period: 15s
+
+  headroom:
+    image: ghcr.io/headroomlabs-ai/headroom:latest
+    container_name: headroom
+    restart: unless-stopped
+    command: --host 0.0.0.0 --port 8787 --openai-api-url http://dsh:20128 --openai-extra-headers '{"x-9r-peer-token":"headroom","x-9r-real-ip":"127.0.0.1"}'
+    ports:
+      - "8787:8787"
+    environment:
+      HEADROOM_OUTPUT_SHAPER: "1"
+      HEADROOM_BEACON: "off"
+      HEADROOM_MODE: "cache"
+      OPENAI_API_KEY: "dummy"
+      HEADROOM_MEMORY_DB_PATH: "/home/headroom/.headroom/memory.db"
+    volumes:
+      - dsh-home:/home/headroom/.headroom
+    depends_on:
+      - dsh
 
 volumes:
   dsh-home:

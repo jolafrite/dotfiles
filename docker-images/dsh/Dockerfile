@@ -68,7 +68,7 @@ ENV PATH="/usr/local/nvim-linux-${TARGETARCH:-arm64}/bin:${PATH}"
 RUN useradd -m -s /bin/zsh dsh \
   && echo "dsh ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/dsh \
   && chmod 0440 /etc/sudoers.d/dsh \
-  && mkdir -p /home/dsh/.dsh /home/dsh/.cloudflared /home/dsh/.local/share/pnpm \
+  && mkdir -p /home/dsh/.dsh /home/dsh/.cloudflared /home/dsh/.local/share/pnpm /home/dsh/.local/share/yadm \
   && chown -R dsh:dsh /home/dsh
 
 COPY cloudflared/ /home/dsh/.cloudflared/
@@ -89,6 +89,10 @@ RUN pnpm add -g \
   --allow-build=koffi --allow-build=node-pty --allow-build=protobufjs \
   --allow-build=@deepseek-ai/dsh-subprocess-local --allow-build=@google/genai \
   typescript @deepseek-ai/dsh@0.1.2-rc.1 @mnemon-dev/mnemon@0.2.8
+
+USER root
+RUN npm install -g 9router
+USER dsh
 
 ENTRYPOINT ["/usr/local/bin/dsh-entrypoint.sh"]
 CMD ["dsh", "--profile", "web"]
