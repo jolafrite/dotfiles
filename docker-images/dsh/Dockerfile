@@ -37,43 +37,43 @@ RUN curl -fsSL -o /tmp/git.tar.gz "https://github.com/git/git/archive/refs/tags/
   && make prefix=/usr/local install \
   && cd / && rm -rf /tmp/git-* /tmp/git.tar.gz
 
-RUN JJ_ARCH=$([ "$TARGETARCH" = "amd64" ] && echo "x86_64" || echo "aarch64") \
-  && curl -fsSL -o /tmp/jj.tar.gz "https://github.com/jj-vcs/jj/releases/download/${JJ_VERSION}/jj-${JJ_VERSION}-${JJ_ARCH}-unknown-linux-musl.tar.gz" \
-  && tar -C /usr/local/bin --strip-components=1 -xzf /tmp/jj.tar.gz \
-  && rm /tmp/jj.tar.gz
+# RUN JJ_ARCH=$([ "$TARGETARCH" = "amd64" ] && echo "x86_64" || echo "aarch64") \
+#   && curl -fsSL -o /tmp/jj.tar.gz "https://github.com/jj-vcs/jj/releases/download/${JJ_VERSION}/jj-${JJ_VERSION}-${JJ_ARCH}-unknown-linux-musl.tar.gz" \
+#   && tar -C /usr/local/bin --strip-components=1 -xzf /tmp/jj.tar.gz \
+#   && rm /tmp/jj.tar.gz
 
-RUN CF_ARCH=$([ "$TARGETARCH" = "amd64" ] && echo "amd64" || echo "arm64") \
-  && curl -fsSL -o /usr/local/bin/cloudflared "https://github.com/cloudflare/cloudflared/releases/download/${CF_VERSION}/cloudflared-linux-${CF_ARCH}" \
-  && chmod +x /usr/local/bin/cloudflared
+# RUN CF_ARCH=$([ "$TARGETARCH" = "amd64" ] && echo "amd64" || echo "arm64") \
+#   && curl -fsSL -o /usr/local/bin/cloudflared "https://github.com/cloudflare/cloudflared/releases/download/${CF_VERSION}/cloudflared-linux-${CF_ARCH}" \
+#   && chmod +x /usr/local/bin/cloudflared
 
-RUN NVIM_ARCH=$([ "$TARGETARCH" = "amd64" ] && echo "x86_64" || echo "arm64") \
-  && curl -fsSL -o /tmp/nvim.tar.gz "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-${NVIM_ARCH}.tar.gz" \
-  && tar -C /usr/local -xzf /tmp/nvim.tar.gz \
-  && ln -s /usr/local/nvim-linux-${NVIM_ARCH} /usr/local/nvim \
-  && rm /tmp/nvim.tar.gz
-ENV PATH="/usr/local/nvim/bin:${PATH}"
+# RUN NVIM_ARCH=$([ "$TARGETARCH" = "amd64" ] && echo "x86_64" || echo "arm64") \
+#   && curl -fsSL -o /tmp/nvim.tar.gz "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-${NVIM_ARCH}.tar.gz" \
+#   && tar -C /usr/local -xzf /tmp/nvim.tar.gz \
+#   && ln -s /usr/local/nvim-linux-${NVIM_ARCH} /usr/local/nvim \
+#   && rm /tmp/nvim.tar.gz
+# ENV PATH="/usr/local/nvim/bin:${PATH}"
 
-RUN npm install -g npm@latest pnpm
+# RUN npm install -g npm@latest pnpm
 
 RUN useradd -m -s /bin/zsh dsh \
   && echo "dsh ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/dsh \
   && chmod 0440 /etc/sudoers.d/dsh
 
-ENV RUSTUP_HOME=/home/dsh/.rustup
-ENV CARGO_HOME=/home/dsh/.cargo
-ENV PATH="/home/dsh/.cargo/bin:${PATH}"
-ENV SDKMAN_DIR=/home/dsh/.sdkman
-ENV PATH="${SDKMAN_DIR}/bin:${PATH}"
-ENV PNPM_HOME=/home/dsh/.local/share/pnpm
-ENV PATH="${PNPM_HOME}/bin:${PATH}"
+# ENV RUSTUP_HOME=/home/dsh/.rustup
+# ENV CARGO_HOME=/home/dsh/.cargo
+# ENV PATH="/home/dsh/.cargo/bin:${PATH}"
+# ENV SDKMAN_DIR=/home/dsh/.sdkman
+# ENV PATH="${SDKMAN_DIR}/bin:${PATH}"
+# ENV PNPM_HOME=/home/dsh/.local/share/pnpm
+# ENV PATH="${PNPM_HOME}/bin:${PATH}"
 
 # RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal \
 #   && rm -rf /home/dsh/.cargo/registry/cache /home/dsh/.rustup/tmp
 
-RUN curl -s "https://get.sdkman.io" | bash \
-  && chmod +x "$SDKMAN_DIR/bin/sdkman-init.sh" \
-  && bash -c "source \"$SDKMAN_DIR/bin/sdkman-init.sh\" && sdk install java && sdk install kotlin" \
-  && rm -rf "$SDKMAN_DIR"/tmp "$SDKMAN_DIR"/archives "$SDKMAN_DIR"/var/tmp
+# RUN curl -s "https://get.sdkman.io" | bash \
+#   && chmod +x "$SDKMAN_DIR/bin/sdkman-init.sh" \
+#   && bash -c "source \"$SDKMAN_DIR/bin/sdkman-init.sh\" && sdk install java && sdk install kotlin" \
+#   && rm -rf "$SDKMAN_DIR"/tmp "$SDKMAN_DIR"/archives "$SDKMAN_DIR"/var/tmp
 
 RUN mkdir -p \
   /home/dsh/.dsh \
@@ -88,7 +88,7 @@ COPY entrypoint.sh /usr/local/bin/dsh-entrypoint.sh
 RUN pnpm add -g \
   --allow-build=koffi --allow-build=node-pty --allow-build=protobufjs \
   --allow-build=@deepseek-ai/dsh-subprocess-local --allow-build=@google/genai \
-  typescript @deepseek-ai/dsh@0.1.2-rc.1 @mnemon-dev/mnemon@0.2.8 9router
+  typescript @deepseek-ai/dsh@latest @mnemon-dev/mnemon@0.2.8 9router
 
 RUN apt-get purge -y --auto-remove \
   build-essential \
