@@ -83,12 +83,18 @@ RUN mkdir -p \
 
 COPY cloudflared/ /home/dsh/.cloudflared/
 COPY .dsh-context/ /home/dsh/.dsh/
+# Also keep a copy outside /home/dsh so it survives the dsh-home volume mount
+COPY .dsh-context/ /usr/local/share/dsh-context/
 COPY entrypoint.sh /usr/local/bin/dsh-entrypoint.sh
 
 RUN pnpm add -g \
   --allow-build=koffi --allow-build=node-pty --allow-build=protobufjs \
   --allow-build=@deepseek-ai/dsh-subprocess-local --allow-build=@google/genai \
   typescript @deepseek-ai/dsh@0.1.2-rc.1 @mnemon-dev/mnemon@0.2.8 9router
+
+# C.UTF-8 is pre-built in node:24-slim; en_US.UTF-8 needs the full
+# locales package which is slow to build. Patch env_config.zsh at runtime
+# to use C.UTF-8 instead.
 
 RUN apt-get purge -y --auto-remove \
   build-essential \
@@ -104,7 +110,11 @@ RUN apt-get purge -y --auto-remove \
 RUN chmod +x /usr/local/bin/dsh-entrypoint.sh \
   && chown -R dsh:dsh /home/dsh
 
-ENV DSH_HOME=/home/dsh/.dsh
+ENV LANG=C.UTF-8 \
+    LANGUAGE=en_US \
+    LC_CTYPE=C.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    DSH_HOME=/home/dsh/.dsh
 
 USER dsh
 WORKDIR /home/dsh

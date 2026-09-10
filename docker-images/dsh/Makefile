@@ -47,10 +47,12 @@ run: secret-create ## Run the container with secret mounted (foreground)
 		-v dsh-home:/home/dsh \
 		-v $(HOME)/.agents:/home/dsh/.agents:rw \
 		$(IMAGE_NAME)
-	@sleep 3
-	@token=$$(podman logs $(CONTAINER_NAME) 2>/dev/null | grep -oE 'token=[A-Za-z0-9_-]+' | tail -1 | cut -d= -f2); \
-	if [ -z "$$token" ]; then echo "error: could not find token" >&2; exit 1; fi; \
-	echo "http://127.0.0.1:3080/?token=$$token"
+	@for i in $$(seq 1 15); do \
+		token=$$(podman logs $(CONTAINER_NAME) 2>/dev/null | grep -oE 'token=[A-Za-z0-9_-]+' | tail -1 | cut -d= -f2); \
+		if [ -n "$$token" ]; then echo "http://127.0.0.1:3080/?token=$$token"; exit 0; fi; \
+		sleep 1; \
+	done; \
+	echo "error: could not find token" >&2; exit 1
 
 start: secret-create ## Start the container in detached mode
 	-$(CONTAINER_ENGINE) rm -f $(CONTAINER_NAME) 2>/dev/null || true
