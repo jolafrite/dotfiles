@@ -2,14 +2,14 @@ name: dsh
 
 services:
   dsh:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: deepseek-harness:latest
     container_name: dsh
     restart: unless-stopped
+    user: "501:20"
 
     ports:
       - "3080:3080"
+      - "20128:20128"
 
     environment:
       NODE_ENV: production
@@ -19,11 +19,12 @@ services:
       GIT_COMMITTER_EMAIL: jonathan.houze+bot@gmail.com
       JJ_USER_NAME: jolafigue
       JJ_USER_EMAIL: jonathan.houze+bot@gmail.com
-      NODE_OPTIONS: --max-old-space-size=8192
+      NODE_OPTIONS: "--max-old-space-size=8192"
+      
     deploy:
       resources:
         limits:
-          memory: 10G
+          memory: 12G
 
     secrets:
       - source: dsh_github_token
@@ -31,18 +32,40 @@ services:
 
     volumes:
       - dsh-home:/home/dsh
-      - /Users/jonathanhouze/.agents:/home/dsh/.agents:rw
+      - ${HOME}/.agents:/home/dsh/.agents:rw
+      - dsh-db:/shared-data
 
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3080/"]
+      test: ["CMD-SHELL", "curl", "-f", "http://localhost:3080/"]
       interval: 15s
       timeout: 5s
       retries: 5
       start_period: 15s
 
+  headroom:
+    image: ghcr.io/headroomlabs-ai/headroom:latest
+    container_name: dsh-headroom
+    restart: unless-stopped
+    ports:
+      - "8787:8787"
+      
+    environment:
+      HEADROOM_OUTPUT_SHAPER: "1"
+      HEADROOM_BEACON: "off"
+      HEADROOM_MODE: "cache"
+      OPENAI_API_KEY: "dummy"
+      HEADROOM_MEMORY_DB_PATH: "/shared-data/memory.db"
+      
+    volumes:
+      - dsh-db:/shared-data
+    depends_on:
+      dsh:
+        condition: service_healthy
+
 volumes:
   dsh-home:
-
+  dsh-db:
+  
 secrets:
   dsh_github_token:
     file: ./secrets/github-token
