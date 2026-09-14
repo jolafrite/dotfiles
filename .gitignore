@@ -1,9 +1,6 @@
 # ignore all files (allowlist: un-ignore only exact files below)
 *
 
-# ---- directories git is allowed to descend (only the roots we manage) ----
-# Every directory under $HOME is ignored & pruned EXCEPT these roots,
-# so yadm add ~ does NOT crawl .cargo/.bun/.cache/.cline/.local/share/...
 !.config/
 !.config/**
 !.local/
