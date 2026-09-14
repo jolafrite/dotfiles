@@ -1,0 +1,38 @@
+FROM node:26-slim AS dsh-builder
+
+RUN npm install -g --no-audit --no-fund npm \
+  && npm install -g --no-audit --no-fund pnpm \
+    @deepseek-ai/dsh@next \
+    @mnemon-dev/mnemon@latest
+
+FROM node:26-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    socat \
+    tini \
+    zsh \
+    ssh \
+&& rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+
+COPY --from=dsh-builder /usr/local/ /usr/local/
+
+RUN mkdir -p /home/node/workspaces /var/log/dsh /home/node/.ssh \
+  && chown -R node:node /home/node/workspaces /var/log/dsh /home/node/.ssh \
+  && chmod 700 /home/node/.ssh
+
+COPY dsh-entrypoint.sh /usr/local/bin/dsh-entrypoint.sh
+RUN chmod 755 /usr/local/bin/dsh-entrypoint.sh
+
+ENV PNPM_HOME=/home/node/.local/share/pnpm
+
+RUN printf 'Host *\n  StrictHostKeyChecking accept-new\n' >> /etc/ssh/ssh_config
+
+USER node
+WORKDIR /home/node
+EXPOSE 3080
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD node -e "fetch('http://127.0.0.1:'+(process.env.PROXY_PORT||3080)+'/').then(()=>process.exit(0)).catch(()=>process.exit(1))"
+
+ENTRYPOINT ["tini", "--", "/usr/local/bin/dsh-entrypoint.sh"]
+

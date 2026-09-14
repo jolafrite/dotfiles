@@ -8,7 +8,7 @@
 !.github/
 !.github/**
 !docker-images/
-!docker-images/dsh/
+!docker-images/**
 
 # ---- root files (anchored: only match at repo root) ----
 !/.gitignore
@@ -86,9 +86,6 @@
 
 # ---- .github / .local / docker-images ----
 !.github/dependabot.yml
-!docker-images/dsh/.gitignore
-!docker-images/dsh/Dockerfile
-!docker-images/dsh/entrypoint.sh
 
 .local/bin/
 .local/pipx/
@@ -113,3 +110,5 @@
 docker-images/**/secrets/
 docker-images/**/cloudflared/
 docker-images/**/.dsh-context/
+
+.DS_Store
