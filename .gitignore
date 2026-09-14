@@ -5,7 +5,7 @@
 !*/
 !.git/
 
-# skip descending into root-owned / heavy dirs (avoids 'Permission denied' on yadm add ~)
+# skip descending into root-owned / heavy dirs
 .kind/
 
 # --- root files ---
