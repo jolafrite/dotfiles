@@ -101,6 +101,7 @@
 .config/zsh/.zsh_sessions/
 .config/zsh/personal_aliases
 .config/zsh/secrets/
+.config/nvim/
 .config/nvim-pack/
 .config/tmux/plugins/
 .config/jj/repos/
