@@ -44,7 +44,8 @@ alias bi="brew install"
 alias ub="update-brew"
 alias eb="edit-brew"
 
-# --- macOS trash path ---
+# --- macOS trash path (mask the Linux alias from aliases_common) ---
+unalias trash 2>/dev/null || true
 trash() { command mv "$@" ~/.Trash; }
 
 # --- v2ray (Homebrew path) ---
