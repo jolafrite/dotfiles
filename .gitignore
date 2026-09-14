@@ -1,17 +1,12 @@
 # ignore all files (allowlist: un-ignore only exact files below)
 *
 
-# ---- directories git is allowed to descend (only the roots we manage) ----
-# Every directory under $HOME is ignored & pruned EXCEPT these roots,
-# so yadm add ~ does NOT crawl .cargo/.bun/.cache/.cline/.local/share/...
 !.config/
 !.config/**
 !.local/
-!.local/scripts/**
+!.local/**
 !.github/
 !.github/**
-!.hammerspoon/
-!.hammerspoon/**
 !docker-images/
 !docker-images/dsh/
 
@@ -89,22 +84,18 @@
 !.config/zsh/updates_linux.zsh
 !.config/zsh/updates_mac.zsh
 
-# ---- .github / .hammerspoon / .local / docker-images ----
+# ---- .github / .local / docker-images ----
 !.github/dependabot.yml
-!.hammerspoon/init.lua
-!.local/scripts/cross-platform/editor
-!.local/scripts/generic/datenow
-!.local/scripts/generic/gitignore
-!.local/scripts/generic/havecmd
-!.local/scripts/generic/in-path
-!.local/scripts/generic/is_machine
-!.local/scripts/generic/ocr
-!.local/scripts/generic/on_os
-!.local/scripts/generic/super
-!.local/scripts/generic/with-secrets
 !docker-images/dsh/.gitignore
 !docker-images/dsh/Dockerfile
 !docker-images/dsh/entrypoint.sh
+
+.local/bin/
+.local/pipx/
+.local/share/
+.local/lib/
+.local/pyvenv/
+.local/state/
 
 # ---- junk inside the allowed roots that must stay ignored ----
 .config/zsh/.zcompcache/

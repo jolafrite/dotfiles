@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# Usage: ./dump_files.sh -e ext1,ext2,ext3 dir1 dir2 ...
+# Example: ./dump_files.sh -e go,js,ts ./src ./pkg
+
+set -euo pipefail
+
+extensions=()
+dirs=()
+
+while getopts "e:h" opt; do
+  case "$opt" in
+  e)
+    IFS=',' read -ra ext_list <<<"$OPTARG"
+    for ext in "${ext_list[@]}"; do
+      extensions+=("$ext")
+    done
+    ;;
+  h)
+    echo "Usage: $0 -e ext1,ext2,... dir1 [dir2 ...]"
+    echo "Example: $0 -e go,js,ts ./src ./pkg"
+    exit 0
+    ;;
+  *)
+    echo "Invalid option"
+    exit 1
+    ;;
+  esac
+done
+
+shift $((OPTIND - 1))
+
+dirs=("$@")
+
+if [ ${#extensions[@]} -eq 0 ]; then
+  echo "ERROR: No extensions provided. Use -e ext1,ext2,..." >&2
+  exit 1
+fi
+
+if [ ${#dirs[@]} -eq 0 ]; then
+  echo "ERROR: No directories provided." >&2
+  exit 1
+fi
+
+find_args=()
+
+for dir in "${dirs[@]}"; do
+  find_args+=("$dir")
+done
+find_args+=(-type f)
+find_args+=("(")
+
+first=true
+for ext in "${extensions[@]}"; do
+  if $first; then
+    find_args+=(-name "*.$ext")
+    first=false
+  else
+    find_args+=(-o -name "*.$ext")
+  fi
+done
+
+find_args+=(")")
+find_args+=(-print0)
+
+find "${find_args[@]}" | while IFS= read -r -d '' file; do
+  basename "$file"
+  echo "---"
+  cat "$file"
+  echo "---"
+done
