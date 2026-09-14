@@ -24,4 +24,9 @@
 docker-images/**/secrets/
 docker-images/**/cloudflared/
 docker-images/**/.dsh-context/
-!docker-images/**/.dsh-context/settings.yaml
+
+# sensitive — do not expose
+/client-config.json
+/.local/scripts/generic/find-best-mtu
+/docker-images/dsh/docker-compose.yml
+/docker-images/dsh/Makefile
