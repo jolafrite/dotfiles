@@ -7,8 +7,6 @@
 !.local/scripts/**
 !.github/
 !.github/**
-!.hammerspoon/
-!.hammerspoon/**
 !docker-images/
 !docker-images/dsh/
 
@@ -86,9 +84,8 @@
 !.config/zsh/updates_linux.zsh
 !.config/zsh/updates_mac.zsh
 
-# ---- .github / .hammerspoon / .local / docker-images ----
+# ---- .github / .local / docker-images ----
 !.github/dependabot.yml
-!.hammerspoon/init.lua
 !.local/scripts/cross-platform/editor
 !.local/scripts/generic/datenow
 !.local/scripts/generic/gitignore
