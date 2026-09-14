@@ -4,7 +4,7 @@
 !.config/
 !.config/**
 !.local/
-!.local/scripts/**
+!.local/**
 !.github/
 !.github/**
 !docker-images/
@@ -86,19 +86,16 @@
 
 # ---- .github / .local / docker-images ----
 !.github/dependabot.yml
-!.local/scripts/cross-platform/editor
-!.local/scripts/generic/datenow
-!.local/scripts/generic/gitignore
-!.local/scripts/generic/havecmd
-!.local/scripts/generic/in-path
-!.local/scripts/generic/is_machine
-!.local/scripts/generic/ocr
-!.local/scripts/generic/on_os
-!.local/scripts/generic/super
-!.local/scripts/generic/with-secrets
 !docker-images/dsh/.gitignore
 !docker-images/dsh/Dockerfile
 !docker-images/dsh/entrypoint.sh
+
+.local/bin/
+.local/pipx/
+.local/share/
+.local/lib/
+.local/pyvenv/
+.local/state/
 
 # ---- junk inside the allowed roots that must stay ignored ----
 .config/zsh/.zcompcache/

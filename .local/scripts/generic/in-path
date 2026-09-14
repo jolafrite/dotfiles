@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+declare script_name="${1?missing script name}"
+
+for dir in ${PATH//:/ }; do
+  target="${dir}/${script_name}"
+
+  if [[ -f "${target}" ]]; then
+    echo "${target}"
+
+    if [[ ! -x "${target}" ]]; then
+      echo "Warning: ${target} is not executable" >&2
+    fi
+  fi
+done

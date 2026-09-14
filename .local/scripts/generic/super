@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# A wrapper script for supervisord/supervisorctl
+# which does setup before running supervisor
+
+SUPERVISOR_LOGS='/tmp/supervisor'
+export SUPERVISOR_LOGS
+mkdir -p "${SUPERVISOR_LOGS}"
+
+LINUX_TASK_SCRIPT=$(which false) # if not on linux, fail fast
+case "$ON_OS" in
+linux_arch*)
+	LINUX_TASK_SCRIPT="$(which linux_tasks)"
+	;;
+esac
+export LINUX_TASK_SCRIPT
+
+SUPERVISOR_CONF="${HOME}/.config/supervisord.conf"
+
+function run_super() {
+	case "$1" in
+	--kill)
+		run_super --ctl "stop all"
+		tail "$SUPERVISOR_LOGS"/*
+		run_super --ctl "shutdown"
+		;;
+	--daemon)
+		with-secrets supervisord --configuration="${SUPERVISOR_CONF}"
+		;;
+	--foreground)
+		# run supervisor
+		with-secrets supervisord --configuration="${SUPERVISOR_CONF}" -n
+		;;
+	--ctl)
+		shift # remove '--ctl' from arg list
+		with-secrets supervisorctl --configuration="${SUPERVISOR_CONF}" "$@"
+		;;
+	--logs)
+		tail -f "$SUPERVISOR_LOGS"/*.log
+		;;
+	-h | --help | *)
+		# parse this case statement to get the choices
+		# shellcheck disable=SC2021
+		SPECIFY_CHOIES="$(grep -P '^\s*--\w+\)\s*$' "${BASH_SOURCE[0]}" | tr -d '[ )\t]')"
+		printf "Must specify one of:\n%s\n" "$SPECIFY_CHOIES" 1>&2
+		return 1
+		;;
+	esac
+}
+
+run_super "$@" || exit $?

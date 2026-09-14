@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+set -e
+
+main() {
+	usage='is_machine [-v] MACHINE (can be android|linux|windows|mac)
+
+Provide [-v] (verbose) to report to the user if the
+MACHINE does not match'
+
+	report_not_matching=0
+
+	while getopts "hV:v" opt; do
+		case "$opt" in
+		h)
+			printf "%s\n" "$usage"
+			exit 10
+			;;
+		v)
+			report_not_matching=1
+			;;
+		?)
+			printf "Unknown flag: %s\n" "$opt"
+			printf "\n%s\n" "$usage"
+			return 10
+			;;
+		esac
+	done
+
+	shift "$((OPTIND - 1))"
+
+	MACHINE="${1:?Must provide MACHINE as argument}"
+
+	if [ $(on_os) = ${MACHINE} ]; then
+		exit 0
+	fi
+
+	if ((report_not_matching)); then
+		printf "is_machine: The MACHINE value \"%s\" is not matching with the current machine \"%s\"." "$MACHINE" "$(on_os)" >&2
+		echo
+	fi
+
+	exit 2
+}
+
+main "$@" || exit $?

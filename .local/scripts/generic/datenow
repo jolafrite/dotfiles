@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# prompt current date in lots of formats
+# and copy that to your command line
+
+print_dates() {
+	date "+%m/%d/%y # us date"
+	date "+%d/%m/%y # standard date"
+	date "+%Y/%m/%d # YYYY/MM/DD (blog)"
+	date "+%F # YYYY-MM-DD"
+	date "+%F %T # YYYY-MM-DD HH:MM:SS"
+	date "+%c # full date"
+	date "+%A, %B %e, %Y, %l:%M:%S%p # now"
+	date "+%s # epoch"
+}
+
+PICKED="$(print_dates | picker -p "Pick Date > ")" || exit $?
+DATESTR="$(cut -d "#" -f1 <<<"${PICKED}" | xargs echo)"
+printf '%s\n' "${DATESTR}"
+printf '%s' "${DATESTR}" | clipcopy
+notify "datenow" "Copied '${DATESTR}' to clipboard"
