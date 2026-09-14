@@ -5,6 +5,9 @@
 !*/
 !.git/
 
+# skip descending into root-owned / heavy dirs
+.kind/
+
 # --- root files ---
 !.gitignore
 !.env
