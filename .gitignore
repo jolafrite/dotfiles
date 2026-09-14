@@ -1,17 +1,5 @@
-# ---- whitelist-style .gitignore (allowlist) ----
-# Opposite of the old blacklist: ignore EVERYTHING, then allow only
-# the roots/files this repo manages. Anything not listed here stays
-# untracked, so a stray file can't silently sneak in.
-# Remove a line (or add a root) when you intentionally track something new.
-
-# Ignore everything…
 *
-
-# …but not the version-control metadata or this file itself
 !.gitignore
-
-# Manage dotfiles only — allow each root dir, then its contents.
-# NOTE: git needs BOTH the dir node (!/d/) AND recurse (!/d/**) to descend.
 !.config/
 !.config/**
 !.local/
@@ -29,17 +17,10 @@
 !README.md
 !dotfiles
 !client-config.json
-
-# ----- secrets & local state inside the allowed roots -----
-# environment files copied into the repo tree
 *.env.local
 *.env.*
-
-# yadm / zsh local overrides
 .config/zsh/personal_aliases
 .config/zsh/secrets/
-
-# docker images can contain real credentials — never commit these
 docker-images/**/secrets/
 docker-images/**/cloudflared/
 docker-images/**/.dsh-context/
