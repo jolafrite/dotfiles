@@ -1,0 +1,78 @@
+FROM debian:trixie-slim
+
+ARG TARGETARCH
+ARG GIT_VERSION=v2.55.0
+ARG JJ_VERSION=v0.45.1
+ARG CF_VERSION=2026.8.3
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    make \
+    g++ \
+    ripgrep \
+    zlib1g-dev \
+    libcurl4-openssl-dev \
+    curl \
+    ca-certificates \
+    libssl-dev \
+    libexpat1-dev \
+    gettext \
+    sudo \
+    zsh \
+    openssh-server \
+    gh \
+&& rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+
+ENV RUSTUP_HOME=/home/app/.rustup
+ENV CARGO_HOME=/home/node/.cargo
+ENV PATH="/home/node/.cargo/bin:${PATH}"
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal \
+   && rm -rf /home/node/.cargo/registry/cache /home/node/.rustup/tmp
+
+RUN curl -fsSL -o /tmp/git.tar.gz "https://github.com/git/git/archive/refs/tags/${GIT_VERSION}.tar.gz" \
+   && tar -xzf /tmp/git.tar.gz -C /tmp \
+   && cd "/tmp/git-${GIT_VERSION#v}" \
+   && mkdir -p t/helper/.depend \
+   && make -j"$(nproc)" prefix=/usr/local NO_TCLTK=1 NO_GITWEB=1 \
+   && make prefix=/usr/local install \
+   && cd / && rm -rf /tmp/git-* /tmp/git.tar.gz
+   
+RUN JJ_ARCH=$([ "$TARGETARCH" = "amd64" ] && echo "x86_64" || echo "aarch64") \
+  && curl -fsSL -o /tmp/jj.tar.gz "https://github.com/jj-vcs/jj/releases/download/${JJ_VERSION}/jj-${JJ_VERSION}-${JJ_ARCH}-unknown-linux-musl.tar.gz" \
+  && tar -C /usr/local/bin --strip-components=1 -xzf /tmp/jj.tar.gz \
+  && rm /tmp/jj.tar.gz
+
+RUN NVIM_ARCH=$([ "$TARGETARCH" = "amd64" ] && echo "x86_64" || echo "arm64") \
+  && curl -fsSL -o /tmp/nvim.tar.gz "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-${NVIM_ARCH}.tar.gz" \
+  && tar -C /usr/local -xzf /tmp/nvim.tar.gz \
+  && ln -s /usr/local/nvim-linux-${NVIM_ARCH} /usr/local/nvim \
+  && rm /tmp/nvim.tar.gz
+ENV PATH="/usr/local/nvim/bin:${PATH}"
+
+RUN printf '%s\n' \
+      'Port 2222' \
+      'PasswordAuthentication no' \
+      'KbdInteractiveAuthentication no' \
+      'PermitRootLogin no' \
+      'AllowUsers app' \
+      'HostKey /etc/ssh/ssh_host_rsa_key' \
+      'HostKey /etc/ssh/ssh_host_ecdsa_key' \
+      'HostKey /etc/ssh/ssh_host_ed25519_key' \
+    > /etc/ssh/sshd_config.d/99-workspace.conf \
+ && ssh-keygen -A
+
+RUN useradd -ms "$(command -v zsh)" app \
+ && echo "app ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/app \
+ && chmod 0440 /etc/sudoers.d/app \
+ && mkdir -p /home/app/workspaces \
+ && chown -R app:app /home/app
+
+COPY workspaces-entrypoint.sh /usr/local/bin/workspaces-entrypoint.sh
+RUN chmod 755 /usr/local/bin/workspaces-entrypoint.sh
+
+USER app
+WORKDIR /home/app
+EXPOSE 2222
+
+ENTRYPOINT ["/usr/local/bin/workspaces-entrypoint.sh"]
+
