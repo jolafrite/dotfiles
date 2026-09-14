@@ -1,21 +1,28 @@
 # ignore all files (allowlist: un-ignore only exact files below)
 *
 
-# allow every directory so git can descend; files still gated by `*`
-!*/
-!.git/
+# ---- directories git is allowed to descend (only the roots we manage) ----
+# Every directory under $HOME is ignored & pruned EXCEPT these roots,
+# so yadm add ~ does NOT crawl .cargo/.bun/.cache/.cline/.local/share/...
+!.config/
+!.config/**
+!.local/
+!.local/scripts/**
+!.github/
+!.github/**
+!.hammerspoon/
+!.hammerspoon/**
+!docker-images/
+!docker-images/dsh/
 
-# skip descending into root-owned / heavy dirs
-.kind/
-
-# --- root files (anchored: only match at repo root, not as basenames at any depth) ---
+# ---- root files (anchored: only match at repo root) ----
 !/.gitignore
 !/.env
 !/.profile
 !/README.md
 !/dotfiles
 
-# --- .config files (exact, no directory globbing) ---
+# ---- exact managed files under .config ----
 !.config/.gitconfig
 !.config/.ssh.config
 !.config/starship.toml
@@ -82,7 +89,7 @@
 !.config/zsh/updates_linux.zsh
 !.config/zsh/updates_mac.zsh
 
-# --- .github / .hammerspoon / .local ---
+# ---- .github / .hammerspoon / .local / docker-images ----
 !.github/dependabot.yml
 !.hammerspoon/init.lua
 !.local/scripts/cross-platform/editor
@@ -95,19 +102,17 @@
 !.local/scripts/generic/on_os
 !.local/scripts/generic/super
 !.local/scripts/generic/with-secrets
-
-# --- docker-images ---
 !docker-images/dsh/.gitignore
 !docker-images/dsh/Dockerfile
 !docker-images/dsh/entrypoint.sh
 
-# --- never track these even though their dirs are visited ---
-.config/zsh/personal_aliases
-.config/zsh/secrets/
+# ---- junk inside the allowed roots that must stay ignored ----
 .config/zsh/.zcompcache/
 .config/zsh/.zcompdump*
 .config/zsh/.zsh_history
 .config/zsh/.zsh_sessions/
+.config/zsh/personal_aliases
+.config/zsh/secrets/
 .config/nvim-pack/
 .config/tmux/plugins/
 .config/jj/repos/
