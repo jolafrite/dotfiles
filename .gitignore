@@ -3,7 +3,7 @@
 !.config/
 !.config/**
 !.local/
-!.local/**
+!.local/scripts/**
 !.github/
 !.github/**
 !.hammerspoon/
