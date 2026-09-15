@@ -6,10 +6,6 @@ PROXY_PORT="${PROXY_PORT:-3080}"
 LOG_DIR="${LOG_DIR:-/var/log/dsh}"
 READY_TIMEOUT="${READY_TIMEOUT:-120}"
 
-GIT_VERSION="${GIT_VERSION:-v2.55.0}"
-JJ_VERSION="${JJ_VERSION:-v0.45.1}"
-CF_VERSION="${CF_VERSION:-2026.8.3}"
-
 # GitHub token from secret
 if [ -f /run/secrets/dsh_github_token ]; then
   export GH_TOKEN="$(cat /run/secrets/dsh_github_token)"

@@ -81,9 +81,6 @@ services:
     container_name: dsh-headroom
     restart: unless-stopped
 
-    ports:
-      - "8787:8787"
-
     volumes:
       - dsh-db:/shared-data
 
@@ -99,9 +96,6 @@ services:
     container_name: dsh-workspaces
     restart: unless-stopped
 
-    ports:
-      - "2222:2222"
-
     environment:
       SSH_PUBLIC_KEY: ${SSH_PUBLIC_KEY:-}
       GIT_AUTHOR_NAME: jolafigue
@@ -116,8 +110,7 @@ services:
         target: dsh_github_token
 
     volumes:
-      - dsh-workspaces:/home/node/workspaces
-      - dsh-config:/home/node/.dsh:ro
+      - dsh-workspaces:/home/app/workspaces
 
 volumes:
   dsh-config:

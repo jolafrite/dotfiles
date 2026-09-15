@@ -24,10 +24,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 ENV RUSTUP_HOME=/home/app/.rustup
-ENV CARGO_HOME=/home/node/.cargo
-ENV PATH="/home/node/.cargo/bin:${PATH}"
+ENV CARGO_HOME=/home/app/.cargo
+ENV PATH="/home/app/.cargo/bin:${PATH}"
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal \
-   && rm -rf /home/node/.cargo/registry/cache /home/node/.rustup/tmp
+   && rm -rf /home/app/.cargo/registry/cache /home/app/.rustup/tmp
 
 RUN curl -fsSL -o /tmp/git.tar.gz "https://github.com/git/git/archive/refs/tags/${GIT_VERSION}.tar.gz" \
    && tar -xzf /tmp/git.tar.gz -C /tmp \
