@@ -3,12 +3,12 @@ FROM debian:trixie-slim
 ARG TARGETARCH
 ARG GIT_VERSION=v2.55.0
 ARG JJ_VERSION=v0.45.1
-ARG CF_VERSION=2026.8.3
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     make \
     g++ \
+    tini \
     ripgrep \
     zlib1g-dev \
     libcurl4-openssl-dev \
@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zsh \
     openssh-server \
     gh \
+    sudo \
 && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 ENV RUSTUP_HOME=/home/app/.rustup
@@ -49,11 +50,8 @@ RUN NVIM_ARCH=$([ "$TARGETARCH" = "amd64" ] && echo "x86_64" || echo "arm64") \
   && rm /tmp/nvim.tar.gz
 ENV PATH="/usr/local/nvim/bin:${PATH}"
 
-# SSH host keys owned by app so sshd can read them at runtime
 RUN useradd -ms "$(command -v zsh)" app \
-  && echo "app ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/app \
-  && chmod 0440 /etc/sudoers.d/app \
-  && mkdir -p /home/app/workspaces \
+  && mkdir -p /home/app/workspaces /home/app/.sshd \
   && chown -R app:app /home/app
 
 RUN printf '%s\n' \
@@ -62,12 +60,11 @@ RUN printf '%s\n' \
       'KbdInteractiveAuthentication no' \
       'PermitRootLogin no' \
       'AllowUsers app' \
-      'HostKey /etc/ssh/ssh_host_rsa_key' \
-      'HostKey /etc/ssh/ssh_host_ecdsa_key' \
-      'HostKey /etc/ssh/ssh_host_ed25519_key' \
-    > /etc/ssh/sshd_config.d/99-workspace.conf \
-  && ssh-keygen -A \
-  && chown app:app /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
+      'HostKey /home/app/.ssh/ssh_host_rsa_key' \
+      'HostKey /home/app/.ssh/ssh_host_ecdsa_key' \
+      'HostKey /home/app/.ssh/ssh_host_ed25519_key' \
+      'PidFile /home/app/.sshd/sshd.pid' \
+    > /etc/ssh/sshd_config.d/99-workspace.conf
 
 COPY workspaces-entrypoint.sh /usr/local/bin/workspaces-entrypoint.sh
 RUN chmod 755 /usr/local/bin/workspaces-entrypoint.sh
@@ -76,4 +73,4 @@ USER app
 WORKDIR /home/app
 EXPOSE 2222
 
-ENTRYPOINT ["/usr/local/bin/workspaces-entrypoint.sh"]
+ENTRYPOINT ["tini", "--", "/usr/local/bin/workspaces-entrypoint.sh"]

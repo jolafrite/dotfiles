@@ -1,5 +1,10 @@
 name: dsh
 
+x-common-restart: &restart unless-stopped
+x-logging: &logging
+  driver: json-file
+  options: { max-size: "10m", max-file: "3" }
+
 services:
   dsh:
     build: 
@@ -7,7 +12,7 @@ services:
       dockerfile: Dockerfile.dsh
     image: dsh-assistant:latest
     container_name: dsh
-    restart: unless-stopped
+    restart: *restart
 
     ports:
       - "3080:3080"
@@ -23,7 +28,7 @@ services:
 
     volumes:
       - dsh-config:/home/node/.dsh
-      - ${HOME}/.agents:/home/node/.agents
+      - ${HOME}/.agents:/home/node/.agents:z
 
     secrets:
       - source: dsh_github_token
@@ -36,10 +41,12 @@ services:
       retries: 5
       start_period: 90s
 
+    logging: *logging
+
   9router:
     image: decolua/9router:latest
     container_name: dsh-9router
-    restart: unless-stopped
+    restart: *restart
 
     ports:
       - "20128:20128"
@@ -50,19 +57,21 @@ services:
       HOSTNAME: "0.0.0.0"
       NODE_ENV: production
       HEADROOM_URL: http://headroom:8787
-      INITIAL_PASSWORD: 123456
+      INITIAL_PASSWORD: ${INITIAL_PASSWORD:-}
 
     volumes:
       - 9router-data:/app/data
 
     depends_on:
       headroom:
-        condition: service_healthy
+        condition: service_started
+
+    logging: *logging
 
   cloudflared:
     image: cloudflare/cloudflared:latest
     container_name: dsh-cloudflared
-    restart: unless-stopped
+    restart: *restart
 
     environment:
       HOME: /home/cloudflared
@@ -75,11 +84,13 @@ services:
     depends_on:
       dsh:
         condition: service_healthy
+    
+    logging: *logging
 
   headroom:
     image: ghcr.io/chopratejas/headroom:latest
     container_name: dsh-headroom
-    restart: unless-stopped
+    restart: *restart
 
     volumes:
       - dsh-db:/shared-data
@@ -87,6 +98,8 @@ services:
     depends_on:
       dsh:
         condition: service_healthy
+    
+    logging: *logging
 
   workspaces:
     build: 
@@ -94,7 +107,7 @@ services:
       dockerfile: Dockerfile.workspaces
     image: dsh-workspaces:latest
     container_name: dsh-workspaces
-    restart: unless-stopped
+    restart: *restart
 
     environment:
       SSH_PUBLIC_KEY: ${SSH_PUBLIC_KEY:-}
@@ -107,10 +120,15 @@ services:
 
     secrets:
       - source: dsh_github_token
-        target: dsh_github_token
+        target: /run/secrets/dsh_github_token
 
     volumes:
       - dsh-workspaces:/home/app/workspaces
+
+    ports: 
+      - "127.0.0.1:2222:2222"
+
+    logging: *logging
 
 volumes:
   dsh-config:
