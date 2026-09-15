@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -eu
 
-# --- SSH key setup ---
+# --- SSH authorized key ---
 mkdir -p /home/app/.ssh
 chmod 700 /home/app/.ssh
 
