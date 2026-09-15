@@ -36,7 +36,7 @@ RUN curl -fsSL -o /tmp/git.tar.gz "https://github.com/git/git/archive/refs/tags/
    && make -j"$(nproc)" prefix=/usr/local NO_TCLTK=1 NO_GITWEB=1 \
    && make prefix=/usr/local install \
    && cd / && rm -rf /tmp/git-* /tmp/git.tar.gz
-   
+
 RUN JJ_ARCH=$([ "$TARGETARCH" = "amd64" ] && echo "x86_64" || echo "aarch64") \
   && curl -fsSL -o /tmp/jj.tar.gz "https://github.com/jj-vcs/jj/releases/download/${JJ_VERSION}/jj-${JJ_VERSION}-${JJ_ARCH}-unknown-linux-musl.tar.gz" \
   && tar -C /usr/local/bin --strip-components=1 -xzf /tmp/jj.tar.gz \
@@ -49,6 +49,13 @@ RUN NVIM_ARCH=$([ "$TARGETARCH" = "amd64" ] && echo "x86_64" || echo "arm64") \
   && rm /tmp/nvim.tar.gz
 ENV PATH="/usr/local/nvim/bin:${PATH}"
 
+# SSH host keys owned by app so sshd can read them at runtime
+RUN useradd -ms "$(command -v zsh)" app \
+  && echo "app ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/app \
+  && chmod 0440 /etc/sudoers.d/app \
+  && mkdir -p /home/app/workspaces \
+  && chown -R app:app /home/app
+
 RUN printf '%s\n' \
       'Port 2222' \
       'PasswordAuthentication no' \
@@ -59,13 +66,8 @@ RUN printf '%s\n' \
       'HostKey /etc/ssh/ssh_host_ecdsa_key' \
       'HostKey /etc/ssh/ssh_host_ed25519_key' \
     > /etc/ssh/sshd_config.d/99-workspace.conf \
- && ssh-keygen -A
-
-RUN useradd -ms "$(command -v zsh)" app \
- && echo "app ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/app \
- && chmod 0440 /etc/sudoers.d/app \
- && mkdir -p /home/app/workspaces \
- && chown -R app:app /home/app
+  && ssh-keygen -A \
+  && chown app:app /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
 
 COPY workspaces-entrypoint.sh /usr/local/bin/workspaces-entrypoint.sh
 RUN chmod 755 /usr/local/bin/workspaces-entrypoint.sh
@@ -75,4 +77,3 @@ WORKDIR /home/app
 EXPOSE 2222
 
 ENTRYPOINT ["/usr/local/bin/workspaces-entrypoint.sh"]
-

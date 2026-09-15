@@ -10,6 +10,11 @@ GIT_VERSION="${GIT_VERSION:-v2.55.0}"
 JJ_VERSION="${JJ_VERSION:-v0.45.1}"
 CF_VERSION="${CF_VERSION:-2026.8.3}"
 
+# GitHub token from secret
+if [ -f /run/secrets/dsh_github_token ]; then
+  export GH_TOKEN="$(cat /run/secrets/dsh_github_token)"
+fi
+
 DSH_PID=""
 PROXY_PID=""
 TAIL_PIDS=""

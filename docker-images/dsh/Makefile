@@ -3,7 +3,7 @@ IMAGE_NAME       ?= dsh-assistant
 CONTAINER_NAME   ?= dsh
 SECRET_NAME      ?= dsh_github_token
 SECRET_FILE      ?= ./secrets/github-token
-COMPOSE_FILE     ?= compose.yaml
+COMPOSE_FILE     ?= docker-compose.yml
 CLOUDFLARE_HOST  ?= ai.frisboolab.com
 
 .DEFAULT_GOAL := help
@@ -17,9 +17,9 @@ help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
 
 build: ## Build the container image
-	$(CONTAINER_ENGINE) build -t $(IMAGE_NAME) --dns=8.8.8.8 .
+	$(CONTAINER_ENGINE) build -t $(IMAGE_NAME) --dns=8.8.8.8 -f Dockerfile.dsh .
 
-rebuild: clean-images build ## Force a clean rebuild (no cache)
+rebuild: rmi build ## Force a clean rebuild (no cache)
 	@echo "✅ Image rebuilt without cache"
 
 rmi: ## Remove the built image
@@ -38,37 +38,27 @@ secret-rm: ## Remove the GitHub token secret
 secret-ls: ## List all secrets
 	$(CONTAINER_ENGINE) secret ls
 
-run: secret-create ## Run the container with secret mounted (foreground)
-	-$(CONTAINER_ENGINE) rm -f $(CONTAINER_NAME) 2>/dev/null || true
-	$(CONTAINER_ENGINE) run -d \
-		--name $(CONTAINER_NAME) \
-		--secret $(SECRET_NAME) \
-		-p 3080:3080 \
-		-v dsh-home:/home/dsh \
-		-v $(HOME)/.agents:/home/dsh/.agents:rw \
-		$(IMAGE_NAME)
-	@sleep 3
-	@token=$$(podman logs $(CONTAINER_NAME) 2>/dev/null | grep -oE 'token=[A-Za-z0-9_-]+' | tail -1 | cut -d= -f2); \
-	if [ -z "$$token" ]; then echo "error: could not find token" >&2; exit 1; fi; \
-	echo "http://127.0.0.1:3080/?token=$$token"
+run: secret-create ## Start all services via compose and print the GUI URL
+	-podman-compose -f $(COMPOSE_FILE) down 2>/dev/null || true
+	podman-compose -f $(COMPOSE_FILE) up -d --build
+	@for i in $$(seq 1 120); do \
+		token=$$(podman logs dsh 2>/dev/null | grep -oE 'token=[A-Za-z0-9_-]+' | tail -1 | cut -d= -f2); \
+		if [ -n "$$token" ]; then echo "http://127.0.0.1:3080/?token=$$token"; exit 0; fi; \
+		sleep 1; \
+	done; \
+	echo "error: could not find token" >&2; exit 1
 
-start: secret-create ## Start the container in detached mode
-	-$(CONTAINER_ENGINE) rm -f $(CONTAINER_NAME) 2>/dev/null || true
-	$(CONTAINER_ENGINE) run -d \
-		--name $(CONTAINER_NAME) \
-		--secret $(SECRET_NAME) \
-		-p 3080:3080 \
-		-v dsh-home:/home/dsh \
-		-v $(HOME)/.agents:/home/dsh/.agents:rw \
-		$(IMAGE_NAME)
-	@echo "✅ Container '$(CONTAINER_NAME)' started"
+start: secret-create ## Start all services via compose (detached)
+	-podman-compose -f $(COMPOSE_FILE) down 2>/dev/null || true
+	podman-compose -f $(COMPOSE_FILE) up -d --build
+	@echo "✅ Compose services started"
 	@echo "   Run 'make url' to get the GUI URL"
 
 stop: ## Stop the running container
-	-$(CONTAINER_ENGINE) stop $(CONTAINER_NAME) 2>/dev/null || true
+	-podman-compose -f $(COMPOSE_FILE) stop 2>/dev/null || true
 
 rm: stop ## Remove the container
-	-$(CONTAINER_ENGINE) rm -f $(CONTAINER_NAME) 2>/dev/null || true
+	-podman-compose -f $(COMPOSE_FILE) down 2>/dev/null || true
 
 restart: rm start ## Restart the container
 
@@ -104,13 +94,13 @@ status: ## Show container status + health
 		'Container: {{.Name}}\nStatus:  {{.State.Status}}\nHealth:  {{.State.Health.Status}}\nStarted: {{.State.StartedAt}}' 2>/dev/null
 
 up: ## Start services via compose (detached)
-	$(CONTAINER_ENGINE) compose -f $(COMPOSE_FILE) up -d --build
+	podman-compose -f $(COMPOSE_FILE) up -d --build
 
 down: ## Stop and remove compose services
-	$(CONTAINER_ENGINE) compose -f $(COMPOSE_FILE) down
+	podman-compose -f $(COMPOSE_FILE) down
 
 compose-logs: ## Tail compose logs
-	$(CONTAINER_ENGINE) compose -f $(COMPOSE_FILE) logs -f
+	podman-compose -f $(COMPOSE_FILE) logs -f
 
 ps: ## List running containers
 	$(CONTAINER_ENGINE) ps
@@ -120,8 +110,12 @@ clean: rm ## Remove container and dangling images
 	@echo "🧹 Cleaned up containers and dangling images"
 
 clean-all: clean ## Remove container, images, volumes, and secrets
-	-$(CONTAINER_ENGINE) volume rm dsh_dsh-home 2>/dev/null || true
-	-$(CONTAINER_ENGINE) volume rm dsh-home 2>/dev/null || true
+	-$(CONTAINER_ENGINE) volume rm dsh_dsh-workspaces 2>/dev/null || true
+	-$(CONTAINER_ENGINE) volume rm dsh-workspaces 2>/dev/null || true
+	-$(CONTAINER_ENGINE) volume rm dsh_dsh-db 2>/dev/null || true
+	-$(CONTAINER_ENGINE) volume rm dsh-db 2>/dev/null || true
+	-$(CONTAINER_ENGINE) volume rm dsh_9router-data 2>/dev/null || true
+	-$(CONTAINER_ENGINE) volume rm 9router-data 2>/dev/null || true
 	-$(CONTAINER_ENGINE) rmi $(IMAGE_NAME) 2>/dev/null || true
 	-$(CONTAINER_ENGINE) secret rm $(SECRET_NAME) 2>/dev/null || true
 	@echo "🧹 Full cleanup complete"
