@@ -48,7 +48,7 @@ wait_ready "$DSH_PORT" "$READY_TIMEOUT" "$DSH_PID" dsh "$LOG_DIR/dsh.log"
 echo "[dsh] ready (pid $DSH_PID)"
 
 echo "[proxy] starting proxy on port $PROXY_PORT -> $DSH_PORT"
-socat tcp-listen:"$PROXY_PORT",fork,reuseaddr tcp:127.0.0.1:"$DSH_PORT" > "$LOG_DIR/proxy-socat.log" 2>&1 &
+socat tcp-listen:"$PROXY_PORT",fork,reuseaddr,keepalive,keepidle=30,keepintvl=10,keepcnt=3 tcp:127.0.0.1:"$DSH_PORT",keepalive,keepidle=30,keepintvl=10,keepcnt=3 > "$LOG_DIR/proxy-socat.log" 2>&1 &
 PROXY_PID=$!; PIDS="$PIDS $PROXY_PID"
 
 wait_ready "$PROXY_PORT" 30 "$PROXY_PID" proxy
