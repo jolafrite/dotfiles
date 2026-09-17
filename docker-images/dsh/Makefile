@@ -1,8 +1,6 @@
 CONTAINER_ENGINE ?= podman
 IMAGE_NAME       ?= dsh-assistant
 CONTAINER_NAME   ?= dsh
-SECRET_NAME      ?= dsh_github_token
-SECRET_FILE      ?= ./secrets/github-token
 COMPOSE_FILE     ?= docker-compose.yml
 CLOUDFLARE_HOST  ?= ai.frisboolab.com
 
@@ -25,20 +23,7 @@ rebuild: rmi build ## Force a clean rebuild (no cache)
 rmi: ## Remove the built image
 	-$(CONTAINER_ENGINE) rmi $(IMAGE_NAME) 2>/dev/null || true
 
-secret-create: ## Create the GitHub token secret in Podman
-	@test -f $(SECRET_FILE) || (echo "❌ Secret file not found: $(SECRET_FILE)" && exit 1)
-	$(CONTAINER_ENGINE) secret rm $(SECRET_NAME) 2>/dev/null || true
-	$(CONTAINER_ENGINE) secret create $(SECRET_NAME) $(SECRET_FILE)
-	@echo "✅ Secret '$(SECRET_NAME)' created from $(SECRET_FILE)"
-
-secret-rm: ## Remove the GitHub token secret
-	-$(CONTAINER_ENGINE) secret rm $(SECRET_NAME) 2>/dev/null || true
-	@echo "🗑️  Secret '$(SECRET_NAME)' removed"
-
-secret-ls: ## List all secrets
-	$(CONTAINER_ENGINE) secret ls
-
-run: secret-create ## Start all services via compose and print the GUI URL
+run: ## Start all services via compose and print the GUI URL
 	-podman-compose -f $(COMPOSE_FILE) down 2>/dev/null || true
 	podman-compose -f $(COMPOSE_FILE) up -d --build
 	@for i in $$(seq 1 120); do \
@@ -48,7 +33,7 @@ run: secret-create ## Start all services via compose and print the GUI URL
 	done; \
 	echo "error: could not find token" >&2; exit 1
 
-start: secret-create ## Start all services via compose (detached)
+start: ## Start all services via compose (detached)
 	-podman-compose -f $(COMPOSE_FILE) down 2>/dev/null || true
 	podman-compose -f $(COMPOSE_FILE) up -d --build
 	@echo "✅ Compose services started"
@@ -78,8 +63,9 @@ url: ## Print/open the GUI URL
 	echo "$$url"; \
 	open "$$url" 2>/dev/null || true
 
-exec: ## Run a command inside the dsh container
-	@exec podman exec $(CONTAINER_NAME) $$@
+exec: ## Run a command inside the dsh container (make exec CMD="ls -la")
+	@test -n "$(CMD)" || (echo 'usage: make exec CMD="your command"' && exit 1)
+	@podman exec -it $(CONTAINER_NAME) bash -lc '$(CMD)'
 
 token: ## Print the current access token
 	@podman logs $(CONTAINER_NAME) 2>/dev/null | grep -oE 'token=[A-Za-z0-9_-]+' | tail -1 | cut -d= -f2
@@ -109,7 +95,7 @@ clean: rm ## Remove container and dangling images
 	-$(CONTAINER_ENGINE) image prune -f
 	@echo "🧹 Cleaned up containers and dangling images"
 
-clean-all: clean ## Remove container, images, volumes, and secrets
+clean-all: clean ## Remove container, images and volumes
 	-$(CONTAINER_ENGINE) volume rm dsh_dsh-workspaces 2>/dev/null || true
 	-$(CONTAINER_ENGINE) volume rm dsh-workspaces 2>/dev/null || true
 	-$(CONTAINER_ENGINE) volume rm dsh_dsh-db 2>/dev/null || true
@@ -117,7 +103,6 @@ clean-all: clean ## Remove container, images, volumes, and secrets
 	-$(CONTAINER_ENGINE) volume rm dsh_9router-data 2>/dev/null || true
 	-$(CONTAINER_ENGINE) volume rm 9router-data 2>/dev/null || true
 	-$(CONTAINER_ENGINE) rmi $(IMAGE_NAME) 2>/dev/null || true
-	-$(CONTAINER_ENGINE) secret rm $(SECRET_NAME) 2>/dev/null || true
 	@echo "🧹 Full cleanup complete"
 
 inspect: ## Inspect the image metadata

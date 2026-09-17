@@ -87,12 +87,6 @@ source_if_exists "$XDG_DATA_HOME/functions/_atuin"
 
 source <(COMPLETE=zsh jj)
 
-# check if supervisord (background processes are running)
-# else start them
-#
-# this does mean processes don't start running till
-# I open a terminal, but I start one on boot anyways
-
 if [[ ! -e /tmp/supervisord.pid ]]; then
   echo "Supervisor pid file does not exist, starting supervisor..."
   super --daemon

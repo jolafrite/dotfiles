@@ -1,46 +1,42 @@
-FROM node:26-slim AS dsh-builder
-
-RUN npm install -g --no-audit --no-fund npm \
-  && npm install -g --no-audit --no-fund pnpm \
-    @deepseek-ai/dsh@next \
-    @mnemon-dev/mnemon@latest
-
 FROM node:26-slim
 
-ENV DSH_HOME=/home/node/.dsh
-ENV PNPM_HOME=/home/node/.dsh/.pnpm-global
-ENV XDG_DATA_HOME=/home/node/.dsh/.data
-ENV XDG_CACHE_HOME=/home/node/.dsh/.cache
-ENV PATH=/home/node/.dsh/.pnpm-global:$PATH
+ARG USERNAME=node
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DSH_HOME=/home/${USERNAME}/.dsh
+ENV PNPM_HOME=/home/${USERNAME}/.dsh/.pnpm-global
+ENV XDG_DATA_HOME=/home/${USERNAME}/.dsh/.data
+ENV XDG_CACHE_HOME=/home/${USERNAME}/.dsh/.cache
+ENV PATH=/home/${USERNAME}/.dsh/.pnpm-global/bin:$PATH
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    python3 \
+    ca-certificates \
     git \
+    openssh-client \
     socat \
     tini \
     zsh \
-    ssh \
-    ca-certificates \
     sudo \
 && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
-COPY --from=dsh-builder /usr/local/ /usr/local/
-
-RUN mkdir -p /home/node/workspaces /var/log/dsh /home/node/.ssh \
-  && chown -R node:node /home/node/workspaces /var/log/dsh /home/node/.ssh \
-  && chmod 700 /home/node/.ssh
+RUN mkdir -p /var/log/dsh /home/${USERNAME}/.ssh /home/${USERNAME}/.dsh/.pnpm-global/bin && \
+  npm install -g --no-audit --no-fund npm pnpm && \
+  pnpm add -g @deepseek-ai/dsh@next @mnemon-dev/mnemon@latest
 
 COPY dsh-entrypoint.sh /usr/local/bin/dsh-entrypoint.sh
 RUN chmod 755 /usr/local/bin/dsh-entrypoint.sh
 
+RUN printf 'Host github.com\n  StrictHostKeyChecking accept-new\n' >> /etc/ssh/ssh_config
 
-RUN printf 'Host *\n  StrictHostKeyChecking accept-new\n' >> /etc/ssh/ssh_config
+RUN echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME \
+    && chown -R node:node /home/${USERNAME} /var/log/dsh \
+    && chmod 700 /home/${USERNAME}/.ssh
 
-RUN echo "node ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/node \
- && chmod 0440 /etc/sudoers.d/node
-
-USER node
-WORKDIR /home/node
+USER ${USERNAME}
+WORKDIR /home/${USERNAME}
 EXPOSE 3080
 
 ENTRYPOINT ["tini", "--", "/usr/local/bin/dsh-entrypoint.sh"]
-
