@@ -108,7 +108,9 @@
 .config/fish/
 .config/zed/
 .config/clash*
+.config/containers/
 docker-images/**/secrets/
+docker-images/**/.env
 docker-images/**/cloudflared/
 docker-images/**/.dsh-context/
 
