@@ -8,6 +8,20 @@ READY_TIMEOUT="${READY_TIMEOUT:-120}"
 
 [ -f /run/secrets/dsh_github_token ] && export GH_TOKEN="$(cat /run/secrets/dsh_github_token)"
 
+# SSH config for connecting to the workspaces container
+mkdir -p /home/node/.ssh
+chmod 700 /home/node/.ssh
+cat > /home/node/.ssh/config <<'EOF'
+Host workspaces
+    HostName workspaces
+    Port 2222
+    User app
+    IdentityFile ~/.ssh/dsh-workspace
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
+EOF
+chmod 600 /home/node/.ssh/config
+
 PIDS=""
 
 probe() {

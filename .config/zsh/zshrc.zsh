@@ -23,24 +23,22 @@ source_if_exists() {
 }
 
 source "${ZDOTDIR}/env_config.zsh"
-source "${ZDOTDIR}/prompt.zsh"
 source "${ZDOTDIR}/functions.zsh"
-source "${ZDOTDIR}/cd.zsh"
-source "${ZDOTDIR}/completion.zsh"
 source "${ZDOTDIR}/lazy.zsh"
 source "${ZDOTDIR}/progressive_enhancement.zsh"
 source "${ZDOTDIR}/updates.zsh"
-source "${ZDOTDIR}/source_aliases.zsh"
+source "${ZDOTDIR}/aliases.zsh"
 
 alias u='rj'
 
 is_machine "mac" && {
   source "${ZDOTDIR}/mac.zsh"
 }
+is_machine "linux" && {
+  source "${ZDOTDIR}/linux.zsh"
+}
 
 havecmd basher && eval "$(basher init - zsh)"
-
-source "${ZDOTDIR}/cache_aliases.zsh"
 
 if [[ -f "$ZDOTDIR/.zshrc_local" ]]; then
   source "$ZDOTDIR/.zshrc_local"

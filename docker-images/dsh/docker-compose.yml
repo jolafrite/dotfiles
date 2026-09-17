@@ -29,6 +29,7 @@ services:
     volumes:
       - dsh-config:/home/node/.dsh
       - ${HOME}/.agents:/home/node/.agents:z
+      - ${HOME}/.ssh/dsh-workspace:/home/node/.ssh/dsh-workspace:ro
 
     secrets:
       - source: dsh_github_token

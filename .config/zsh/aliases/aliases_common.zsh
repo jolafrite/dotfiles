@@ -1,7 +1,11 @@
 #!/usr/bin/env zsh
 
-is_macos() { [[ "$OSTYPE" == "darwin"* ]]; }
-is_linux() { [[ "$OSTYPE" == "linux-gnu"* ]]; }
+is_macos() {
+[[ "$OSTYPE" == "darwin"* ]];
+}
+is_linux() {
+[[ "$OSTYPE" == "linux-gnu"* ]];
+}
 
 if [[ -t 1 ]]; then
   RED=$(tput setaf 1)
@@ -20,10 +24,14 @@ alias p="pwd"
 alias h="history"
 alias j="jobs -l"
 
-reload() { exec "${SHELL:-zsh}" -l; }
+reload() {
+exec "${SHELL:-zsh}" -l;
+}
 alias path='print -l ${PATH//:/\\n}'
 
-mcd() { mkdir -p "$1" && cd "$1" || return; }
+mcd() {
+mkdir -p "$1" && cd "$1" || return;
+}
 
 groot() {
   local root
@@ -35,7 +43,9 @@ groot() {
   fi
 }
 
-zv() { z "$1" && nvim .; }
+zv() {
+z "$1" && nvim .;
+}
 
 cdi() {
   local dir
@@ -50,9 +60,15 @@ alias la="ll --all"
 alias tree="eza --tree --level=5 --icons --group-directories-first --color auto"
 command -v eza >/dev/null || alias ll="command ls -lh"
 
-ff() { find . -name "$1"; }
-ffs() { find . -name "*$1*"; }
-ffe() { find . -name "*$1"; }
+ff() {
+find . -name "$1";
+}
+ffs() {
+find . -name "*$1*";
+}
+ffe() {
+find . -name "*$1";
+}
 
 fmv() {
   local target
@@ -61,8 +77,12 @@ fmv() {
 }
 
 extract() {
-  [[ -z "$1" ]] && { print "Usage: extract <file>"; return 1; }
-  [[ ! -f "$1" ]] && { print "'$1' is not a valid file"; return 1; }
+  [[ -z "$1" ]] && {
+print "Usage: extract <file>"; return 1;
+}
+  [[ ! -f "$1" ]] && {
+print "'$1' is not a valid file"; return 1;
+}
   case "$(echo "$1" | tr '[:upper:]' '[:lower:]')" in
     *.tar.bz2) tar xjf "$1" ;;
     *.tar.gz)  tar xzf "$1" ;;
@@ -96,8 +116,14 @@ alias listening="lsof -nP +c 15 | grep LISTEN"
 alias ports="lsof -i -n -P | grep TCP"
 alias findPid="lsof -t -c"
 
-psrm() { ps -o rss= -p "$1" | awk '{ hr=$1/1024; printf "%13.2f Mb\n", hr }' | tr -d ' '; }
-psrml() { while true; do psrm "$1"; sleep 1; done; }
+psrm() {
+ps -o rss= -p "$1" | awk '{
+hr=$1/1024; printf "%13.2f Mb\n", hr
+}' | tr -d ' ';
+}
+psrml() {
+while true; do psrm "$1"; sleep 1; done;
+}
 
 epoch() {
   if is_linux; then
@@ -128,15 +154,23 @@ alias gP="git pull"
 alias gst="git status"
 alias gsk="gpg --list-secret-keys --keyid-format LONG"
 
-gas() { git status; git add . -A; git commit -m "$1"; git push; }
-gsa() { git stash save "$1" -a; git stash list; }
+gas() {
+git status; git add . -A; git commit -m "$1"; git push;
+}
+gsa() {
+git stash save "$1" -a; git stash list;
+}
 
 alias yA="yadm add --all"
 alias ya="yadm add"
 alias yc="yadm commit"
-ycp() { if (( $# == 0 )); then yadm commit && yadm push; else yadm commit -m "$*" && yadm push; fi; }
+ycp() {
+if (( $# == 0 )); then yadm commit && yadm push; else yadm commit -m "$*" && yadm push; fi;
+}
 alias yd="yadm diff"
-ydh() { yadm diff HEAD~"${1:-1}"; }
+ydh() {
+yadm diff HEAD~"${1:-1}";
+}
 alias yds="yadm diff --staged"
 alias yl="yadm pull --recurse-submodules"
 alias yP="yadm pull"
@@ -179,7 +213,9 @@ alias k="kubectl"
 alias kall='k get all -o wide --show-labels'
 alias kc='k config get-contexts'
 alias kn='k config set-context --current --namespace'
-kd() { kubectl "$@" -o yaml --dry-run=client; }
+kd() {
+kubectl "$@" -o yaml --dry-run=client;
+}
 
 alias db="docker build -f"
 alias awsregion="aws ec2 describe-availability-zones --output text --query 'AvailabilityZones[0].[RegionName]'"
@@ -220,12 +256,24 @@ pkgrun() {
 : "${EDITOR:=nvim}"
 alias e="$EDITOR"
 
-edit-config() { pushd "$XDG_CONFIG_HOME" >/dev/null && $EDITOR . && popd >/dev/null; }
-edit-nvim() { pushd "${NVIM_DIR:-$XDG_CONFIG_HOME/nvim}" >/dev/null && $EDITOR . && popd >/dev/null; }
-edit-starship() { pushd "$XDG_CONFIG_HOME" >/dev/null && $EDITOR ./starship.toml && popd >/dev/null; }
-edit-yadm() { pushd "${YADM_DIR:-$HOME/.yadm}" >/dev/null && $EDITOR . && popd >/dev/null; }
-edit-zsh() { pushd "${ZDOTDIR:-$HOME}" >/dev/null && $EDITOR . && popd >/dev/null; }
-edit-aliases() { pushd "${ALIAS_DIR:-$XDG_CONFIG_HOME/zsh/aliases}" >/dev/null && $EDITOR . && popd >/dev/null; }
+edit-config() {
+pushd "$XDG_CONFIG_HOME" >/dev/null && $EDITOR . && popd >/dev/null;
+}
+edit-nvim() {
+pushd "${NVIM_DIR:-$XDG_CONFIG_HOME/nvim}" >/dev/null && $EDITOR . && popd >/dev/null;
+}
+edit-starship() {
+pushd "$XDG_CONFIG_HOME" >/dev/null && $EDITOR ./starship.toml && popd >/dev/null;
+}
+edit-yadm() {
+pushd "${YADM_DIR:-$HOME/.yadm}" >/dev/null && $EDITOR . && popd >/dev/null;
+}
+edit-zsh() {
+pushd "${ZDOTDIR:-$HOME}" >/dev/null && $EDITOR . && popd >/dev/null;
+}
+edit-aliases() {
+pushd "${ALIAS_DIR:-$XDG_CONFIG_HOME/zsh/aliases}" >/dev/null && $EDITOR . && popd >/dev/null;
+}
 
 alias ea="edit-aliases"
 alias en="edit-nvim"
@@ -237,15 +285,25 @@ alias nvim-clear-cache="rm -rf ${XDG_DATA_HOME:-~/.local/share}/nvim ${XDG_STATE
 
 
 alias catn="grep -Ev '^(#|$)'"
-zipf() { zip -r "$1.zip" "$1"; }
+zipf() {
+zip -r "$1.zip" "$1";
+}
 alias editHosts="sudo $EDITOR /etc/hosts"
 alias killall-nvim="killall -9 nvim"
 
-httpDebug() { curl "$@" -o /dev/null -w "dns: %{time_namelookup} | connect: %{time_connect} | pretransfer: %{time_pretransfer} | starttransfer: %{time_starttransfer} | total: %{time_total}\n"; }
-httpHeaders() { curl -I -L "$@"; }
+httpDebug() {
+curl "$@" -o /dev/null -w "dns: %{time_namelookup} | connect: %{time_connect} | pretransfer: %{time_pretransfer} | starttransfer: %{time_starttransfer} | total: %{time_total}\n";
+}
+httpHeaders() {
+curl -I -L "$@";
+}
 
-ijq() { print "" | fzf --print-query --preview-window nohidden --no-height --preview "${1:-pbpaste} | jq {q}"; }
-jcmt() { delta <(jq --sort-keys . "$1") <(jq --sort-keys . "$2"); }
+ijq() {
+print "" | fzf --print-query --preview-window nohidden --no-height --preview "${1:-pbpaste} | jq {q}";
+}
+jcmt() {
+delta <(jq --sort-keys . "$1") <(jq --sort-keys . "$2");
+}
 
 alias ua="update-all"
 alias uc="update-cargo"
