@@ -53,7 +53,7 @@ ENV PATH="/usr/local/nvim/bin:${PATH}"
 
 RUN useradd -ms "$(command -v zsh)" ${USERNAME} \
     && mkdir -p /home/${USERNAME}/workspaces /home/${USERNAME}/.sshd \
-    && chown -R ${USERNAME:${USERNAME}} /home/${USERNAME}
+    && chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}
 
 RUN printf '%s\n' \
     'Port 2222' \
