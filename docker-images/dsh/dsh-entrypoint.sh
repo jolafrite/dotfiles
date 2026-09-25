@@ -41,17 +41,20 @@ wait_ready() {
 
 echo "[dsh] starting DSH on port $DSH_PORT"
 chmod 755 -R $HOME/.dsh
-if [ ! -f "$HOME/.dsh/.credentials.yaml" ]; then
-  echo "[dsh] WARNING: $HOME/.dsh/.credentials.yaml is missing — run 'make bootstrap' on the host first" >&2
-fi
-chmod 600 "$HOME/.dsh/.credentials.yaml" 2>/dev/null || true
 
-# Move ephemeral dirs off the host volume into the container's overlay FS.
-# The directory bind-mount keeps credentials writes working: rename(2) on a
-# file *inside* a mounted directory succeeds, whereas rename() onto a mount
-# point fails with EBUSY. Symlinks let DSH keep writing to the same paths
-# while the actual data lives in ephemeral storage that is recreated every
-# boot. Durable files (.credentials.yaml, etc.) stay in the bind-mounted dir.
+DIR="$HOME/.dsh"
+mkdir -p "$DIR"
+touch "$DIR/.credentials.yaml"
+chmod 600 "$DIR/.credentials.yaml"
+for f in .anonymous-user-id dsh-ssh.json pet.json skin-center-active.json settings.yaml.imported; do
+  if [ ! -s "$DIR/$f" ]; then
+    case "$f" in
+      .anonymous-user-id|settings.yaml.imported) : > "$DIR/$f" ;;
+      *) printf '{}' > "$DIR/$f" ;;
+    esac
+  fi
+done
+
 EPHEMERAL=/home/node/.dsh-ephemeral
 mkdir -p "$EPHEMERAL"/{sessions,profiles,logs,storages,.data,.cache,dsh-usage,dsh-session-archive,remote-workspaces,task-board}
 for d in sessions profiles logs storages .data .cache dsh-usage dsh-session-archive remote-workspaces task-board; do

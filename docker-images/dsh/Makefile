@@ -6,9 +6,6 @@ CLOUDFLARE_HOST  ?= ai.frisboolab.com
 
 .DEFAULT_GOAL := help
 
-bootstrap: ## Ensure durable ~/.dsh files exist on the host (run before first start)
-	@./bootstrap.sh
-
 help: ## Show this help message
 	@echo "DSH Development Environment"
 	@echo ""
@@ -36,7 +33,7 @@ run: ## Start all services via compose and print the GUI URL
 	done; \
 	echo "error: could not find token" >&2; exit 1
 
-start: ## Start all services via compose (detached); run `make bootstrap` first on a fresh host
+start: ## Start all services via compose (detached)
 	-podman-compose -f $(COMPOSE_FILE) down 2>/dev/null || true
 	podman-compose -f $(COMPOSE_FILE) up -d --build
 	@echo "Compose services started"

@@ -30,10 +30,12 @@ restarts because the files are gone with the container.
 ## Getting started
 
 ```bash
-make bootstrap   # create durable files on a fresh host (idempotent)
-make start       # build + start all services
-make url         # print the GUI URL
+make start   # build + start all services
+make url     # print the GUI URL
 ```
+
+The entrypoint creates the durable files on first boot if absent, writing
+through the bind-mount to the host. No host-side setup step is needed.
 
 ## Maintenance
 
