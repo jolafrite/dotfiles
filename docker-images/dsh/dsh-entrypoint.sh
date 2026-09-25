@@ -45,6 +45,20 @@ if [ ! -f "$HOME/.dsh/.credentials.yaml" ]; then
   echo "[dsh] WARNING: $HOME/.dsh/.credentials.yaml is missing — run 'make bootstrap' on the host first" >&2
 fi
 chmod 600 "$HOME/.dsh/.credentials.yaml" 2>/dev/null || true
+
+# Move ephemeral dirs off the host volume into the container's overlay FS.
+# The directory bind-mount keeps credentials writes working: rename(2) on a
+# file *inside* a mounted directory succeeds, whereas rename() onto a mount
+# point fails with EBUSY. Symlinks let DSH keep writing to the same paths
+# while the actual data lives in ephemeral storage that is recreated every
+# boot. Durable files (.credentials.yaml, etc.) stay in the bind-mounted dir.
+EPHEMERAL=/home/node/.dsh-ephemeral
+mkdir -p "$EPHEMERAL"/{sessions,profiles,logs,storages,.data,.cache,dsh-usage,dsh-session-archive,remote-workspaces,task-board}
+for d in sessions profiles logs storages .data .cache dsh-usage dsh-session-archive remote-workspaces task-board; do
+  rm -rf "$HOME/.dsh/$d"
+  ln -s "$EPHEMERAL/$d" "$HOME/.dsh/$d"
+done
+
 cd /usr/local/dsh
 pnpm dsh web --port "$DSH_PORT" --no-open > "$LOG_DIR/dsh.log" 2>&1 &
 DSH_PID=$!; PIDS="$PIDS $DSH_PID"

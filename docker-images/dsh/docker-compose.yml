@@ -21,12 +21,7 @@ services:
         limits:
           memory: 12G
     volumes:
-      - ${HOME}/.config/dsh-docker/dsh/.credentials.yaml:/home/node/.dsh/.credentials.yaml:Z
-      - ${HOME}/.config/dsh-docker/dsh/.anonymous-user-id:/home/node/.dsh/.anonymous-user-id:Z
-      - ${HOME}/.config/dsh-docker/dsh/dsh-ssh.json:/home/node/.dsh/dsh-ssh.json:Z
-      - ${HOME}/.config/dsh-docker/dsh/pet.json:/home/node/.dsh/pet.json:Z
-      - ${HOME}/.config/dsh-docker/dsh/skin-center-active.json:/home/node/.dsh/skin-center-active.json:Z
-      - ${HOME}/.config/dsh-docker/dsh/settings.yaml.imported:/home/node/.dsh/settings.yaml.imported:Z
+      - ${HOME}/.config/dsh-docker/dsh:/home/node/.dsh:Z
       - ${HOME}/.agents:/home/node/.agents:z
       - ${HOME}/.ssh/dsh-workspace:/home/node/.ssh/dsh-workspace:ro
     secrets:
