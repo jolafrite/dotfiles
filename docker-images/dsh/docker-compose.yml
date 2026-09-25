@@ -1,115 +1,93 @@
 name: dsh
-
 x-common-restart: &restart unless-stopped
 x-logging: &logging
   driver: json-file
-  options: { max-size: "10m", max-file: "3" }
-
+  options: {max-size: "10m", max-file: "3"}
 services:
   dsh:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile.dsh
     image: dsh-assistant:latest
     container_name: dsh
     restart: *restart
-
     ports:
       - "3080:3080"
-
     environment:
       NODE_ENV: production
       NODE_OPTIONS: "--max-old-space-size=6144"
-
     deploy:
       resources:
         limits:
           memory: 12G
-
     volumes:
-      - dsh-config:/home/node/.dsh
+      - ${HOME}/.config/dsh-docker/dsh/.credentials.yaml:/home/node/.dsh/.credentials.yaml:Z
+      - ${HOME}/.config/dsh-docker/dsh/.anonymous-user-id:/home/node/.dsh/.anonymous-user-id:Z
+      - ${HOME}/.config/dsh-docker/dsh/dsh-ssh.json:/home/node/.dsh/dsh-ssh.json:Z
+      - ${HOME}/.config/dsh-docker/dsh/pet.json:/home/node/.dsh/pet.json:Z
+      - ${HOME}/.config/dsh-docker/dsh/skin-center-active.json:/home/node/.dsh/skin-center-active.json:Z
+      - ${HOME}/.config/dsh-docker/dsh/settings.yaml.imported:/home/node/.dsh/settings.yaml.imported:Z
       - ${HOME}/.agents:/home/node/.agents:z
       - ${HOME}/.ssh/dsh-workspace:/home/node/.ssh/dsh-workspace:ro
-
     secrets:
       - source: dsh_github_token
         target: /run/secrets/dsh_github_token
-
     healthcheck:
       test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:'+(process.env.PROXY_PORT||3080)+'/').then(()=>process.exit(0)).catch(()=>process.exit(1))\""]
       interval: 15s
       timeout: 5s
       retries: 5
       start_period: 90s
-
     logging: *logging
-
   9router:
     image: decolua/9router:latest
     container_name: dsh-9router
     restart: *restart
-
     ports:
       - "20128:20128"
-
     environment:
       DATA_DIR: /app/data
       PORT: "20128"
       HOSTNAME: "0.0.0.0"
       NODE_ENV: production
       HEADROOM_URL: http://headroom:8787
-      INITIAL_PASSWORD: ${INITIAL_PASSWORD:-}
-
+      INITIAL_PASSWORD: ${NINEROUTER_INITIAL_PASSWORD:-}
     volumes:
-      - 9router-data:/app/data
-
+      - ${HOME}/.config/dsh-docker/9router:/app/data
     depends_on:
       headroom:
         condition: service_started
-
     logging: *logging
-
   cloudflared:
     image: cloudflare/cloudflared:latest
     container_name: dsh-cloudflared
     restart: *restart
-
     environment:
       HOME: /home/cloudflared
-
     volumes:
-      - ./cloudflared/:/home/cloudflared/.cloudflared/
-
+      - ~/.config/dsh-docker/cloudflared:/home/cloudflared/.cloudflared
     command: tunnel run dsh
-
     depends_on:
       dsh:
         condition: service_healthy
-    
     logging: *logging
-
   headroom:
     image: ghcr.io/chopratejas/headroom:latest
     container_name: dsh-headroom
     restart: *restart
-
     volumes:
-      - dsh-db:/shared-data
-
+      - ${HOME}/.config/dsh-docker/headroom:/shared-data
     depends_on:
       dsh:
         condition: service_healthy
-    
     logging: *logging
-
   workspaces:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile.workspaces
     image: dsh-workspaces:latest
     container_name: dsh-workspaces
     restart: *restart
-
     environment:
       SSH_PUBLIC_KEY: ${SSH_PUBLIC_KEY:-}
       GIT_AUTHOR_NAME: jolafigue
@@ -118,25 +96,18 @@ services:
       GIT_COMMITTER_EMAIL: jonathan.houze+bot@gmail.com
       JJ_USER_NAME: jolafigue
       JJ_USER_EMAIL: jonathan.houze+bot@gmail.com
-
     secrets:
       - source: dsh_github_token
         target: /run/secrets/dsh_github_token
-
     volumes:
       - dsh-workspaces:/home/app/workspaces
-
-    ports: 
+      - ${HOME}/.agents:/home/app/.agents:z
+    ports:
       - "127.0.0.1:2222:2222"
-
     logging: *logging
-
 volumes:
-  dsh-config:
-  dsh-db:
   dsh-workspaces:
   9router-data:
-
 secrets:
   dsh_github_token:
     file: ./secrets/github-token
