@@ -16,6 +16,7 @@ services:
     environment:
       NODE_ENV: production
       NODE_OPTIONS: "--max-old-space-size=6144"
+      DSH_REMOTE_PUBLIC_BASE_URL: "https://ai.frisboolab.com"
     deploy:
       resources:
         limits:
