@@ -7,18 +7,18 @@ CLOUDFLARE_HOST  ?= ai.frisboolab.com
 .DEFAULT_GOAL := help
 
 help: ## Show this help message
-	@echo "🚀 DSH Development Environment"
+	@echo "DSH Development Environment"
 	@echo ""
 	@echo "Usage: make [target]"
 	@echo ""
 	@echo "Targets:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
 
-build: ## Build the container image
+build: ## Build the container image (uses BuildKit cache automatically)
 	$(CONTAINER_ENGINE) build -t $(IMAGE_NAME) --dns=8.8.8.8 -f Dockerfile.dsh .
 
-rebuild: rmi build ## Force a clean rebuild (no cache)
-	@echo "✅ Image rebuilt without cache"
+reset: rmi build ## Force a clean rebuild (no cache / reset layers)
+	@echo "Image rebuilt without cache"
 
 rmi: ## Remove the built image
 	-$(CONTAINER_ENGINE) rmi $(IMAGE_NAME) 2>/dev/null || true
@@ -36,7 +36,7 @@ run: ## Start all services via compose and print the GUI URL
 start: ## Start all services via compose (detached)
 	-podman-compose -f $(COMPOSE_FILE) down 2>/dev/null || true
 	podman-compose -f $(COMPOSE_FILE) up -d --build
-	@echo "✅ Compose services started"
+	@echo "Compose services started"
 	@echo "   Run 'make url' to get the GUI URL"
 
 stop: ## Stop the running container
@@ -46,6 +46,10 @@ rm: stop ## Remove the container
 	-podman-compose -f $(COMPOSE_FILE) down 2>/dev/null || true
 
 restart: rm start ## Restart the container
+
+wipe-cache: restart ## Restart the container; ephemeral data is gone, durable host files untouched
+	@echo "Ephemeral data (sessions, profiles, pnpm store, caches) is gone with the container."
+	@echo "Durable files on the host are untouched."
 
 logs: ## Tail container logs
 	$(CONTAINER_ENGINE) logs -f $(CONTAINER_NAME)
@@ -93,7 +97,7 @@ ps: ## List running containers
 
 clean: rm ## Remove container and dangling images
 	-$(CONTAINER_ENGINE) image prune -f
-	@echo "🧹 Cleaned up containers and dangling images"
+	@echo "Cleaned up containers and dangling images"
 
 clean-all: clean ## Remove container, images and volumes
 	-$(CONTAINER_ENGINE) volume rm dsh_dsh-workspaces 2>/dev/null || true
@@ -103,7 +107,7 @@ clean-all: clean ## Remove container, images and volumes
 	-$(CONTAINER_ENGINE) volume rm dsh_9router-data 2>/dev/null || true
 	-$(CONTAINER_ENGINE) volume rm 9router-data 2>/dev/null || true
 	-$(CONTAINER_ENGINE) rmi $(IMAGE_NAME) 2>/dev/null || true
-	@echo "🧹 Full cleanup complete"
+	@echo "Full cleanup complete"
 
 inspect: ## Inspect the image metadata
 	$(CONTAINER_ENGINE) inspect $(IMAGE_NAME) | less

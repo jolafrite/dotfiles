@@ -8,20 +8,6 @@ READY_TIMEOUT="${READY_TIMEOUT:-120}"
 
 [ -f /run/secrets/dsh_github_token ] && export GH_TOKEN="$(cat /run/secrets/dsh_github_token)"
 
-# SSH config for connecting to the workspaces container
-mkdir -p /home/node/.ssh
-chmod 700 /home/node/.ssh
-cat > /home/node/.ssh/config <<'EOF'
-Host workspaces
-    HostName workspaces
-    Port 2222
-    User app
-    IdentityFile ~/.ssh/dsh-workspace
-    StrictHostKeyChecking no
-    UserKnownHostsFile /dev/null
-EOF
-chmod 600 /home/node/.ssh/config
-
 PIDS=""
 
 probe() {
@@ -54,7 +40,30 @@ wait_ready() {
 }
 
 echo "[dsh] starting DSH on port $DSH_PORT"
-dsh web --port "$DSH_PORT" --no-open > "$LOG_DIR/dsh.log" 2>&1 &
+chmod 755 -R $HOME/.dsh
+
+DIR="$HOME/.dsh"
+mkdir -p "$DIR"
+touch "$DIR/.credentials.yaml"
+chmod 600 "$DIR/.credentials.yaml"
+for f in .anonymous-user-id dsh-ssh.json pet.json skin-center-active.json settings.yaml.imported; do
+  if [ ! -s "$DIR/$f" ]; then
+    case "$f" in
+      .anonymous-user-id|settings.yaml.imported) : > "$DIR/$f" ;;
+      *) printf '{}' > "$DIR/$f" ;;
+    esac
+  fi
+done
+
+EPHEMERAL=/home/node/.dsh-ephemeral
+mkdir -p "$EPHEMERAL"/{sessions,profiles,logs,storages,.data,.cache,dsh-usage,dsh-session-archive,remote-workspaces,task-board}
+for d in sessions profiles logs storages .data .cache dsh-usage dsh-session-archive remote-workspaces task-board; do
+  rm -rf "$HOME/.dsh/$d"
+  ln -s "$EPHEMERAL/$d" "$HOME/.dsh/$d"
+done
+
+cd /usr/local/dsh
+pnpm dsh web --port "$DSH_PORT" --no-open > "$LOG_DIR/dsh.log" 2>&1 &
 DSH_PID=$!; PIDS="$PIDS $DSH_PID"
 tail -qF "$LOG_DIR/dsh.log" & PIDS="$PIDS $!"
 
