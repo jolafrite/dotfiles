@@ -13,10 +13,11 @@ services:
     restart: *restart
     ports:
       - "3080:3080"
+      - "18787:18787"
     environment:
       NODE_ENV: production
       NODE_OPTIONS: "--max-old-space-size=6144"
-      DSH_REMOTE_PUBLIC_BASE_URL: "https://ai.frisboolab.com"
+      DSH_REMOTE_PUBLIC_BASE_URL: ${DSH_REMOTE_PUBLIC_BASE_URL}
     deploy:
       resources:
         limits:
@@ -25,9 +26,6 @@ services:
       - ${HOME}/.config/dsh-docker/dsh:/home/node/.dsh:Z
       - ${HOME}/.agents:/home/node/.agents:z
       - ${HOME}/.ssh/dsh-workspace:/home/node/.ssh/dsh-workspace:ro
-    secrets:
-      - source: dsh_github_token
-        target: /run/secrets/dsh_github_token
     healthcheck:
       test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:'+(process.env.PROXY_PORT||3080)+'/').then(()=>process.exit(0)).catch(()=>process.exit(1))\""]
       interval: 15s
@@ -47,7 +45,7 @@ services:
       HOSTNAME: "0.0.0.0"
       NODE_ENV: production
       HEADROOM_URL: http://headroom:8787
-      INITIAL_PASSWORD: ${NINEROUTER_INITIAL_PASSWORD:-}
+      INITIAL_PASSWORD: ${NINEROUTER_INITIAL_PASSWORD}
     volumes:
       - ${HOME}/.config/dsh-docker/9router:/app/data
     depends_on:
@@ -84,26 +82,13 @@ services:
     image: dsh-workspaces:latest
     container_name: dsh-workspaces
     restart: *restart
-    environment:
-      SSH_PUBLIC_KEY: ${SSH_PUBLIC_KEY:-}
-      GIT_AUTHOR_NAME: jolafigue
-      GIT_AUTHOR_EMAIL: jonathan.houze+bot@gmail.com
-      GIT_COMMITTER_NAME: jolafigue
-      GIT_COMMITTER_EMAIL: jonathan.houze+bot@gmail.com
-      JJ_USER_NAME: jolafigue
-      JJ_USER_EMAIL: jonathan.houze+bot@gmail.com
-    secrets:
-      - source: dsh_github_token
-        target: /run/secrets/dsh_github_token
     volumes:
       - dsh-workspaces:/home/app/workspaces
       - ${HOME}/.agents:/home/app/.agents:z
+      - ${HOME}/.ssh/dsh-workspace.pub:/home/app/.ssh/dsh-workspace.pub
     ports:
       - "127.0.0.1:2222:2222"
     logging: *logging
 volumes:
   dsh-workspaces:
   9router-data:
-secrets:
-  dsh_github_token:
-    file: ./secrets/github-token
